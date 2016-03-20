@@ -8,12 +8,18 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
     Vector3 offset;
     public Transform targetTransform;
     private GameObject flowTarget;
-    private Transform flowTransform;
+
     public float flow_speed = 0.01F;
     bool calcDesiredPosition = true;
 	bool calcPosition = true;
     Vector3 desiredPosition;
 
+
+	public void SetFlowTarget(Transform t)
+	{
+		flowTarget.transform.position = t.position;
+		flowTarget.transform.rotation = t.rotation;
+	}
     void AbstractThirdCamera.SetTarget(Transform t)
     {
         targetTransform = t;        
@@ -22,24 +28,24 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
     {		
         offset = v;
     }
-    Vector3 AbstractThirdCamera.GetOffset()
+    public Vector3 GetOffset()
     {
         return offset;
     }
-    Transform AbstractThirdCamera.GetTarget()
+	public Transform GetTarget()
     {
         return targetTransform;
     }
-    Transform AbstractThirdCamera.GetSource()
+	public Transform GetSource()
     {
         return transform;
     }
-    void AbstractThirdCamera.SetPosition(Vector3 pos)
+	public void SetPosition(Vector3 pos)
     {
         transform.position = pos;
 
     }
-    public void ChangePosition(Vector3 pos)
+	public void ChangePosition(Vector3 pos)
     {
         desiredPosition = pos;
     }
@@ -49,16 +55,16 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
         calcDesiredPosition = v;
     }
 	public void CalcdPosition(bool v)
-	{
+	{		
 		calcPosition = v;
 	}
     // Use this for initialization
     void Start()
     {
         offset = transform.position - targetTransform.position;
-        flowTarget = new GameObject();
-        flowTransform = flowTarget.transform;
-        flowTransform.position = targetTransform.position;
+		flowTarget = new GameObject(); 
+		SetFlowTarget (targetTransform);
+
     }
 
     void Update()
@@ -76,6 +82,7 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
 				desiredPosition = targetTransform.position + offset;
 			}
 
+
 			Vector3 position;//= Vector3.MoveTowards(transform.position, desiredPosition, Time.deltaTime * damping);
 			position = Vector3.Lerp (transform.position, desiredPosition, Time.deltaTime * damping);
 		        
@@ -88,12 +95,10 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
 
 			transform.position = position;
 
-	        if (flowTransform)
-	        {            
-	            flowTransform.position = Vector3.Lerp(flowTransform.position, targetTransform.position, flow_speed);
+			flowTarget.transform.position = Vector3.Lerp(flowTarget.transform.position, targetTransform.position, flow_speed);
 	            //flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
-	            transform.LookAt(flowTransform.position);
-	        }    
+			transform.LookAt(flowTarget.transform.position );
+
 		}
 
     }
