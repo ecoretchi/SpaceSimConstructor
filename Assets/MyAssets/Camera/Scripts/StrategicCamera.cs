@@ -3,7 +3,7 @@ using System.Collections;
 // Common strategic camera implemented: 
 // 1) moving the camera by XZ plain 
 // 2) following to hitted object by tag name
-// 3) orbital rotating around the selected target, or invisible GameObject creted by current script
+// 3) orbital rotating around the selected target, or invisible GameObject created by current script
 // 4) zoom: move closer to target and out away 
 
 public class StrategicCamera : MonoBehaviour {
@@ -105,8 +105,8 @@ public class StrategicCamera : MonoBehaviour {
 			torqueForward = Input.GetAxis ("Mouse Y") * moveSpeed;
 			torqueLaterally = Input.GetAxis ("Mouse X") * moveSpeed;
 			if (Input.GetMouseButtonDown (MouseButtonIDMoving)) {
-				flowTarget.position = source.transform.position;
-				flowTarget.rotation = source.transform.rotation; //it is importat get copy rotation to get proper move forward vector
+				flowTarget.position = source.position;
+				flowTarget.rotation = source.rotation; //it is importat get copy rotation to get proper move forward vector
 				//setup the move directions
 				moveForward = Vector3.Cross (flowTarget.right, Vector3.up);
 				moveLaterally = flowTarget.right;
@@ -124,7 +124,7 @@ public class StrategicCamera : MonoBehaviour {
 			else
 				if (Input.GetMouseButton(MouseButtonZoomID) ){
 					torqueForward = Input.GetAxis ("Mouse Y") * zoomSpeed;
-					//Debug.DrawRay (source.transform.position, moveForward*moveSpeed, Color.green);
+					//Debug.DrawRay (source.position, moveForward*moveSpeed, Color.green);
 				}
 	}
 	// --------------- Motion Flow Begin Implementing ---------------
@@ -229,12 +229,12 @@ public class StrategicCamera : MonoBehaviour {
 		}
 
 		if(IsMoving()) {
-			source.transform.position = source.transform.position + newPos;
+			source.position = source.position + newPos;
 
-			flowTarget.position = source.transform.position - offset;
+			flowTarget.position = source.position - offset;
 
 			target = flowTarget;
-			desiredPosition = source.transform.position;
+			desiredPosition = source.position;
 		}
 	}
 
