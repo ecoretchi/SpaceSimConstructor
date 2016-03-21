@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(AbstractThirdCamera))]
 public class MovingWASDCamera : MonoBehaviour {
 
     AbstractThirdCamera thirdCam;
