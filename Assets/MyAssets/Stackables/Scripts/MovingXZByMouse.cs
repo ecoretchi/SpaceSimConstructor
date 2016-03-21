@@ -1,15 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MovingXZByMouse : MonoBehaviour {
+public class MovingXZByMouse : SelectingMicros {
+	
+	void Start()
+	{
+		tag = "stackable";
+		base.Start();
+	}
 
-	// Use this for initialization
-	void Start () {
-	
+	void Update()
+	{
+		base.Update ();
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	virtual public void OnTargetHitHold(Transform target)
+	{
 	}
+	virtual public void OnTargetHitRelease(Transform target)
+	{
+		
+	}
+
 }

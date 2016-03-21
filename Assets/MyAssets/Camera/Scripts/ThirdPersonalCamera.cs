@@ -4,12 +4,12 @@ using System;
 
 public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
 {
-    public float damping = 0.1f;
+    public float flowDamping = 0.1f;
+	public float flowSpeed = 0.01F;
     Vector3 offset;
     public Transform targetTransform;
     private GameObject flowTarget;
 
-    public float flow_speed = 0.01F;
     bool calcDesiredPosition = true;
 	bool calcPosition = true;
     Vector3 desiredPosition;
@@ -84,18 +84,18 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
 
 
 			Vector3 position;//= Vector3.MoveTowards(transform.position, desiredPosition, Time.deltaTime * damping);
-			position = Vector3.Lerp (transform.position, desiredPosition, Time.deltaTime * damping);
+			position = Vector3.Lerp (transform.position, desiredPosition, Time.deltaTime * flowDamping);
 		        
-			if (!calcDesiredPosition) {
+			if (!calcDesiredPosition) {//this code using by rotate orbit flow, hook
 				float magnitute = offset.magnitude - Vector3.Distance (targetTransform.position, position);
 				if (magnitute > 0) {
-					position = Vector3.RotateTowards (transform.position, desiredPosition, damping, offset.magnitude);
+					position = Vector3.RotateTowards (transform.position, desiredPosition, flowDamping, offset.magnitude);
 				}
 			}
 
 			transform.position = position;
 
-			flowTarget.transform.position = Vector3.Lerp(flowTarget.transform.position, targetTransform.position, flow_speed);
+			flowTarget.transform.position = Vector3.Lerp(flowTarget.transform.position, targetTransform.position, flowSpeed);
 	            //flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
 			transform.LookAt(flowTarget.transform.position );
 
