@@ -10,20 +10,20 @@ public class MovingWASDCamera : MonoBehaviour {
 
     public int MouseButtonID = 2;
 
-	GameObject srcCopy;
+	GameObject targetCpy;
+
 	public Vector3 moveForward;
 	public Vector3 moveLaterally;
 	public float torqueForward;
 	public float torqueLaterally;
 
-	public float angleAxis;
 
 	public Vector3 rotationE;
     void Start()
     {
         Camera cam = GetComponent<Camera>();
         thirdCam = cam.GetComponent<AbstractThirdCamera>();
-		srcCopy = new GameObject();
+		targetCpy = new GameObject ();
     }
 
     // Update is called once per frame
@@ -31,74 +31,56 @@ public class MovingWASDCamera : MonoBehaviour {
     {
 		Transform target = thirdCam.GetTarget ();
 		Transform source = thirdCam.GetSource();
-		rotationE = source.rotation.eulerAngles;
-	
-		//Test debug info: draw Ray parallell (x,z)plain
-		srcCopy.transform.position = source.transform.position;
 
-		srcCopy.transform.Translate(Vector3.forward*100000,Space.World);
-
-
-		Debug.DrawRay (source.transform.position, srcCopy.transform.position - source.transform.position, Color.green);
-		Debug.DrawRay (target.transform.position, srcCopy.transform.position - target.transform.position, Color.blue);
-
-//		srcCopy.transform.Translate(thirdCam.GetOffset());
-//
-//		Debug.DrawRay (source.transform.position, srcCopy.transform.position - source.transform.position, Color.green);
-//
-//		Vector3 lookPos = srcCopy.transform.position;
-//		lookPos.y = source.position.y;
-//
-		//		Debug.DrawRay (source.transform.position, lookPos - source.transform.position, Color.red);
-//		Debug.DrawRay (target.transform.position, lookPos - target.transform.position, Color.blue);
-//
-//		srcCopy.transform.LookAt (lookPos);
-//
-//		srcCopy.transform.Translate (srcCopy.transform.forward*10 );
-//		Vector3 remPos = srcCopy.transform.position;
-
-		//Debug.DrawRay (source.position, remPos - source.position, Color.green);
-
-		//angleAxis = Vector3.Angle(source.transform.forward, Vector3.forward);
-
-		//Let array be allways draw parallel
-
-        if (Input.GetMouseButton(MouseButtonID))
-        {
+        if (Input.GetMouseButton(MouseButtonID)) {
 			torqueForward = Input.GetAxis ("Mouse Y") * moveSpeed;
 			torqueLaterally = Input.GetAxis ("Mouse X") * moveSpeed;
 
+			Debug.DrawRay (source.transform.position, moveForward*moveSpeed, Color.green);
         }
 
 		if (Input.GetMouseButtonDown (MouseButtonID)) {
+			
 			thirdCam.CalcDesiredPosition (false);
 			thirdCam.CalcdPosition (false);
 
-
+			GameObject srcCopy = new GameObject();
+			srcCopy.transform.position = source.transform.position;
+			srcCopy.transform.rotation = source.transform.rotation; 
 			//get the move direct
-			moveForward = srcCopy.transform.forward;
+			moveForward = Vector3.Cross (srcCopy.transform.right, Vector3.up);
 			moveLaterally = srcCopy.transform.right;
 		}
 
-
-		if (Mathf.Abs (torqueForward) > 1) {			
+		Vector3 newPos = Vector3.zero;
+		bool isTorqueF = Mathf.Abs (torqueForward) > 1;
+		bool isTorqueL = Mathf.Abs (torqueLaterally) > 1;
+		if (isTorqueF) {			
 			torqueForward = Mathf.Lerp(torqueForward, 0, moveFriction);
+			newPos = -moveForward * torqueForward * Time.deltaTime;
+		}
 
-			//target.transform.position = source.position - thirdCam.GetOffset();
-			//thirdCam.SetTarget(target.transform);
+		if (isTorqueL) {			
+			torqueLaterally = Mathf.Lerp(torqueLaterally, 0, moveFriction);
+			newPos += -moveLaterally * torqueLaterally * Time.deltaTime;
+		}
 
-			source.transform.Translate( moveForward * torqueForward * Time.deltaTime );
-			//thirdCam.SetPosition (source.transform.position);
-			//thirdCam.ChangePosition (source.transform.position);
+		if(isTorqueF || isTorqueL ) {
+			source.transform.position = source.transform.position + newPos;
+
+			targetCpy.transform.position = source.transform.position - thirdCam.GetOffset();
+			targetCpy.transform.rotation = target.transform.rotation;
+
+
+			thirdCam.SetTarget (targetCpy.transform);
+			thirdCam.SetFlowTarget (targetCpy.transform);
+			thirdCam.SetPosition (source.transform.position);
+			thirdCam.ChangePosition (source.transform.position);
 
 		}
-//		if (Mathf.Abs (torqueLaterally) > 1) {			
-//			torqueLaterally = Mathf.Lerp(torqueLaterally, 0, moveFriction);
-//			target.transform.Translate( - moveLaterally * torqueLaterally * Time.deltaTime );
-//		}
+		else if(!Input.GetMouseButtonDown (MouseButtonID))
+		{
 			
-
-		if (Input.GetMouseButtonUp (MouseButtonID)) {
 			thirdCam.CalcDesiredPosition (true);
 			thirdCam.CalcdPosition (true);
 		}
