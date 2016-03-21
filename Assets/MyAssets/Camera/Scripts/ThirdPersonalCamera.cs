@@ -47,7 +47,7 @@ public class ThirdPersonalCamera : MonoBehaviour, AbstractThirdCamera
     }
 	public void ChangePosition(Vector3 pos)
     {
-        desiredPosition = pos;
+		desiredPosition = pos;
     }
 
     public void CalcDesiredPosition(bool v)

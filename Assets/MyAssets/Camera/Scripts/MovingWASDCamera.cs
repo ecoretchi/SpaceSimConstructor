@@ -42,9 +42,6 @@ public class MovingWASDCamera : MonoBehaviour {
 
 		if (Input.GetMouseButtonDown (MouseButtonID)) {
 			
-			thirdCam.CalcDesiredPosition (false);
-			thirdCam.CalcdPosition (false);
-
 			GameObject srcCopy = new GameObject();
 			srcCopy.transform.position = source.transform.position;
 			srcCopy.transform.rotation = source.transform.rotation; 
@@ -78,12 +75,6 @@ public class MovingWASDCamera : MonoBehaviour {
 			thirdCam.SetPosition (source.transform.position);
 			thirdCam.ChangePosition (source.transform.position);
 
-		}
-		else if(!Input.GetMouseButtonDown (MouseButtonID))
-		{
-			
-			thirdCam.CalcDesiredPosition (true);
-			thirdCam.CalcdPosition (true);
 		}
     }
 }
