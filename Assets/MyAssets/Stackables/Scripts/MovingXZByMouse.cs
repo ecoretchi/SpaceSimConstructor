@@ -15,10 +15,10 @@ public class MovingXZByMouse : SelectingMicros {
 
 	}
 
-	virtual public void OnTargetHitHold(Transform target)
+	override public void OnTargetHitHold(Transform target)
 	{
 	}
-	virtual public void OnTargetHitRelease(Transform target)
+	override public void OnTargetHitRelease(Transform target)
 	{
 		
 	}

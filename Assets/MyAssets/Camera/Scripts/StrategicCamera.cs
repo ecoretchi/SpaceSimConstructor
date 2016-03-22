@@ -6,27 +6,36 @@ using System.Collections;
 // 3) orbital rotating around the selected target, or invisible GameObject created by current script
 // 4) zoom: move closer to target and out away 
 
-public class StrategicCamera : MonoBehaviour {
+public class StrategicCamera : HitSelectObjectByTag {
 
+	[Header("Strategic Camera")]
+	[Tooltip("common properties")]
 	// -------------- common properties --------------
 	public int MouseButtonIDMoving = 0;
 	public int MouseButtonIDRotateH = 1;
 	public int MouseButtonIDRotateV = 1;
 	public int MouseButtonZoomID = 2;
 
+	GameObject targetObj;
+
+	Transform target; //current look to that position
+	Transform source; //source look from that position
+
+	Vector3 offset;//current offset between source and target
+
+	Vector3 desiredTarget; //source(as camera) desire look to that position
+
+	//------------ properties for flow processing ------------
+	[Header("Motion flow")]
 
 	public float flowSpeed = 0.01F;
 	public float flowDamping = 0.1f;
 
-	public Transform target;// destination look at position
-	protected Transform source;// source look from position
-
-	Vector3 offset;
-	Vector3 desiredPosition; //source(as camera) desire move to that position
-
-	protected Transform flowTarget;// virtual look at position
+	//protected Transform flowTarget; //virtual look at position
 
 	//------------ properties for vertical rotate processing ------------
+	[Header("Vertical rotate ")]
+
 	public float rotateVFriction = 0.05f;
 	public float rotateVSpeed = 5;
 
@@ -37,6 +46,7 @@ public class StrategicCamera : MonoBehaviour {
 	public int meredianLimit = 0; //vertical rotation limit 
 
 	//------------ properties for horizontal rotate processing ------------
+	[Header("Horizontal rotate")]
 
 	public float rotateHFriction = 0.05f;
 	public float rotateHSpeed = 5;
@@ -45,51 +55,82 @@ public class StrategicCamera : MonoBehaviour {
 	public float torqueHorizontal;
 
 	//------------ properties for moving over xz plane processing ------------
+	[Header("Horizont Moving")]
+
+	[Range(1, 5)]
+	public int expanentMove; // zoom speed increased over far distance 
+
 	public float moveFriction = 0.1f;
 	public float moveSpeed = 10;
 
-	public Vector3 moveForward;
-	public Vector3 moveLaterally;
+	Vector3 moveForward;
+	Vector3 moveLaterally;
+
+	[HideInInspector]
 	public float torqueForward;
+
+	[HideInInspector]
 	public float torqueLaterally;
 
 	//------------ properties for zoom processing ------------
+	[Header("Zoom")]
+
+	[Range(0, 1)]
+	public float expanentZoom; // zoom speed increased over far distance 
 
 	public float minOffset = 2;
 	public float maxOffset = 100;
 	public float zoomFriction = 0.1f;
 	public float zoomSpeed = 10;
 
+	[HideInInspector]
 	public float torqueZoomForward;
+	[HideInInspector]
 	public float torqueZoomWheel;
 
 	// ------------ Main Implementation Begin ------------ 
 	// Use this for initialization
 	void Start () {
+		base.Start ();
 		source = transform;
-		flowTarget = new GameObject() .transform; 
+
+		targetObj = new GameObject();
+
 		if (!target) {
-			target = flowTarget;
+			target = targetObj .transform;
 		}
 		offset = source.position - target.position;
 	}
 
 	// Update is called once per frame
 	void Update () {
+		
+		base.Update ();
+
 		CalcTorques();
 
+		Debug.DrawLine(target.position, source.position);
 		if (IsOrbitRotating ()) {
-			if (IsRotatingVertical ())
-				DoRotateVertical ();			
-			if (IsRotatingHorizontal ())
-				DoRotateHorizontal ();
+
+
 		}
 		else
-		{
-			DoMoving ();
-			DoFlow ();
-			DoZooming ();
-		}			
+		{			
+		}	
+
+		DoRotateVertical();			
+		DoRotateHorizontal ();
+		DoZooming ();
+		DoMoving ();
+		DoFlow ();
+	}
+	// ------------ overriding class methods HitSelectObjectByTag ------------ 
+	override public void OnTargetHitHold(Transform target)
+	{
+	}
+	override public void OnTargetHitRelease(Transform target)
+	{
+		desiredTarget = target.position;
 	}
 	// ------------ Main Implementation End ------------ 
 	bool IsOrbitRotating(){
@@ -102,66 +143,63 @@ public class StrategicCamera : MonoBehaviour {
 		if (Input.GetMouseButton(MouseButtonIDRotateH))
 			torqueHorizontal = Input.GetAxis("Mouse X") * rotateHSpeed;
 		if (Input.GetMouseButton (MouseButtonIDMoving)) {
-			torqueForward = Input.GetAxis ("Mouse Y") * moveSpeed;
-			torqueLaterally = Input.GetAxis ("Mouse X") * moveSpeed;
-			if (Input.GetMouseButtonDown (MouseButtonIDMoving)) {
-				flowTarget.position = source.position;
-				flowTarget.rotation = source.rotation; //it is importat get copy rotation to get proper move forward vector
+
+			float moveSpeed_ = moveSpeed;
+
+			if (expanentMove>0)
+				moveSpeed = offset.magnitude * expanentMove;
+			
+			torqueForward = Input.GetAxis ("Mouse Y") * moveSpeed_;
+			torqueLaterally = Input.GetAxis ("Mouse X") * moveSpeed_;
+				
+			if (Input.GetMouseButtonDown (MouseButtonIDMoving)) {				
+				//flowTarget.position = source.position + offset;
+				//flowTarget.rotation = source.rotation; //it is importat get copy rotation to get proper move forward vector
 				//setup the move directions
-				moveForward = Vector3.Cross (flowTarget.right, Vector3.up);
-				moveLaterally = flowTarget.right;
+				moveForward = Vector3.Cross (source.right, Vector3.up);
+				moveLaterally = source.right;
 			}
 		}
 
 		torqueZoomWheel = Input.GetAxis ("Mouse ScrollWheel");
-		if(torqueZoomWheel>0) {
-			torqueForward+=zoomSpeed;
-		}
-		else
-			if(torqueZoomWheel<0) {
-				torqueForward-=zoomSpeed;
+
+
+		if (isZooming()) {
+			float zoomSpeed_ = zoomSpeed;
+			if (expanentZoom > 0) {
+				zoomSpeed_ = offset.magnitude * expanentZoom;
 			}
-			else
-				if (Input.GetMouseButton(MouseButtonZoomID) ){
-					torqueForward = Input.GetAxis ("Mouse Y") * zoomSpeed;
-					//Debug.DrawRay (source.position, moveForward*moveSpeed, Color.green);
-				}
+			if (torqueZoomWheel > 0) {
+				torqueZoomForward += zoomSpeed_;
+			} else if (torqueZoomWheel < 0) {
+				torqueZoomForward -= zoomSpeed_;
+			} else if (Input.GetMouseButton (MouseButtonZoomID)) {
+				torqueZoomForward = Input.GetAxis ("Mouse Y") * zoomSpeed_;
+				//Debug.DrawRay (source.position, moveForward*moveSpeed, Color.green);
+			}
+		}
 	}
 	// --------------- Motion Flow Begin Implementing ---------------
 	void DoFlow (){
 
-		CalcDesirePosition ();
-		source.position = CalcFlowPosition ();
+		Debug.DrawLine (target.position, source.position, Color.red);
 
-		flowTarget.position = Vector3.Lerp(flowTarget.position, target.position, flowSpeed);
-		source.LookAt(flowTarget.position);
-	}
+		Vector3 desiredPosition = desiredTarget + offset;
 
-	void CalcDesirePosition ()
-	{
-		desiredPosition = target.position + offset;
-	}
+		source.position = Vector3.Lerp (source.position, desiredPosition, flowDamping);
 
-	Vector3 CalcFlowPosition()
-	{
-		return Vector3.Lerp (source.position, desiredPosition, Time.deltaTime * flowDamping);
-	}
-	// --------------- Motion Flow End Implementing ---------------
+		target.position = Vector3.Lerp(target.position , desiredTarget, flowSpeed);
+		//flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
+		transform.LookAt(target.position);
 
-	// Rotate Flow Implementing 
-	Vector3 CalcOrbitRotatePosition()
-	{
-		float magnitute = offset.magnitude - Vector3.Distance (target.position, source.position);
-		if (magnitute > 0) {
-			return Vector3.RotateTowards (source.position, desiredPosition, flowDamping, offset.magnitude);
-		}
-		return source.position;
-	}
-		
+
+	}		
 	// --------------- Verical Rotate Begin Implementing ---------------
 	void DoRotateVertical ()
 	{
-
+		if (!IsRotatingVertical ())
+			return;
+			
 		torqueVertical = Mathf.Lerp(torqueVertical, 0, rotateVFriction);
 
 		int sign = torqueVertical > 0 ? -1 : 1;
@@ -173,21 +211,22 @@ public class StrategicCamera : MonoBehaviour {
 		if (resAngle > meredianLimit) {
 			Vector3 desiredPosition = target.position + offsetV;
 
-			Debug.DrawRay (target.position, desiredPosition - target.position, Color.green);
-			Debug.DrawRay (source.position, desiredPosition - source.position, Color.blue);
+			//Debug.DrawLine (target.position, desiredPosition , Color.green);
+			//Debug.DrawLine(source.position, desiredPosition , Color.blue);
 
 			Vector3 side1 = source.position - target.position;
 			Vector3 side2 = desiredPosition - target.position;
 			Vector3 normal = Vector3.Cross (side1, side2);
 
-			Debug.DrawRay (target.position, normal - target.position, Color.red);
+			Debug.DrawRay (source.position, normal, Color.red);
 
 			Quaternion rotation = Quaternion.AngleAxis (Mathf.Abs (torqueVertical), normal);
 			offset = rotation * offset;				
 
 			desiredPosition = target.position + offset;
 
-			source.position = CalcOrbitRotatePosition ();
+			source.position = Vector3.RotateTowards (source.position, desiredPosition, Mathf.Abs(torqueVertical), offset.magnitude);
+			source.LookAt (target.position);
 
 		} else
 			torqueVertical = 0;
@@ -199,16 +238,19 @@ public class StrategicCamera : MonoBehaviour {
 	// --------------- DoRotateV End Implementing ---------------
 	// --------------- DoRotateH Begin Implementing ---------------
 	void DoRotateHorizontal(){
-		if (IsRotatingHorizontal())
-		{
-			torqueHorizontal = Mathf.Lerp(torqueHorizontal, 0, rotateHFriction); 
+		if (!IsRotatingHorizontal ())
+			return;
+		torqueHorizontal = Mathf.Lerp(torqueHorizontal, 0, rotateHFriction); 
 
-			Quaternion rotation = Quaternion.Euler(0, torqueHorizontal, 0);
-			offset = rotation * offset;
-			desiredPosition = target.position + offset;
-			source.position = CalcOrbitRotatePosition ();
+		Quaternion rotation = Quaternion.Euler(0, torqueHorizontal, 0);
+		offset = rotation * offset;
+		Vector3 desiredPosition = target.position + offset;
 
-		}
+		source.position = Vector3.RotateTowards (source.position, desiredPosition, Mathf.Abs(torqueHorizontal), offset.magnitude);
+		source.LookAt (target.position);
+
+		//Debug.DrawRay (source.position, desiredPosition - source.position, Color.red);
+		//Debug.DrawRay (target.position, desiredPosition - target.position, Color.green);
 	}
 	bool IsRotatingHorizontal(){
 		return Mathf.Abs (torqueHorizontal) > Mathf.Deg2Rad;
@@ -229,12 +271,11 @@ public class StrategicCamera : MonoBehaviour {
 		}
 
 		if(IsMoving()) {
+			
 			source.position = source.position + newPos;
+			target.position = source.position - offset;
+			desiredTarget = target.position;
 
-			flowTarget.position = source.position - offset;
-
-			target = flowTarget;
-			desiredPosition = source.position;
 		}
 	}
 
@@ -251,21 +292,29 @@ public class StrategicCamera : MonoBehaviour {
 	// --------------- Zooming Begin Implementing ---------------
 	void DoZooming()
 	{		
-		bool isTorqueF = Mathf.Abs (torqueZoomForward) > 0;
+		if (!isZooming ())
+			return;
 
-		if (isTorqueF) {
-			torqueZoomForward = Mathf.Lerp(torqueZoomForward, 0, zoomFriction);
+		torqueZoomForward = Mathf.Lerp(torqueZoomForward, 0, zoomFriction);
 
-			float curDistance = offset.magnitude;
+		float curDistance = offset.magnitude;
 
-			if (//avoid changing distance near the target only during zooming in
-				( curDistance > torqueZoomForward + minOffset && torqueZoomForward > 0 ) || 
-				//avoid changing distance far away from target only during zooming out
-				(curDistance < maxOffset && torqueZoomForward < 0)) {
-				source.Translate (Vector3.forward * torqueZoomForward);
-				offset = source.position - target.position;
-			}			
+		if (//avoid changing distance near the target only during zooming in
+			(curDistance > torqueZoomForward + minOffset && torqueZoomForward > 0) ||
+			//avoid changing distance far away from target only during zooming out
+			(curDistance < maxOffset && torqueZoomForward < 0)) {
+			source.Translate (Vector3.forward * torqueZoomForward);
+			offset = source.position - target.position;
+		} else {
+			torqueZoomForward = 0;
 		}
+
+	}
+	bool isZooming(){		
+		bool ret = Mathf.Abs (torqueZoomForward) > 0;
+		if(!ret)
+			ret = torqueZoomWheel > 0 || torqueZoomWheel < 0 || Input.GetMouseButton (MouseButtonZoomID);
+		return ret;
 	}
 	// --------------- Zooming End Implementing ---------------
 
