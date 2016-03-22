@@ -21,14 +21,14 @@ public class StrategicCamera : HitSelectObjectByTag {
 	Transform target; //current look to that position
 	Transform source; //source look from that position
 
-	Vector3 offset;//current offset between source and target
+	public Vector3 offset { get; set; } //current offset between source and target
 
 	Vector3 desiredTarget; //source(as camera) desire look to that position
 
 	//------------ properties for flow processing ------------
 	[Header("Motion flow")]
 
-	public float flowSpeed = 0.01F;
+	public float flowSpeed = 0.1f;
 	public float flowDamping = 0.1f;
 
 	//protected Transform flowTarget; //virtual look at position
@@ -58,9 +58,9 @@ public class StrategicCamera : HitSelectObjectByTag {
 	[Header("Horizont Moving")]
 
 	[Range(1, 5)]
-	public int expanentMove; // zoom speed increased over far distance 
+	public int expanentMove = 2; // zoom speed increased over far distance 
 
-	public float moveFriction = 0.1f;
+	public float moveFriction = 0.01f;
 	public float moveSpeed = 10;
 
 	Vector3 moveForward;
@@ -76,12 +76,12 @@ public class StrategicCamera : HitSelectObjectByTag {
 	[Header("Zoom")]
 
 	[Range(0, 1)]
-	public float expanentZoom; // zoom speed increased over far distance 
+	public float expanentZoom = 0.01f; // zoom speed increased over far distance 
 
 	public float minOffset = 2;
 	public float maxOffset = 100;
-	public float zoomFriction = 0.1f;
-	public float zoomSpeed = 10;
+	public float zoomFriction = 0.01f;
+	public float zoomSpeed = 0.01f;
 
 	[HideInInspector]
 	public float torqueZoomForward;
@@ -92,7 +92,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 	// Use this for initialization
 	void Start () {
 		base.Start ();
-		source = transform;
+		source = base.currCamera.transform;
 
 		targetObj = new GameObject();
 

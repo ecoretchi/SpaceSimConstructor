@@ -4,27 +4,30 @@ using System.Collections;
 
 public class HitSelectObjectByTag : MonoBehaviour 
 {
-	[Header("HitSelectObjectByTag")]
 
-	[HideInInspector]
-	public Camera camera;
+	public Camera currCamera { get; set; }
+
 	int MouseHitID = 0;
 	Transform tmpHitSelected;
 	RaycastHit hitInfo;
+
+	[Header("HitSelectObjectByTag")]
 	public string tag = "Construction";
 
 	protected void Start()
 	{
 		hitInfo = new RaycastHit();
-		if(!camera)
-			camera = GetComponent<Camera>();
-
+		if(!currCamera)
+			currCamera = (Camera) GameObject.FindObjectOfType(typeof(Camera));
 	}
 
 	bool GetHitTransform(out Transform t, string tag)
 	{
-
-		Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+		if (!currCamera) {
+			t = null;
+			return false;
+		}
+		Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
 		bool res = Physics.Raycast(ray, out hitInfo);
 		t = hitInfo.transform;        
 		return res && t.tag == tag;
@@ -49,7 +52,7 @@ public class HitSelectObjectByTag : MonoBehaviour
 		if (Input.GetMouseButtonUp(MouseHitID) )
 		{
 			Transform hitTransform;
-			if ( GetHitTransform(out hitTransform, "Construction") && hitTransform==tmpHitSelected)
+			if ( GetHitTransform(out hitTransform, tag) && hitTransform==tmpHitSelected)
 			{
 				print("Target changes");
 				OnTargetHitRelease (hitTransform);
