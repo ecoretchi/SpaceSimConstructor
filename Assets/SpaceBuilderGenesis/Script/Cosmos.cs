@@ -27,7 +27,7 @@ public class Cosmos : Singleton<Cosmos> {
 
 	#region Members
 
-	private bool isComosReady = false;
+	private bool isCosmosReady = false;
 
 	#region Camera
 	[SerializeField]
@@ -48,7 +48,7 @@ public class Cosmos : Singleton<Cosmos> {
 
 						if (On_CosmosReady!=null && spaceCamera!=null){
 							On_CosmosReady();
-							isComosReady = true;
+							isCosmosReady = true;
 						}
 					}
 				}
@@ -220,19 +220,19 @@ public class Cosmos : Singleton<Cosmos> {
 		cosmosCamera.gameObject.AddComponent<FlareLayer>();
 		#endregion
 		
-		if (On_CosmosReady!=null && spaceCamera!=null && !isComosReady){
+		if (On_CosmosReady!=null && spaceCamera!=null && !isCosmosReady){
 			On_CosmosReady();
 		}
 
 		if (spaceCamera!=null){
-		   isComosReady = true;
+		   isCosmosReady = true;
 		}
 	}
 
 
 	void Update(){
 
-		if (isComosReady ){
+		if (isCosmosReady ){
 			cosmosCamera.transform.rotation = spaceCamera.transform.rotation;
 
 			// Drift
