@@ -88,9 +88,31 @@ public class StrategicCamera : HitSelectObjectByTag {
 	[HideInInspector]
 	public float torqueZoomWheel;
 
-	// ------------ Main Implementation Begin ------------ 
-	// Use this for initialization
-	void Start () {
+
+    float remFlowSpeed;
+    float remFlowDamping;
+
+    // ------------ Public Interface Implementation Begin ------------ 
+    public void SetDesiredTarget(Vector3 pos, float flowFactor) {
+
+        this.flowSpeed = this.remFlowSpeed * flowFactor;
+        this.flowDamping = this.remFlowDamping * flowFactor;
+
+        desiredTarget = pos;
+    }
+    public void OnLerpLookAt(Vector3 pos, float flowFactor) {
+        
+        this.flowSpeed = this.remFlowSpeed * flowFactor;
+        this.flowDamping = this.remFlowDamping * flowFactor;
+        
+        pos = target.position + (pos - target.position) * flowFactor / 5;
+
+        offset = source.position - pos;
+        desiredTarget = pos;
+    }
+    // ------------ Main Implementation Begin ------------ 
+    // Use this for initialization
+    void Start () {
 		base.Start ();
 		source = base.currCamera.transform;
 
@@ -100,23 +122,24 @@ public class StrategicCamera : HitSelectObjectByTag {
 			target = targetObj .transform;
 		}
 		offset = source.position - target.position;
-	}
+
+        source.LookAt(target.position);
+
+        remFlowSpeed = flowSpeed;
+        remFlowDamping = flowDamping;
+    }
 
 	// Update is called once per frame
 	void Update () {
 		
 		base.Update ();
 
-		CalcTorques();
+        bool ret = CalcTorques();
+
+        if (ret)
+            SetupExValueByDefault();
 
 		Debug.DrawLine(target.position, source.position);
-		if (IsOrbitRotating ()) {
-
-
-		}
-		else
-		{			
-		}	
 
 		DoRotateVertical();			
 		DoRotateHorizontal ();
@@ -124,8 +147,13 @@ public class StrategicCamera : HitSelectObjectByTag {
 		DoMoving ();
 		DoFlow ();
 	}
-	// ------------ overriding class methods HitSelectObjectByTag ------------ 
-	override public void OnTargetHitHold(Transform target)
+    void SetupExValueByDefault() {
+        print("SetupExValueByDefault");
+        flowSpeed = remFlowSpeed;
+        flowDamping = remFlowDamping;
+    }
+    // ------------ overriding class methods HitSelectObjectByTag ------------ 
+    override public void OnTargetHitHold(Transform target)
 	{
 	}
 	override public void OnTargetHitRelease(Transform target)
@@ -133,18 +161,24 @@ public class StrategicCamera : HitSelectObjectByTag {
 		desiredTarget = target.position;
 	}
 	// ------------ Main Implementation End ------------ 
-	bool IsOrbitRotating(){
+	public bool IsOrbitRotating(){
 		return IsRotatingVertical() || IsRotatingHorizontal();
 	}
-	void CalcTorques()
+	bool CalcTorques()
 	{
-		if (Input.GetMouseButton(MouseButtonIDRotateV))
-			torqueVertical = Input.GetAxis("Mouse Y") * rotateVSpeed;
-		if (Input.GetMouseButton(MouseButtonIDRotateH))
-			torqueHorizontal = Input.GetAxis("Mouse X") * rotateHSpeed;
+        bool ret = false;
+        if (Input.GetMouseButton(MouseButtonIDRotateV)) {
+            torqueVertical = Input.GetAxis("Mouse Y") * rotateVSpeed;
+            ret = true;
+        }
+        if (Input.GetMouseButton(MouseButtonIDRotateH)) {
+            torqueHorizontal = Input.GetAxis("Mouse X") * rotateHSpeed;
+            ret = true;
+        }
 		if (Input.GetMouseButton (MouseButtonIDMoving)) {
+            ret = true;
 
-			float moveSpeed_ = moveSpeed;
+            float moveSpeed_ = moveSpeed;
 
 			if (expanentMove>0)
 				moveSpeed = offset.magnitude * expanentMove;
@@ -164,8 +198,9 @@ public class StrategicCamera : HitSelectObjectByTag {
 		torqueZoomWheel = Input.GetAxis ("Mouse ScrollWheel");
 
 
-		if (isZooming()) {
-			float zoomSpeed_ = zoomSpeed;
+		if (IsZooming()) {
+            ret = true;
+            float zoomSpeed_ = zoomSpeed;
 			if (expanentZoom > 0) {
 				zoomSpeed_ = offset.magnitude * expanentZoom;
 			}
@@ -178,6 +213,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 				//Debug.DrawRay (source.position, moveForward*moveSpeed, Color.green);
 			}
 		}
+        return ret;
 	}
 	// --------------- Motion Flow Begin Implementing ---------------
 	void DoFlow (){
@@ -188,15 +224,13 @@ public class StrategicCamera : HitSelectObjectByTag {
 
 		source.position = Vector3.Lerp (source.position, desiredPosition, flowDamping);
 
-		target.position = Vector3.Lerp(target.position , desiredTarget, flowSpeed);
-		//flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
-		transform.LookAt(target.position);
-
-
-	}		
+		target.position = Vector3.Lerp(target.position , desiredTarget, flowSpeed );
+        //flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
+        source.LookAt(target.position);
+    }		
 	// --------------- Verical Rotate Begin Implementing ---------------
-	void DoRotateVertical ()
-	{
+	void DoRotateVertical () {
+
 		if (!IsRotatingVertical ())
 			return;
 			
@@ -270,8 +304,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 			newPos += -moveLaterally * torqueLaterally * Time.deltaTime;
 		}
 
-		if(IsMoving()) {
-			
+		if(IsMoving()) {			
 			source.position = source.position + newPos;
 			target.position = source.position - offset;
 			desiredTarget = target.position;
@@ -285,14 +318,14 @@ public class StrategicCamera : HitSelectObjectByTag {
 	bool IsMovingLaterally(){
 		return Mathf.Abs (torqueLaterally) > 1;
 	}
-	bool IsMoving(){
+    public bool IsMoving(){
 		return IsMovingForward () || IsMovingLaterally ();
 	}
 	// --------------- Moving End Implementing ---------------
 	// --------------- Zooming Begin Implementing ---------------
-	void DoZooming()
-	{		
-		if (!isZooming ())
+	void DoZooming() {		
+
+		if (!IsZooming ())
 			return;
 
 		torqueZoomForward = Mathf.Lerp(torqueZoomForward, 0, zoomFriction);
@@ -308,9 +341,8 @@ public class StrategicCamera : HitSelectObjectByTag {
 		} else {
 			torqueZoomForward = 0;
 		}
-
 	}
-	bool isZooming(){		
+    public bool IsZooming(){
 		bool ret = Mathf.Abs (torqueZoomForward) > 0;
 		if(!ret)
 			ret = torqueZoomWheel > 0 || torqueZoomWheel < 0 || Input.GetMouseButton (MouseButtonZoomID);
