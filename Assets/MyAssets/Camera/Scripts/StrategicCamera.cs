@@ -76,12 +76,12 @@ public class StrategicCamera : HitSelectObjectByTag {
 	[Header("Zoom")]
 
 	[Range(0, 1)]
-	public float expanentZoom = 0.01f; // zoom speed increased over far distance 
+	public float expanentZoom = 0.05f; // zoom speed increased over far distance 
 
 	public float minOffset = 2;
 	public float maxOffset = 100;
-	public float zoomFriction = 0.01f;
-	public float zoomSpeed = 0.01f;
+	public float zoomFriction = 0.1f;
+	public float zoomSpeed = 0.1f;
 
 	[HideInInspector]
 	public float torqueZoomForward;
@@ -128,7 +128,6 @@ public class StrategicCamera : HitSelectObjectByTag {
         remFlowSpeed = flowSpeed;
         remFlowDamping = flowDamping;
     }
-
 	// Update is called once per frame
 	void Update () {
 		
@@ -148,7 +147,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 		DoFlow ();
 	}
     void SetupExValueByDefault() {
-        print("SetupExValueByDefault");
+
         flowSpeed = remFlowSpeed;
         flowDamping = remFlowDamping;
     }
@@ -195,7 +194,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 			}
 		}
 
-		torqueZoomWheel = Input.GetAxis ("Mouse ScrollWheel");
+		torqueZoomWheel = Input.GetAxis ("Mouse ScrollWheel") * 0.1f;
 
 
 		if (IsZooming()) {
@@ -343,7 +342,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 		}
 	}
     public bool IsZooming(){
-		bool ret = Mathf.Abs (torqueZoomForward) > 0;
+		bool ret = Mathf.Abs (torqueZoomForward) > 0.1f;
 		if(!ret)
 			ret = torqueZoomWheel > 0 || torqueZoomWheel < 0 || Input.GetMouseButton (MouseButtonZoomID);
 		return ret;

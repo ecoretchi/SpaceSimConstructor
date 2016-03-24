@@ -29,6 +29,7 @@ public class MovingXZByMouse : HitSelectObjectByTag {
     float curAngle;
     float curMeredianAngle;
 
+    int maxFreeLookBorderV = 100;
     
 
     override public void OnTargetHitHold(Transform target) {
@@ -79,8 +80,9 @@ public class MovingXZByMouse : HitSelectObjectByTag {
 
         curMeredianAngle = Vector3.Angle(Vector3.up, - offset);
         //print(curMeredianAngle);
-        
+
         DoLookFollow();
+        DoMoveFollow();
     }
 
     void DoMoving() {
@@ -103,15 +105,24 @@ public class MovingXZByMouse : HitSelectObjectByTag {
         }
     }
 
-    void DoFollow() {
+    void DoMoveFollow() {
         if (!target)
             return;
+       
+        float posY = Input.mousePosition.y;
 
-        if (curAngle > freeMoveForwardConuseAngle) {
-            float newFlowFactor = curAngle / 40.0f;
+        if (posY > (Screen.height - maxFreeLookBorderV ) ) {
+            float newFlowFactor = 0.2f + maxFreeLookBorderV / (Screen.height - posY + 10) * 0.1f;
+            flowSpeed = newFlowFactor;
+            strategicCamera.SetDesiredTarget(projectedMousePosOnPlane, newFlowFactor);
+        }else
+        if(posY < maxFreeLookBorderV) {
+            float newFlowFactor = 0.2f + maxFreeLookBorderV / ( posY + 10) * 0.1f;
             flowSpeed = newFlowFactor;
             strategicCamera.SetDesiredTarget(projectedMousePosOnPlane, newFlowFactor);
         }
+        else
+            flowSpeed = 1;
 
     }
     void DoLookFollow() {
