@@ -12,11 +12,15 @@ namespace FlyMode {
         public Transform cameraPositionsSource;
         private Transform[] cameraPositions;
         private int cameraIndex = 0; //индекс камеры, которую надо использовать
+		private bool _isDamping = false;
+		private float _dampSpeed = 10f;
 
-        public GameObject engineLights;
+		public GameObject engineLights;
 		public Slider enginePowerSlider;
+		public Color enginePowerSliderPositiveColor = Color.blue;
+		public Color enginePowerSliderNegativeColor = Color.red;
 
-        public bool controlledByPlayer = false;
+		public bool controlledByPlayer = false;
         public string shipName = "Test Ship";
         // Текущие характеристики конкретного корабля (не общие для класса, т.е. с учетом всех апгрейдов и т.п.)
         public float nominalMass        = 10f;  //Номинальная масса корабля (пустой корабль, тонны)
@@ -67,6 +71,16 @@ namespace FlyMode {
             gameObject.name = shipName + " (" + GUID + ")";
         }
 
+		void StartOnEnable() {
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+		}
+				
+		void OnDisable() {
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+		}
+
         private void prepareCameraList() {
             /*List<Transform> camerasList = new List<Transform>();
             
@@ -99,10 +113,19 @@ namespace FlyMode {
 
         // Update is called once per frame
         void Update() {
-            //Подготавливаем силы, действующие на корабль
 
-            //Читаем устройства ввода (либо тут работает AI, управляющий кораблем)
-            if (controlledByPlayer) {
+			if (Input.GetKeyUp(KeyCode.Escape)) {
+				#if UNITY_EDITOR
+					UnityEditor.EditorApplication.isPlaying = false;
+				#else
+					Application.Quit();
+				#endif
+			}
+
+			//Подготавливаем силы, действующие на корабль
+
+			//Читаем устройства ввода (либо тут работает AI, управляющий кораблем)
+			if (controlledByPlayer) {
                 forces[0] = Input.GetAxis("Horisontal Strafe") * rotationXForce;        // direction x
                 forces[1] = Input.GetAxis("Vertical Strafe") * rotationYForce;          // direction y
                 forces[2] = Input.GetAxis("Speed") * maxMainEngineForce;                // direction z
@@ -111,21 +134,7 @@ namespace FlyMode {
                 forces[5] = Input.GetAxis("Roll") * rotationZForce;                     // rotation z
             }
 
-			float speedFactor = Mathf.Abs(forces[2]) / maxMainEngineForce;
-
-			if (engineLights) {
-                foreach( Light l in engineLights.GetComponentsInChildren<Light>()) {
-                    l.intensity = speedFactor;
-                }
-            }
-			if (enginePowerSlider) {
-				enginePowerSlider.value = speedFactor;
-			}
-
-            if( Input.GetKeyUp( KeyCode.F1 )) {
-                swithCamera();
-            }
-
+			
             instantVelocity = Mathf.Abs(GetComponent<Rigidbody>().velocity.magnitude);
             instantAcceleration = (instantVelocity - oldvelocity) / Time.deltaTime;
             maxAcceleration = Mathf.Max(Mathf.Abs(instantAcceleration), maxAcceleration);
@@ -139,13 +148,26 @@ namespace FlyMode {
                 vel0to99 = vel0to99temp;
                 vel0to99temp = Mathf.NegativeInfinity;
             }
-        }
 
-        void LateUpdate() {
-            cameraToUse.transform.position = cameraPositions[cameraIndex].position;
-            cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
-        }
+			//float speedFactor = forces[2] / maxMainEngineForce;
+			float speedFactor = instantVelocity / 26f; //some magic numbers :)
 
+			if (engineLights) {
+				foreach (Light l in engineLights.GetComponentsInChildren<Light>()) {
+					l.intensity = speedFactor;
+				}
+			}
+			if (enginePowerSlider) {
+				enginePowerSlider.value = speedFactor;
+				enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+			}
+
+			if (Input.GetKeyUp(KeyCode.F1)) {
+				swithCamera();
+			}
+		}
+
+        
         /// <summary>
         ///  "Переключает" камеру на одну из позиций из списка GameObject'ов
         ///  Если позиций камер не обнаружено, то поставит просто в центр текущего GameObject.
@@ -163,13 +185,31 @@ namespace FlyMode {
                 cameraIndex = Math.Min(toSwitchIndex, cameraPositions.GetLength(0) - 1);
             }
 
+			CameraPositionPoint cp = cameraPositions[cameraIndex].gameObject.GetComponent<CameraPositionPoint>();
+			if (cp) {
+				_isDamping = cp.isDamped;
+				_dampSpeed = cp.dampingSpeed;
+			}
+
         }
 
         void FixedUpdate() {
             //Применяем силы
             GetComponent<Rigidbody>().AddRelativeForce(forces[0], forces[1], forces[2], ForceMode.Force);
             GetComponent<Rigidbody>().AddRelativeTorque(forces[3], forces[4], forces[5], ForceMode.Force);
-        }
+
+			if (_isDamping) {
+				cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
+				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
+			}
+		}
+
+		void LateUpdate() {
+			if (!_isDamping) {
+				cameraToUse.transform.position = cameraPositions[cameraIndex].position;
+				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
+			}
+		}
 
         protected void setupPhysics() {
             //setup the rigidbody
@@ -184,8 +224,8 @@ namespace FlyMode {
 
         // Static
         static int ships;
-
-        protected void setupGUID() {
+		
+		protected void setupGUID() {
             //classType = ClassTypes.ship;
             _guid = "XXXX-SHIP-000" + ++ships;
         }
@@ -204,7 +244,7 @@ namespace FlyMode {
                 Debug.Log("Strong hit");
         }
 
-
+		
         /*
 	void Awake() {
 		//Awake is called when the script instance is being loaded.
