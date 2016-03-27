@@ -1,12 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using System;
 
 namespace FlyMode {
     public class ShipTest : MonoBehaviour, ISpaceEntity {
 
         public Camera cameraToUse;
-        public Transform camPosDummy;
+
+        // Управление камерой
+        public Transform cameraPositionsSource;
+        private Transform[] cameraPositions;
+        private int cameraIndex = 0; //индекс камеры, которую надо использовать
+
+        public GameObject engineLights;
 
         public bool controlledByPlayer = false;
         public string shipName = "Test Ship";
@@ -41,24 +47,44 @@ namespace FlyMode {
             }
         }
 
+
+
         // Use this for initialization
         void Awake() {
 
-            //TODO: move to setView
             if ( cameraToUse == null) {
                 cameraToUse = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
                 if (cameraToUse == null) throw new Exception("No camera!");
             }
+
+            prepareCameraList();
+            swithCamera( 0 );
 
             setupPhysics();
             setupGUID();
             gameObject.name = shipName + " (" + GUID + ")";
         }
 
+        private void prepareCameraList() {
+            List<Transform> camerasList = new List<Transform>();
+            
+            foreach (Transform child in cameraPositionsSource) { 
+                camerasList.Add(child);
+            }
+
+            //Если вдруг список получился пустой - добавим себя
+            if(camerasList.Count == 0) {
+                camerasList.Add(transform);
+            }
+
+            cameraPositions = camerasList.ToArray();
+            //Debug.Log("CamPosList created: length = " + cameraPositions.GetLength(0));
+        }
+
         // Update is called once per frame
         void Update() {
-            cameraToUse.transform.position = camPosDummy.position;
-            cameraToUse.transform.rotation = camPosDummy.rotation;
+            cameraToUse.transform.position = cameraPositions[cameraIndex].position;
+            cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
 
             //Подготавливаем силы, действующие на корабль
 
@@ -70,6 +96,18 @@ namespace FlyMode {
                 forces[3] = Input.GetAxis("Vertical") * rotationXForce;                 // rotation x
                 forces[4] = Input.GetAxis("Horizontal") * rotationYForce;               // rotation y
                 forces[5] = Input.GetAxis("Roll") * rotationZForce;                     // rotation z
+            }
+
+            if(engineLights) {
+                float speedFactor = Mathf.Abs(forces[2]) / maxMainEngineForce;
+
+                foreach( Light l in engineLights.GetComponentsInChildren<Light>()) {
+                    l.intensity = speedFactor;
+                }
+            }
+
+            if( Input.GetKeyUp( KeyCode.F1 )) {
+                swithCamera();
             }
 
             instantVelocity = Mathf.Abs(GetComponent<Rigidbody>().velocity.magnitude);
@@ -87,6 +125,24 @@ namespace FlyMode {
             }
         }
 
+        /// <summary>
+        ///  "Переключает" камеру на одну из позиций из списка GameObject'ов
+        ///  Если позиций камер не обнаружено, то поставит просто в центр текущего GameObject.
+        /// </summary>
+        /// <param name="toSwitchIndex">
+        ///  Индекс позиции камеры. Если <0 - переключает на следующую. Если больше количества позиций - переключит на последнюю.
+        /// </param>
+        private void swithCamera(int toSwitchIndex = -1) {
+
+            if(toSwitchIndex < 0) {
+                if( ++cameraIndex > cameraPositions.GetLength(0) - 1) {
+                    cameraIndex = 0;
+                }
+            } else {
+                cameraIndex = Math.Min(toSwitchIndex, cameraPositions.GetLength(0) - 1);
+            }
+
+        }
 
         void FixedUpdate() {
             //Применяем силы
