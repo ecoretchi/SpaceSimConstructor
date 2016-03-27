@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
@@ -13,6 +14,7 @@ namespace FlyMode {
         private int cameraIndex = 0; //индекс камеры, которую надо использовать
 
         public GameObject engineLights;
+		public Slider enginePowerSlider;
 
         public bool controlledByPlayer = false;
         public string shipName = "Test Ship";
@@ -109,13 +111,16 @@ namespace FlyMode {
                 forces[5] = Input.GetAxis("Roll") * rotationZForce;                     // rotation z
             }
 
-            if(engineLights) {
-                float speedFactor = Mathf.Abs(forces[2]) / maxMainEngineForce;
+			float speedFactor = Mathf.Abs(forces[2]) / maxMainEngineForce;
 
+			if (engineLights) {
                 foreach( Light l in engineLights.GetComponentsInChildren<Light>()) {
                     l.intensity = speedFactor;
                 }
             }
+			if (enginePowerSlider) {
+				enginePowerSlider.value = speedFactor;
+			}
 
             if( Input.GetKeyUp( KeyCode.F1 )) {
                 swithCamera();
