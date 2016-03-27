@@ -78,7 +78,7 @@ public class ConcaveColliderEditor : Editor
         EditorGUILayout.PropertyField(PropAlgorithm, new GUIContent("Algorithm", "Chooses which convex decomposition algorithm to use"));
         EditorGUILayout.IntSlider(PropMaxHullVertices,  3,    255,    new GUIContent("Max Hull Vertices", "Limits the number of vertices each collider will have"));
         EditorGUILayout.IntSlider(PropMaxHulls,         1,    255,    new GUIContent("Max Hulls", "Limits the number of colliders created"));
-        EditorGUILayout.Slider   (PropInternalScale,    0.0f, 200.0f, new GUIContent("Internal Scale", "Mesh will internally be processed at this size for convex decomposition. Varying this value may get better results."));
+        EditorGUILayout.Slider   (PropInternalScale,    0.0f, 400.0f, new GUIContent("Internal Scale", "Mesh will internally be processed at this size for convex decomposition. Varying this value may get better results."));
         EditorGUILayout.Slider   (PropPrecision,        0.0f, 1.0f,   new GUIContent("Precision", "The more the value, the more precision but also more hulls are created"));
 
         if(PropAlgorithm.enumNames[PropAlgorithm.enumValueIndex] == ConcaveCollider.EAlgorithm.Legacy.ToString())

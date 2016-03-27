@@ -66,7 +66,7 @@ namespace FlyMode {
         }
 
         private void prepareCameraList() {
-            List<Transform> camerasList = new List<Transform>();
+            /*List<Transform> camerasList = new List<Transform>();
             
             foreach (Transform child in cameraPositionsSource) { 
                 camerasList.Add(child);
@@ -78,7 +78,21 @@ namespace FlyMode {
             }
 
             cameraPositions = camerasList.ToArray();
-            //Debug.Log("CamPosList created: length = " + cameraPositions.GetLength(0));
+            */
+            //А теперь более эффективно:
+
+            if (cameraPositionsSource.childCount == 0) {
+                cameraPositions = new Transform[1];
+                cameraPositions[0] = transform;
+            } else {
+                cameraPositions = new Transform[cameraPositionsSource.childCount];
+                int i = 0;
+                foreach (Transform t in cameraPositionsSource) {
+                    cameraPositions[i++] = t;
+                }
+            }
+
+
         }
 
         // Update is called once per frame
