@@ -97,9 +97,6 @@ namespace FlyMode {
 
         // Update is called once per frame
         void Update() {
-            cameraToUse.transform.position = cameraPositions[cameraIndex].position;
-            cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
-
             //Подготавливаем силы, действующие на корабль
 
             //Читаем устройства ввода (либо тут работает AI, управляющий кораблем)
@@ -137,6 +134,11 @@ namespace FlyMode {
                 vel0to99 = vel0to99temp;
                 vel0to99temp = Mathf.NegativeInfinity;
             }
+        }
+
+        void LateUpdate() {
+            cameraToUse.transform.position = cameraPositions[cameraIndex].position;
+            cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
         }
 
         /// <summary>
@@ -178,7 +180,7 @@ namespace FlyMode {
         // Static
         static int ships;
 
-        new protected void setupGUID() {
+        protected void setupGUID() {
             //classType = ClassTypes.ship;
             _guid = "XXXX-SHIP-000" + ++ships;
         }
