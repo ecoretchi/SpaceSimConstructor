@@ -9,51 +9,46 @@ namespace FlyMode {
         public Camera cameraToUse;
 
         // Управление камерой
-        public Transform cameraPositionsSource;
-        private Transform[] cameraPositions;
-        private int cameraIndex = 0; //индекс камеры, которую надо использовать
-		private bool _isDamping = false;
-		private float _dampSpeed = 10f;
+        public	Transform	cameraPositionsSource;
+        private Transform[]	cameraPositions;
+        private int			cameraIndex		= 0; //индекс камеры, которую надо использовать
+		private bool		_isDamping		= false;
+		private float		_dampSpeed		= 10f;
 
-		public GameObject engineLights;
-		public Slider enginePowerSlider;
-		public Color enginePowerSliderPositiveColor = Color.blue;
-		public Color enginePowerSliderNegativeColor = Color.red;
+		public	GameObject	engineLights;
+		public	Slider		enginePowerSlider;
+		public	Color		enginePowerSliderPositiveColor = Color.blue;
+		public	Color		enginePowerSliderNegativeColor = Color.red;
 
-		public bool controlledByPlayer = false;
-        public string shipName = "Test Ship";
+		public	bool		controlledByPlayer	= false;
+        public	string		shipName			= "Test Ship";
         // Текущие характеристики конкретного корабля (не общие для класса, т.е. с учетом всех апгрейдов и т.п.)
-        public float nominalMass        = 10f;  //Номинальная масса корабля (пустой корабль, тонны)
-        public float inertiaDamper      = 1f;   //Эффективность гасителя инерции (0.1 - 5)
-        public float maxMainEngineForce = 100f; //Максимальная мощность маршевого двигателя, kN (килоньютоны)
-        public float rotationXForce     = 40f;  //Мощность поворотных двигателей (она же половина мощности стрейфа) (ось X, вертикальная, kN (килоньютоны))
-        public float rotationYForce     = 30f;  //Мощность поворотных двигателей (она же половина мощности стрейфа) (ось Y, горизонтальная, kN (килоньютоны))
-        public float rotationZForce     = 20f;  //Мощность поворотных двигателей (ось Z, ось движения, kN (килоньютоны))
+        public	float		nominalMass			= 10f;  //Номинальная масса корабля (пустой корабль, тонны)
+        public	float		inertiaDamper		= 1f;   //Эффективность гасителя инерции (0.1 - 5)
+        public	float		maxMainEngineForce	= 100f; //Максимальная мощность маршевого двигателя, kN (килоньютоны)
+        public	float		rotationXForce		= 40f;  //Мощность поворотных двигателей (она же половина мощности стрейфа) (ось X, вертикальная, kN (килоньютоны))
+        public	float		rotationYForce		= 30f;  //Мощность поворотных двигателей (она же половина мощности стрейфа) (ось Y, горизонтальная, kN (килоньютоны))
+        public	float		rotationZForce		= 20f;  //Мощность поворотных двигателей (ось Z, ось движения, kN (килоньютоны))
 
-        float oldvelocity = 0f;
-        float vel0to99 = 0f;
-        float vel0to99temp = 0f;
+				float		oldvelocity			= 0f;
+				float		vel0to99			= 0f;
+				float		vel0to99temp		= 0f;
 
-        public float instantVelocity = 0f;
-        public float instantAcceleration = 0f;
-        public float maxAcceleration = 0f;
+        public	float		instantVelocity		= 0f;
+        public	float		instantAcceleration	= 0f;
+        public	float		maxAcceleration		= 0f;
 
-        float[] forces = {0f, 0f, 0f, 0f, 0f, 0f};
+				float[]		forces				= {0f, 0f, 0f, 0f, 0f, 0f};
 
-        private string _guid;
+        private	string		_guid;
+
         public string GUID {
-            get {
-                return _guid;
-            }
+            get { return _guid; }
         }
 
         public string e_name {
-            get {
-                return shipName;
-            }
+            get { return shipName; }
         }
-
-
 
         // Use this for initialization
         void Awake() {
@@ -81,7 +76,13 @@ namespace FlyMode {
 			Cursor.visible = true;
 		}
 
-        private void prepareCameraList() {
+		static int ships;
+		protected void setupGUID() {
+			//classType = ClassTypes.ship;
+			_guid = "XXXX-SHIP-000" + ++ships;
+		}
+
+		private void prepareCameraList() {
             /*List<Transform> camerasList = new List<Transform>();
             
             foreach (Transform child in cameraPositionsSource) { 
@@ -150,7 +151,8 @@ namespace FlyMode {
             }
 
 			//float speedFactor = forces[2] / maxMainEngineForce;
-			float speedFactor = instantVelocity / 26f; //some magic numbers :)
+			//float speedFactor = instantVelocity / 26f; //some magic numbers :)
+			float speedFactor = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) / 26f;
 
 			if (engineLights) {
 				foreach (Light l in engineLights.GetComponentsInChildren<Light>()) {
@@ -159,7 +161,8 @@ namespace FlyMode {
 			}
 			if (enginePowerSlider) {
 				enginePowerSlider.value = speedFactor;
-				enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+				//enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+				enginePowerSlider.fillRect.GetComponent<Image>().color = speedFactor >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
 			}
 
 			if (Input.GetKeyUp(KeyCode.F1)) {
@@ -221,15 +224,6 @@ namespace FlyMode {
             GetComponent<Rigidbody>().drag = inertiaDamper;
             GetComponent<Rigidbody>().angularDrag = inertiaDamper * 2f;
         }
-
-        // Static
-        static int ships;
-		
-		protected void setupGUID() {
-            //classType = ClassTypes.ship;
-            _guid = "XXXX-SHIP-000" + ++ships;
-        }
-
 
         void OnTriggerEnter(Collider other) {
             Debug.Log("OnTriggerEnter");

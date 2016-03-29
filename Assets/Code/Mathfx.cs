@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 
 static class Mathfx{
@@ -15,6 +14,9 @@ static class Mathfx{
 		return (to - from) * value + from;
 	}
 
+	/// <summary>
+	///		Линейная интерполяция между from и to без отсечения value
+	/// </summary>
 	public static float lerpUnclamped(float from, float to, float value) {
 		return (1.0f - value) * from + value * to;
 	}
