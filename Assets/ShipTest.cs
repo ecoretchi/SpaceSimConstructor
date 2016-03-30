@@ -17,6 +17,7 @@ namespace FlyMode {
 
 		public	GameObject	engineLights;
 		public	Slider		enginePowerSlider;
+		public  Text        enginePowerText;
 		public	Color		enginePowerSliderPositiveColor = Color.blue;
 		public	Color		enginePowerSliderNegativeColor = Color.red;
 
@@ -153,6 +154,10 @@ namespace FlyMode {
 				enginePowerSlider.value = speedFactor;
 				//enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
 				enginePowerSlider.fillRect.GetComponent<Image>().color = speedFactor >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+			}
+			if(enginePowerText) {
+				enginePowerText.text = Math.Round(speedFactor * 26f).ToString();
+				enginePowerText.color = speedFactor >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
 			}
 
 			if (Input.GetKeyUp(KeyCode.F1)) {

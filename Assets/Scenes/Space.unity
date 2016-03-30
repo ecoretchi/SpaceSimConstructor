@@ -4304,12 +4304,13 @@ RectTransform:
   m_Children:
   - {fileID: 555856616}
   - {fileID: 1496338823}
+  - {fileID: 1826127464}
   m_Father: {fileID: 1397612571}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &526037642
 MonoBehaviour:
@@ -4347,7 +4348,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
+  m_DynamicPixelsPerUnit: 100
 --- !u!223 &526037644
 Canvas:
   m_ObjectHideFlags: 0
@@ -9040,6 +9041,7 @@ MonoBehaviour:
   cameraPositionsSource: {fileID: 1617509380}
   engineLights: {fileID: 1225737167}
   enginePowerSlider: {fileID: 1496338824}
+  enginePowerText: {fileID: 1826127465}
   enginePowerSliderPositiveColor: {r: 0, g: 0, b: 1, a: 1}
   enginePowerSliderNegativeColor: {r: 1, g: 0, b: 0, a: 1}
   controlledByPlayer: 1
@@ -9576,7 +9578,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1496338822}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -6.5}
   m_LocalScale: {x: 0.21, y: 0.13, z: 1}
   m_Children:
   - {fileID: 982155979}
@@ -11699,6 +11701,79 @@ Light:
   m_ShadowRadius: 0
   m_ShadowAngle: 0
   m_AreaSize: {x: 1, y: 1}
+--- !u!1 &1826127463
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1826127464}
+  - 222: {fileID: 1826127466}
+  - 114: {fileID: 1826127465}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1826127464
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826127463}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -27.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 526037641}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -12.879996, y: 107.7}
+  m_SizeDelta: {x: 18.46, y: 6.699997}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &1826127465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826127463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 11
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: 10
+--- !u!222 &1826127466
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826127463}
 --- !u!43 &1836178441
 Mesh:
   m_ObjectHideFlags: 0
@@ -13686,8 +13761,8 @@ MonoBehaviour:
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1280, y: 1024}
+  m_ScreenMatchMode: 2
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -13704,7 +13779,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -14205,7 +14280,7 @@ Transform:
   m_GameObject: {fileID: 2124431565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -27.83, y: 3.84, z: 51.8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
@@ -14257,7 +14332,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.0000038146973}
-  m_SizeDelta: {x: 241.7, y: 0}
+  m_SizeDelta: {x: 216.22, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2144260828
 MonoBehaviour:
@@ -14279,11 +14354,11 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_Font: {fileID: 12800000, guid: c1902c8011de5d34488b9e3b03c078f2, type: 3}
+    m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -14291,15 +14366,16 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\n<b><color=red>W/S</color></b> -  \u0414\u0432\u0438\u0436\u0435\u043D\u0438e
-    \u0432\u043F\u0435\u0440\u0435\u0434/\u043D\u0430\u0437\u0430\u0434\n<b><color=red>A/D</color></b>
-    \ -  \u0414\u0432\u0438\u0436\u0435\u043D\u0438\u0435 \u0432\u043B\u0435\u0432\u043E-\u0432\u043F\u0440\u0430\u0432\u043E\n<b><color=red>R/F</color></b>
-    \ -  \u0414\u0432\u0438\u0436\u0435\u043D\u0438\u0435 \u0432\u0432\u0435\u0440\u0445/\u0432\u043D\u0438\u0437\n<b><color=red>Q/R</color></b>
-    \ -  \u041A\u0440\u0443\u0447\u0435\u043D\u0438\u0435 \u0432\u043B\u0435\u0432\u043E/\u0432\u043F\u0440\u0430\u0432\u043E\n<b><color=red>F1</color></b>
-    \  -  \u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0435
-    \u043A\u0430\u043C\u0435\u0440\u044B\n<b><color=red>ALT</color></b> -  \u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C
+  m_Text: "\n<b><color=red>W/S</color></b>  -  \u0414\u0432\u0438\u0436\u0435\u043D\u0438\u0435
+    \u0432\u043F\u0435\u0440\u0435\u0434 / \u043D\u0430\u0437\u0430\u0434\n<b><color=red>A/D</color></b>
+    \ -  \u0414\u0432\u0438\u0436\u0435\u043D\u0438\u0435 \u0432\u043B\u0435\u0432\u043E
+    - \u0432\u043F\u0440\u0430\u0432\u043E\n<b><color=red>R/F</color></b>  -  \u0414\u0432\u0438\u0436\u0435\u043D\u0438\u0435
+    \u0432\u0432\u0435\u0440\u0445 / \u0432\u043D\u0438\u0437\n<b><color=red>Q/R</color></b>
+    \ -  \u041A\u0440\u0443\u0447\u0435\u043D\u0438\u0435 \u0432\u043B\u0435\u0432\u043E
+    / \u0432\u043F\u0440\u0430\u0432\u043E\n<b><color=red>F1</color></b>   -  \u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0435
+    \u043A\u0430\u043C\u0435\u0440\u044B\n<b><color=red>ALT</color></b>  -  \u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C
     \u043A\u0443\u0440\u0441\u043E\u0440 \u043C\u044B\u0448\u0438\n<b><color=red>ESC</color></b>
-    -  \u0412\u044B\u0445\u043E\u0434"
+    \ -  \u0412\u044B\u0445\u043E\u0434"
 --- !u!222 &2144260829
 CanvasRenderer:
   m_ObjectHideFlags: 0
