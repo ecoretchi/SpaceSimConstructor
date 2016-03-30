@@ -66,16 +66,6 @@ namespace FlyMode {
             gameObject.name = shipName + " (" + GUID + ")";
         }
 
-		void StartOnEnable() {
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
-		}
-				
-		void OnDisable() {
-			Cursor.lockState = CursorLockMode.None;
-			Cursor.visible = true;
-		}
-
 		static int ships;
 		protected void setupGUID() {
 			//classType = ClassTypes.ship;
@@ -126,7 +116,7 @@ namespace FlyMode {
 			//Подготавливаем силы, действующие на корабль
 
 			//Читаем устройства ввода (либо тут работает AI, управляющий кораблем)
-			if (controlledByPlayer) {
+			if (controlledByPlayer && GameController.instance.isCursorLocked) {
                 forces[0] = Input.GetAxis("Horisontal Strafe") * rotationXForce;        // direction x
                 forces[1] = Input.GetAxis("Vertical Strafe") * rotationYForce;          // direction y
                 forces[2] = Input.GetAxis("Speed") * maxMainEngineForce;                // direction z
