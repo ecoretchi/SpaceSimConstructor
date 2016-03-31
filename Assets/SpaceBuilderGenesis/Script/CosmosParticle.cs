@@ -77,9 +77,9 @@ public class CosmosParticle : MonoBehaviour {
 
 				if (dist>spawnDistance){
 					particles[i].position = cacheTransform.position + Random.onUnitSphere * spawnDistance;
-					particles[i].size = Random.Range(minSize, maxSize );
+					particles[i].startSize = Random.Range(minSize, maxSize );
 					particles[i].rotation = Random.Range(-180,180);
-					particles[i].color = color.Evaluate( Random.Range(0f,1f));
+					particles[i].startColor = color.Evaluate( Random.Range(0f,1f));
 
 					if (enableDrift){
 						particles[i].velocity  =new Vector3( Random.Range(-1f,1f),Random.Range(-1f,1f),0) * driftSpeed;
@@ -91,7 +91,7 @@ public class CosmosParticle : MonoBehaviour {
 
 				// Fade
 				float alpha = Mathf.Clamp01(1.0f - ((dist - fade) / (spawnDistance - fade)));
-				particles[i].color = new Color( particles[i].color.r/255f,particles[i].color.g/255f,particles[i].color.b/255f, alpha);
+				particles[i].startColor = new Color( particles[i].color.r/255f,particles[i].color.g/255f,particles[i].color.b/255f, alpha);
 
 				if (enableRotation){
 					particles[i].rotation += rotationSpeed * Mathf.Sign(particles[i].rotation)  * Time.deltaTime;
