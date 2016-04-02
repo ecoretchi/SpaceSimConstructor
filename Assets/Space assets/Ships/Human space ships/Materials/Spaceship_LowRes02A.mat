@@ -26,14 +26,14 @@ Material:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 6c658fe75d073b2468f0c36bff3ac2c4, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _DetailNormalMap
         second:
-          m_Texture: {fileID: 2800000, guid: c691ef927e0568b4ba5be7e6a3b6a164, type: 3}
+          m_Texture: {fileID: 2800000, guid: a6ab3700371474943971566503b564eb, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -69,7 +69,7 @@ Material:
           name: _DetailAlbedoMap
         second:
           m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 2, y: 2}
           m_Offset: {x: 0, y: 0}
       data:
         first:
@@ -106,7 +106,7 @@ Material:
       data:
         first:
           name: _BumpScale
-        second: 1
+        second: 0.7
       data:
         first:
           name: _OcclusionStrength
@@ -114,7 +114,7 @@ Material:
       data:
         first:
           name: _DetailNormalMapScale
-        second: 0.2
+        second: -0.44
       data:
         first:
           name: _UVSec
