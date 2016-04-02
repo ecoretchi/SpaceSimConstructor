@@ -13,10 +13,11 @@ public class HitSelectObjectByTag : MonoBehaviour
 
 	[Header("HitSelectObjectByTag")]
 	public string tag = "Construction";
-
+    void Awake() {
+        hitInfo = new RaycastHit();
+    }
 	protected void Start()
-	{
-		hitInfo = new RaycastHit();
+	{		
 		if(!currCamera)
 			currCamera = (Camera) GameObject.FindObjectOfType(typeof(Camera));
 	}

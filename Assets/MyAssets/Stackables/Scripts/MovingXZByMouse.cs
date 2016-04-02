@@ -12,13 +12,10 @@ public class MovingXZByMouse : HitSelectObjectByTag {
 
     float flowSpeed = 1f;
 
-    [Range(0, 90)]
-    public int freeMoveForwardConuseAngle = 35; // turn cam at object if object out of focuse conuse, zero value disable the feature
-    [Range(0, 100)]
-    public int freeMoveDownConuseAngle = 75;
-
-    [Range(0, 100)]//TODO: not implemented feature
-    public int freeMoveDistance = 100; // move cam following to object if object distanced far away, zero value disable the feature
+    //[Range(0, 90)]
+    //public int freeMoveForwardConuseAngle = 35; // turn cam at object if object out of focuse conuse, zero value disable the feature
+    //[Range(0, 100)]
+    //public int freeMoveDownConuseAngle = 75;
 
 
     bool lockTargetMoving = false;
@@ -30,7 +27,8 @@ public class MovingXZByMouse : HitSelectObjectByTag {
     float curMeredianAngle;
 
     int maxFreeLookBorderV = 100;
-    
+    int maxFreeLookBorderH = 100;
+
 
     override public void OnTargetHitHold(Transform target) {
 
@@ -54,7 +52,8 @@ public class MovingXZByMouse : HitSelectObjectByTag {
         tag = "Stackable";
         base.Start();
         strategicCamera = (StrategicCamera)GameObject.FindObjectOfType(typeof(StrategicCamera));
-
+        
+        strategicCamera.SetDesiredTarget(new Vector3(100, 0, 100),1);
     }
     void Update() {
         base.Update();
@@ -64,10 +63,7 @@ public class MovingXZByMouse : HitSelectObjectByTag {
             //strategicCamera.IsOrbitRotating())
             //return;
 
-        DoMoving(); //move the selected target
-        //DoFollow();
-        //DoLookFollow();
-
+        DoMoveObject(); //move the selected target
         DoFlowCam(); //flow cam toward target, if target out from free movement window
     }
 
@@ -85,7 +81,7 @@ public class MovingXZByMouse : HitSelectObjectByTag {
         DoMoveFollow();
     }
 
-    void DoMoving() {
+    void DoMoveObject() {
         //is any target on hold
         if (!target || lockTargetMoving)
             return;
@@ -112,29 +108,47 @@ public class MovingXZByMouse : HitSelectObjectByTag {
         float posY = Input.mousePosition.y;
 
         if (posY > (Screen.height - maxFreeLookBorderV ) ) {
-            float newFlowFactor = 0.2f + maxFreeLookBorderV / (Screen.height - posY + 10) * 0.1f;
-            flowSpeed = newFlowFactor;
-            strategicCamera.SetDesiredTarget(projectedMousePosOnPlane, newFlowFactor);
+            float moveFactor = maxFreeLookBorderV / (Screen.height - posY + 10) * 5;
+            flowSpeed = moveFactor;            
+            strategicCamera.MoveForwardHorizaontal(-moveFactor);
         }else
         if(posY < maxFreeLookBorderV) {
-            float newFlowFactor = 0.2f + maxFreeLookBorderV / ( posY + 10) * 0.1f;
-            flowSpeed = newFlowFactor;
-            strategicCamera.SetDesiredTarget(projectedMousePosOnPlane, newFlowFactor);
+            float moveFactor = maxFreeLookBorderV / ( posY + 10) * 5;
+            flowSpeed = moveFactor;
+            strategicCamera.MoveForwardHorizaontal(moveFactor);
         }
         else
             flowSpeed = 1;
 
     }
+
+    /// -- prev impl -- depricated --
+    //void DoLookFollow() {
+    //    if (!target)
+    //        return;
+    //    if (curMeredianAngle < this.freeMoveDownConuseAngle)
+    //    if (curAngle > freeMoveForwardConuseAngle) {
+    //            float newFlowFactor = curAngle  / curMeredianAngle * 0.75f;
+    //            //float newFlowFactor = curMeredianAngle / 70;
+    //            flowSpeed = newFlowFactor;            
+    //        strategicCamera.OnLerpLookAt(projectedMousePosOnPlane, newFlowFactor);
+    //    }
+    //}
     void DoLookFollow() {
         if (!target)
             return;
-        print("DoLookFollow");
-        if (curMeredianAngle < this.freeMoveDownConuseAngle)
-        if (curAngle > freeMoveForwardConuseAngle) {
-                float newFlowFactor = curAngle  / curMeredianAngle * 0.75f;
-                //float newFlowFactor = curMeredianAngle / 70;
-                flowSpeed = newFlowFactor;            
-            strategicCamera.OnLerpLookAt(projectedMousePosOnPlane, newFlowFactor);
+        float posX = Input.mousePosition.x;
+        float turnFactor = 0.1f;
+        if (posX > (Screen.width - maxFreeLookBorderH)) {
+            turnFactor = maxFreeLookBorderH / (Screen.width - posX + 1) * 0.05f;
+            strategicCamera.TurnHorizaontal(turnFactor);
         }
+        else
+        if (posX < maxFreeLookBorderV) {
+            turnFactor = maxFreeLookBorderH / (posX + 1) * 0.05f;
+            strategicCamera.TurnHorizaontal(-turnFactor);
+        }
+        flowSpeed = turnFactor;
+        
     }
 }

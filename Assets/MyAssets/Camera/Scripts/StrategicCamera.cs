@@ -88,17 +88,28 @@ public class StrategicCamera : HitSelectObjectByTag {
 	[HideInInspector]
 	public float torqueZoomWheel;
 
-
     float remFlowSpeed;
     float remFlowDamping;
+    //------------ properties for moving border limitation------------
+    // after select some target user could move target of camera not longer then predefined distance value
+    public int moveDistanceLimit = 200;
+    Vector3 lastDesiredTarget; // the position that was selected by hit, see external using of the method SetDesiredTarget and OnTargetHitRelease
 
     // ------------ Public Interface Implementation Begin ------------ 
+    public void SetTarget(Vector3 pos) {
+        print("SetTaret");
+        target.position = pos;
+        offset = source.position - target.position;
+        source.LookAt(target.position);
+
+    }
     public void SetDesiredTarget(Vector3 pos, float flowFactor) {
 
         this.flowSpeed = this.remFlowSpeed * flowFactor;
         this.flowDamping = this.remFlowDamping * flowFactor;
 
         desiredTarget = pos;
+        lastDesiredTarget = pos;
     }
     public void OnLerpLookAt(Vector3 pos, float flowFactor) {
         
@@ -110,17 +121,45 @@ public class StrategicCamera : HitSelectObjectByTag {
         offset = source.position - pos;
         desiredTarget = pos;
     }
+    public void MoveForwardHorizaontal(float moveFactor) {
+        torqueForward = moveFactor;
+        moveForward = Vector3.Cross(source.right, Vector3.up);
+    }
+    //turn horizontal function allow to rotate camera left or right same as `free look` methods, but without change angle look between XZ plane and camera looking raycast
+    public void TurnHorizaontal(float turnAngle) {
+        
+        //TODO: not working, have to fix it ...
+
+        ////torqueHorizontal = turnAngle;
+        //turnAngle = Mathf.Deg2Rad;
+        //Vector3 offsetXZ = offset;
+        //offsetXZ.y = 0;
+
+        //Quaternion rotation = Quaternion.Euler(0, turnAngle, 0);
+        //offsetXZ = rotation * offsetXZ;
+
+        //Vector3 rotationPoint = target.position + offsetXZ;
+
+        //target.position = Vector3.RotateTowards(target.position, rotationPoint, Mathf.Abs(turnAngle), offsetXZ.magnitude);
+        //offset = source.position - target.position;
+    }
+    
     // ------------ Main Implementation Begin ------------ 
     // Use this for initialization
+    void Awake() {
+        print("Strategic camera Awake");
+        targetObj = new GameObject();
+
+        if (!target) {
+            target = targetObj.transform;
+        }
+
+    }
     void Start () {
-		base.Start ();
+        print("Strategic camera Start");
+        base.Start ();
 		source = base.currCamera.transform;
 
-		targetObj = new GameObject();
-
-		if (!target) {
-			target = targetObj .transform;
-		}
 		offset = source.position - target.position;
 
         source.LookAt(target.position);
@@ -157,7 +196,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 	}
 	override public void OnTargetHitRelease(Transform target)
 	{
-		desiredTarget = target.position;
+        SetDesiredTarget(target.position, 1);        
 	}
 	// ------------ Main Implementation End ------------ 
 	public bool IsOrbitRotating(){
@@ -214,7 +253,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 		}
         return ret;
 	}
-	// --------------- Motion Flow Begin Implementing ---------------
+	// --------------- Motion Flow Begin Implementation ---------------
 	void DoFlow (){
 
 		Debug.DrawLine (target.position, source.position, Color.red);
@@ -227,7 +266,7 @@ public class StrategicCamera : HitSelectObjectByTag {
         //flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
         source.LookAt(target.position);
     }		
-	// --------------- Verical Rotate Begin Implementing ---------------
+	// --------------- Verical Rotate Begin Implementation ---------------
 	void DoRotateVertical () {
 
 		if (!IsRotatingVertical ())
@@ -268,8 +307,8 @@ public class StrategicCamera : HitSelectObjectByTag {
 	bool IsRotatingVertical (){
 		return Mathf.Abs (torqueVertical) > 0;
 	}
-	// --------------- DoRotateV End Implementing ---------------
-	// --------------- DoRotateH Begin Implementing ---------------
+	// --------------- DoRotateV End Implementation ---------------
+	// --------------- DoRotateH Begin Implementation ---------------
 	void DoRotateHorizontal(){
 		if (!IsRotatingHorizontal ())
 			return;
@@ -288,8 +327,8 @@ public class StrategicCamera : HitSelectObjectByTag {
 	bool IsRotatingHorizontal(){
 		return Mathf.Abs (torqueHorizontal) > Mathf.Deg2Rad;
 	}
-	// --------------- DoRotateH End Implementing ---------------
-	// --------------- Moving Begin Implementing ---------------
+	// --------------- DoRotateH End Implementation ---------------
+	// --------------- Moving Begin Implementation ---------------
 	void DoMoving(){
 
 		Vector3 newPos = Vector3.zero;
@@ -303,12 +342,22 @@ public class StrategicCamera : HitSelectObjectByTag {
 			newPos += -moveLaterally * torqueLaterally * Time.deltaTime;
 		}
 
-		if(IsMoving()) {			
-			source.position = source.position + newPos;
-			target.position = source.position - offset;
-			desiredTarget = target.position;
+		if(IsMoving()) {
+            Vector3 newSpos = source.position + newPos;            
+            Vector3 newTpos = newSpos - offset; 
+            
+            Vector3 movingOffset = lastDesiredTarget - newTpos;
+            if (movingOffset.magnitude < moveDistanceLimit) {
+                source.position = newSpos;
+                target.position = newTpos;
+                desiredTarget = target.position;
+            } else {
+                torqueLaterally = 0;
+                torqueForward = 0;
 
-		}
+            }
+                
+        }
 	}
 
 	bool IsMovingForward(){
@@ -320,8 +369,8 @@ public class StrategicCamera : HitSelectObjectByTag {
     public bool IsMoving(){
 		return IsMovingForward () || IsMovingLaterally ();
 	}
-	// --------------- Moving End Implementing ---------------
-	// --------------- Zooming Begin Implementing ---------------
+	// --------------- Moving End Implementation ---------------
+	// --------------- Zooming Begin Implementation ---------------
 	void DoZooming() {		
 
 		if (!IsZooming ())
@@ -347,7 +396,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 			ret = torqueZoomWheel > 0 || torqueZoomWheel < 0 || Input.GetMouseButton (MouseButtonZoomID);
 		return ret;
 	}
-	// --------------- Zooming End Implementing ---------------
+	// --------------- Zooming End Implementation ---------------
 
 		
 }
