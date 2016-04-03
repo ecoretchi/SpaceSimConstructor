@@ -29,7 +29,6 @@ public class MovingXZByMouse : HitSelectObjectByTag {
     int maxFreeLookBorderV = 100;
     int maxFreeLookBorderH = 100;
 
-
     override public void OnTargetHitHold(Transform target) {
 
     }
@@ -44,7 +43,10 @@ public class MovingXZByMouse : HitSelectObjectByTag {
             this.target = null;
         else {
             this.target = target;
-            curPlane = new Plane(Vector3.up, target.position);
+            Vector3 pos = target.position;
+            pos.y = 0;
+            curPlane = new Plane(Vector3.up, pos);
+
         }
 
     }
@@ -54,9 +56,11 @@ public class MovingXZByMouse : HitSelectObjectByTag {
         strategicCamera = (StrategicCamera)GameObject.FindObjectOfType(typeof(StrategicCamera));
         
         strategicCamera.SetDesiredTarget(new Vector3(100, 0, 100),1);
+
     }
     void Update() {
-        base.Update();
+
+       base.Update();
 
         //if (strategicCamera.IsMoving() ||
             //strategicCamera.IsZooming() ||
@@ -89,6 +93,25 @@ public class MovingXZByMouse : HitSelectObjectByTag {
 
         Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
         float rayDistance;
+        RaycastHit hit;
+        int layerMask = (1 << 8);//the constructs layer only
+        //layerMask = ~layerMask;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) {
+
+            Camera cam = strategicCamera.currCamera;
+            Vector3 incomingVec = hit.point - cam.transform.position;
+            //Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
+            //Debug.DrawRay(hit.point, reflectVec, Color.green);
+
+            Debug.DrawLine(cam.transform.position, hit.point, Color.red);
+            
+            Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
+
+            moveTarget(hit.point);
+            rotateTarget(hit.normal);
+
+        }
+        else
         if (curPlane.Raycast(ray, out rayDistance)) {
             projectedMousePosOnPlane = ray.GetPoint(rayDistance);
             if (flowSpeed < 1) {
@@ -96,11 +119,41 @@ public class MovingXZByMouse : HitSelectObjectByTag {
                 Vector3 offset = projectedMousePosOnPlane - target.position;
                 if (offset.magnitude < 1)
                     flowSpeed = 1;
-            }else
-                target.position = projectedMousePosOnPlane;
+            }
+            else {
+                moveTarget( projectedMousePosOnPlane);
+            }
         }
     }
 
+    void moveTarget(Vector3 pos) {
+        //Rigidbody rg = target.GetComponent<Rigidbody>();
+        //if (rg)
+        //    rg.MovePosition(pos);
+        //else
+            target.position = pos;
+    }
+
+    void rotateTarget22(Vector3 normal) {
+        Vector3 newForward = Vector3.RotateTowards(target.forward, normal,
+                                             Mathf.Deg2Rad + 10, 0);
+        target.rotation = Quaternion.LookRotation(target.forward, newForward);
+    }
+
+    void rotateTarget(Vector3 normal) {
+        //if (normal == target.forward)
+        //    return;
+        Quaternion rotate = Quaternion.FromToRotation(target.forward, normal);
+        //Rigidbody rg = target.GetComponent<Rigidbody>();
+        //if (rg)
+        //    rg.MoveRotation(rotate);
+        //else
+        //target.rotation = rotate * target.rotation;
+
+        Debug.DrawRay(target.position, target.forward * 1000, Color.blue);
+        target.rotation = Quaternion.Slerp(target.rotation, rotate * target.rotation, 0.2f) ;
+
+    }
     void DoMoveFollow() {
         if (!target)
             return;
