@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
+//FIXME:  Скорее всего потом переименую пространство...
 namespace FlyMode {
     public class ShipTest : MonoBehaviour, ISpaceEntity {
 
@@ -145,11 +146,6 @@ namespace FlyMode {
 			//float speedFactor = instantVelocity / 26f; //some magic numbers :)
 			float speedFactor = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) / 26f;
 
-			if (engineLights) {
-				foreach (Light l in engineLights.GetComponentsInChildren<Light>()) {
-					l.intensity = speedFactor;
-				}
-			}
 			if (enginePowerSlider) {
 				enginePowerSlider.value = speedFactor;
 				//enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
@@ -160,6 +156,27 @@ namespace FlyMode {
 				enginePowerText.color = speedFactor >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
 			}
 
+			//TODO: Выпилить все это в отдельный модуль, который будет кешировать все нужные ссылки и в нужные моменты включать нужные эффекты
+			if (engineLights) {
+				foreach (Light l in engineLights.GetComponentsInChildren<Light>()) {
+					l.intensity = speedFactor;
+				}
+			}
+
+			if (forces[2] > 0.1f) {
+				foreach(ParticleSystem p in GetComponentsInChildren<ParticleSystem>(true)) {
+					ParticleSystem.EmissionModule em = p.emission;
+					em.enabled = true;
+				}
+			} else {
+				foreach (ParticleSystem p in GetComponentsInChildren<ParticleSystem>(true)) {
+					ParticleSystem.EmissionModule em = p.emission;
+					em.enabled = false;
+				}
+			}
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			//FIXME: Хм.. где это должно бы быть?.. скорее всего, уйдет в какой-то PlayerPilotingShipController
 			if (Input.GetKeyUp(KeyCode.F1)) {
 				swithCamera();
 			}
