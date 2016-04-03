@@ -159,7 +159,7 @@ namespace FlyMode {
 			//TODO: Выпилить все это в отдельный модуль, который будет кешировать все нужные ссылки и в нужные моменты включать нужные эффекты
 			if (engineLights) {
 				foreach (Light l in engineLights.GetComponentsInChildren<Light>()) {
-					l.intensity = speedFactor;
+					l.intensity = Mathf.Abs(Input.GetAxis("Speed"));
 				}
 			}
 
