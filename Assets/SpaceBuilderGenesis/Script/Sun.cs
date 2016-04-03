@@ -89,8 +89,8 @@ public class Sun : MonoBehaviour {
 	public bool isWaitToDelte = false;
 
 	private void UpdatePosition(){
-		transform.position = Helper.SphericalPosition( -Latitude,Longitude,1000);
-		transform.LookAt( Vector3.zero);
+        transform.position = Helper.SphericalPosition(-Latitude, Longitude, 1000);
+        transform.LookAt( Vector3.zero);
 	}
 }
 }
