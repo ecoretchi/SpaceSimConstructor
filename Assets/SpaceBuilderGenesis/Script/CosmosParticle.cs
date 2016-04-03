@@ -140,6 +140,8 @@ public class CosmosParticle : MonoBehaviour {
 
 
 	}
-	#endregion
-}
+		#endregion
+
+
+	}
 }

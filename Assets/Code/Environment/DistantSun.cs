@@ -24,7 +24,7 @@ public class DistantSun : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		if (Vector3.SqrMagnitude(cameraPosition.transform.position - oldCamPosition) > 0.001 ) {
+		if (Vector3.SqrMagnitude(cameraPosition.transform.position - oldCamPosition) > 0.001f ) {
 			oldCamPosition = cameraPosition.transform.position;
 
 			GameObject axis = new GameObject("Axis");

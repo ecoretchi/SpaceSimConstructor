@@ -4,12 +4,13 @@ using System;
 
 public class GameController : Singleton<GameController> {
 
-	// Unity callbacks
+	// Unity callbacks /////////////////////////////////////////////////////////////////////////////////////////
 	void Start () {
 	
 	}
 		
 	void Update() {
+		// Reading input //////////////////////////////
 		if (Input.GetKeyDown(KeyCode.LeftAlt) ){
 			isCursorLocked = false;
 		}
@@ -18,6 +19,12 @@ public class GameController : Singleton<GameController> {
 		if( isNoCursorMode && !isCursorLocked && !Input.GetKey(KeyCode.LeftAlt) ) {
 			isCursorLocked = true;
 		}
+
+		// Выход. Пока вот такой вот простой
+		if (Input.GetKeyUp(KeyCode.Escape)) {
+			quitApplication();
+		}
+
 	}
 
 	void OnEnable() {
@@ -29,7 +36,7 @@ public class GameController : Singleton<GameController> {
 	}
 
 
-	// Properties
+	// Properties //////////////////////////////////////////////////////////////////////////////////////////////
 
 	[SerializeField]
 	public bool isCursorLocked {
@@ -47,4 +54,15 @@ public class GameController : Singleton<GameController> {
 	/// true если мы в режиме убранной мыши
 	/// </summary>
 	public bool isNoCursorMode { get; set; }
+
+
+	// Public methods //////////////////////////////////////////////////////////////////////////////////////////
+	public void quitApplication() {
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
+	}
+
 }

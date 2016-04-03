@@ -106,15 +106,8 @@ namespace FlyMode {
 
         // Update is called once per frame
         void Update() {
-
-			if (Input.GetKeyUp(KeyCode.Escape)) {
-				#if UNITY_EDITOR
-					UnityEditor.EditorApplication.isPlaying = false;
-				#else
-					Application.Quit();
-				#endif
-			}
-
+						
+			//TODO: ВСЕ это подлежит полной переработке
 			//Подготавливаем силы, действующие на корабль
 
 			//Читаем устройства ввода (либо тут работает AI, управляющий кораблем)
