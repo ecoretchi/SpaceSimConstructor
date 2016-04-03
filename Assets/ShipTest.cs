@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
+//FIXME:  Скорее всего потом переименую пространство...
 namespace FlyMode {
     public class ShipTest : MonoBehaviour, ISpaceEntity {
 
