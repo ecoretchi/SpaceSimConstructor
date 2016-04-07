@@ -6,7 +6,7 @@ using SBGenesis;
 
 public class MenuSBG {
 
-	[MenuItem ("Tools/Space builder/Genesis/Create cosmos",false,1)]
+	[MenuItem ("Tools/Space builder/Create cosmos",false,1)]
 	static void CreateCosmos(){
 		
 		Cosmos.instance.Create();
