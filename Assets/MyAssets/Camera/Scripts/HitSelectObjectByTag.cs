@@ -12,7 +12,7 @@ public class HitSelectObjectByTag : MonoBehaviour
 	RaycastHit hitInfo;
 
 	[Header("HitSelectObjectByTag")]
-	public string tag = "Construction";
+	protected string tag = "Construction";
     void Awake() {
         hitInfo = new RaycastHit();
     }
@@ -28,8 +28,9 @@ public class HitSelectObjectByTag : MonoBehaviour
 			t = null;
 			return false;
 		}
+        int mask = GetHitTransformMask();
 		Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
-		bool res = Physics.Raycast(ray, out hitInfo);
+		bool res = Physics.Raycast(ray, out hitInfo, Mathf.Infinity, mask);
 		t = hitInfo.transform;        
 		return res && t.tag == tag;
 	}
@@ -39,30 +40,36 @@ public class HitSelectObjectByTag : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(MouseHitID))
 		{
-			Transform hitTransform;
-			if (GetHitTransform(out hitTransform, tag))
-			{
-				print("Target selected");
-				tmpHitSelected = hitTransform;
-				OnTargetHitHold (hitTransform);
-
-			}
-			else
-				tmpHitSelected = null;
+            OnHitHold();
 		}
 		if (Input.GetMouseButtonUp(MouseHitID) )
 		{
-			Transform hitTransform;
-			if ( GetHitTransform(out hitTransform, tag) && hitTransform==tmpHitSelected)
-			{
-				print("Target changes");
-				OnTargetHitRelease (hitTransform);
-
-			}
+            OnHitRelease();
 		}
 	}
+    virtual public int GetHitTransformMask() {
+        return 1 << 8;
+    }
+    virtual public void OnHitHold() {
+        Transform hitTransform;
+        if (GetHitTransform(out hitTransform, tag)) {
+            print("Target selected");
+            tmpHitSelected = hitTransform;
+            OnTargetHitHold(hitTransform);
 
-	virtual public void OnTargetHitHold(Transform target)
+        }
+        else
+            tmpHitSelected = null;
+    }
+    virtual public void OnHitRelease() {
+        Transform hitTransform;
+        if (GetHitTransform(out hitTransform, tag) && hitTransform == tmpHitSelected) {
+            print("Target changes");
+            OnTargetHitRelease(hitTransform);
+        }
+    }
+
+    virtual public void OnTargetHitHold(Transform target)
 	{
 	}
 	virtual public void OnTargetHitRelease(Transform target)

@@ -95,6 +95,9 @@ public class StrategicCamera : HitSelectObjectByTag {
     public int moveDistanceLimit = 200;
     Vector3 lastDesiredTarget; // the position that was selected by hit, see external using of the method SetDesiredTarget and OnTargetHitRelease
 
+    override public int GetHitTransformMask() {
+        return ( 1 << 8 ) | 1;
+    }
     // ------------ Public Interface Implementation Begin ------------ 
     public void SetTarget(Vector3 pos) {
         print("SetTaret");
@@ -274,7 +277,11 @@ public class StrategicCamera : HitSelectObjectByTag {
 			
 		torqueVertical = Mathf.Lerp(torqueVertical, 0, rotateVFriction);
 
-		int sign = torqueVertical > 0 ? -1 : 1;
+        if (Mathf.Abs(torqueVertical) < Mathf.Deg2Rad)
+            torqueVertical = 0;
+
+
+        int sign = torqueVertical > 0 ? -1 : 1;
 		Vector3 offsetV = new Vector3(0, offset.magnitude * sign, 0);
 
 		float curAngle = Vector3.Angle(offset, offsetV);
@@ -312,9 +319,12 @@ public class StrategicCamera : HitSelectObjectByTag {
 	void DoRotateHorizontal(){
 		if (!IsRotatingHorizontal ())
 			return;
-		torqueHorizontal = Mathf.Lerp(torqueHorizontal, 0, rotateHFriction); 
+        torqueHorizontal = Mathf.Lerp(torqueHorizontal, 0, rotateHFriction);
 
-		Quaternion rotation = Quaternion.Euler(0, torqueHorizontal, 0);
+        if (Mathf.Abs(torqueHorizontal) < Mathf.Deg2Rad)
+            torqueHorizontal = 0;
+
+        Quaternion rotation = Quaternion.Euler(0, torqueHorizontal, 0);
 		offset = rotation * offset;
 		Vector3 desiredPosition = target.position + offset;
 

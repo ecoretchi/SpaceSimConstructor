@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MovingXZByMouse : HitSelectObjectByTag {
+public class ProcessingStackables : HitSelectObjectByTag {
 
     Transform target;
 
@@ -29,27 +29,64 @@ public class MovingXZByMouse : HitSelectObjectByTag {
     int maxFreeLookBorderV = 100;
     int maxFreeLookBorderH = 100;
 
+    bool connected;
+    Collider m_jointsColl;
+
     override public void OnTargetHitHold(Transform target) {
 
     }
+    override public void OnHitRelease() {
+
+        if (connected) {
+            DoJoin();            
+            return;
+        }
+        
+        base.OnHitRelease();
+    }
     override public void OnTargetHitRelease(Transform target) {
 
-        if (strategicCamera.IsMoving() ||
+        if ((strategicCamera.IsMoving() ||
             strategicCamera.IsZooming() ||
-            strategicCamera.IsOrbitRotating())
+            strategicCamera.IsOrbitRotating()) && !connected)
             return;
 
-        if (this.target == target)
-            this.target = null;
+        if (this.target == target ) {
+            releaseTarget();
+        }
         else {
-            this.target = target;
-            Vector3 pos = target.position;
-            pos.y = 0;
-            curPlane = new Plane(Vector3.up, pos);
-
+            captureTarget(target);
         }
 
     }
+    void DoJoin() {
+        Connector c = target.GetComponent<Connector>();        
+        releaseTarget();        
+        c.OnConnected(m_jointsColl);
+    }
+    void DoUnjoin(Connector c) {
+        c.OnDisconnected();
+    }
+    void releaseTarget() {
+        target.gameObject.layer = 8;
+        this.target = null;
+        connected = false;
+        Cursor.visible = true;
+    }
+    void captureTarget(Transform target) {
+        Connector c = target.GetComponent<Connector>();
+        if (c && c.IsJoined()) {
+            DoUnjoin(c);
+        }
+
+        target.gameObject.layer = 1;
+        Cursor.visible = false;
+        this.target = target;
+        Vector3 pos = target.position;
+        pos.y = 0;
+        curPlane = new Plane(Vector3.up, pos);
+    }
+
     void Start() {
         tag = "Stackable";
         base.Start();
@@ -97,19 +134,7 @@ public class MovingXZByMouse : HitSelectObjectByTag {
         int layerMask = (1 << 8);//the constructs layer only
         //layerMask = ~layerMask;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) {
-
-            Camera cam = strategicCamera.currCamera;
-            Vector3 incomingVec = hit.point - cam.transform.position;
-            //Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-            //Debug.DrawRay(hit.point, reflectVec, Color.green);
-
-            Debug.DrawLine(cam.transform.position, hit.point, Color.red);
-            
-            Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
-
-            moveTarget(hit.point);
-            rotateTarget(hit.normal);
-
+            DoMoveOverConstructon(hit);
         }
         else
         if (curPlane.Raycast(ray, out rayDistance)) {
@@ -125,7 +150,43 @@ public class MovingXZByMouse : HitSelectObjectByTag {
             }
         }
     }
+    void DoMoveOverConstructon(RaycastHit hit) {
 
+        ////Debug: Show reflection ray:
+        //Camera cam = strategicCamera.currCamera;
+        //Vector3 incomingVec = hit.point - cam.transform.position;
+        //Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
+        //Debug.DrawRay(hit.point, reflectVec, Color.green);
+        //Debug.DrawLine(cam.transform.position, hit.point, Color.red);
+        //Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
+
+        Vector3 pos;
+        Vector3 normal;
+        ProcessConnection(hit, out pos, out normal);
+        moveTarget(pos);
+        rotateTarget(normal);
+    }
+
+    void ProcessConnection(RaycastHit hit, out Vector3 pos, out Vector3 normal) {
+
+        pos = hit.point;
+        normal = hit.normal;
+    
+        Connector c = target.GetComponent<Connector>();
+        if (!c)
+            return;
+        Collider coll = hit.collider;
+        connected = coll.tag == c.GetJointCompatibility();
+        if (connected) {
+            m_jointsColl = coll;
+            pos = coll.transform.position;
+            normal = coll.transform.forward;                        
+        }
+        //else
+        //if (hit.collider.tag == "Construction") {
+        //}
+
+    }
     void moveTarget(Vector3 pos) {
         //Rigidbody rg = target.GetComponent<Rigidbody>();
         //if (rg)
