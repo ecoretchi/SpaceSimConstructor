@@ -8,11 +8,7 @@ using Spacecraft;
 public class ShipTest : MonoBehaviour, ISpaceEntity, IShipControls {
 		
 	public  GameObject  engineLights;
-	public  Slider      enginePowerSlider;
-	public  Text        enginePowerText;
-	public  Color       enginePowerSliderPositiveColor = Color.blue;
-	public  Color       enginePowerSliderNegativeColor = Color.red;
-
+	
 	public  bool        controlledByPlayer  = false;
 	public  string      shipName            = "Test Ship";
 	// Текущие характеристики конкретного корабля (не общие для класса, т.е. с учетом всех апгрейдов и т.п.)
@@ -99,15 +95,15 @@ public class ShipTest : MonoBehaviour, ISpaceEntity, IShipControls {
 		var localVelocity = transform.InverseTransformDirection(GetComponent<Rigidbody>().velocity);
 		float forwardSpeed = Mathf.Max(0, localVelocity.z);
 
-		if (enginePowerSlider) {
-			enginePowerSlider.value = speedFactor;
-			//enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
-			enginePowerSlider.fillRect.GetComponent<Image>().color = speedFactor >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
-		}
-		if (enginePowerText) {
-			enginePowerText.text = Math.Round(forwardSpeed).ToString();
-			enginePowerText.color = forwardSpeed >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
-		}
+		//if (enginePowerSlider) {
+		//	enginePowerSlider.value = speedFactor;
+		//	//enginePowerSlider.fillRect.GetComponent<Image>().color = Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward) >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+		//	enginePowerSlider.fillRect.GetComponent<Image>().color = speedFactor >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+		//}
+		//if (enginePowerText) {
+		//	enginePowerText.text = Math.Round(forwardSpeed).ToString();
+		//	enginePowerText.color = forwardSpeed >= 0 ? enginePowerSliderPositiveColor : enginePowerSliderNegativeColor;
+		//}
 
 		//TODO: Выпилить все это в отдельный модуль, который будет кешировать все нужные ссылки и в нужные моменты включать нужные эффекты
 		if (engineLights) {
@@ -116,6 +112,7 @@ public class ShipTest : MonoBehaviour, ISpaceEntity, IShipControls {
 			}
 		}
 
+		//TODO: перенести в управление движками
 		if (forces[2] > 0.1f) {
 			foreach (ParticleSystem p in GetComponentsInChildren<ParticleSystem>(true)) {
 				ParticleSystem.EmissionModule em = p.emission;
