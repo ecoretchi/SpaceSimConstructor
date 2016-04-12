@@ -11,9 +11,11 @@ public class HitSelectObjectByTag : MonoBehaviour
 	Transform tmpHitSelected;
 	RaycastHit hitInfo;
 
-	[Header("HitSelectObjectByTag")]
-	protected string tag = "Construction";
-    void Awake() {
+    [Header("HitSelectObjectByTag")]
+
+    public bool through_hit = true;
+    protected new string tag = "Construction";
+    void Awake() {        
         hitInfo = new RaycastHit();
     }
 	protected void Start()
@@ -30,9 +32,21 @@ public class HitSelectObjectByTag : MonoBehaviour
 		}
         int mask = GetHitTransformMask();
 		Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
-		bool res = Physics.Raycast(ray, out hitInfo, Mathf.Infinity, mask);
-		t = hitInfo.transform;        
-		return res && t.tag == tag;
+        if (!through_hit) {
+            bool res = Physics.Raycast(ray, out hitInfo, Mathf.Infinity, mask);
+            t = hitInfo.transform;
+            return res && t.tag == tag;
+        }
+
+        t = null;
+        RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, mask);
+        for(int i = 0; i < hits.Length; ++i) {
+            hitInfo = hits[i];
+            t = hitInfo.transform;
+            if (t.tag == tag)
+                return true;
+        }        		
+		return false;
 	}
 
 	protected void Update()

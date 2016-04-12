@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ProcessingStackables : HitSelectObjectByTag {
 
-    Transform target;
+    Transform target = null;
 
     [Header("MovingXZByMouse")]
     public int MouseButtonIDMoving = 0;
@@ -54,18 +54,24 @@ public class ProcessingStackables : HitSelectObjectByTag {
         if (this.target == target ) {
             releaseTarget();
         }
-        else {
+        else if(!this.target) {
             captureTarget(target);
         }
 
     }
     void DoJoin() {
+        Socket s = target.GetComponentInChildren<Socket>();
         Connector c = target.GetComponent<Connector>();        
         releaseTarget();        
         c.OnConnected(m_jointsColl);
+        if(s)
+            s.OnConnected();
     }
-    void DoUnjoin(Connector c) {
+    void DoUnjoin(Transform target, Connector c) {
         c.OnDisconnected();
+        Socket s = target.GetComponentInChildren<Socket>();
+        if(s)
+            s.OnDisconnected();
     }
     void releaseTarget() {
         target.gameObject.layer = 8;
@@ -76,7 +82,7 @@ public class ProcessingStackables : HitSelectObjectByTag {
     void captureTarget(Transform target) {
         Connector c = target.GetComponent<Connector>();
         if (c && c.IsJoined()) {
-            DoUnjoin(c);
+            DoUnjoin(target, c);
         }
 
         target.gameObject.layer = 1;
