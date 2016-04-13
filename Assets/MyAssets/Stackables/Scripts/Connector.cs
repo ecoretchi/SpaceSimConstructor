@@ -1,42 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Connector : MonoBehaviour {
+public class Connector : Stackable {
 
-    public string type = "small";
-
-    Collider m_currentColl;
-    public string GetJointCompatibility() {
-        if (type == "small") {
-            return "Joint_S";
-        }
-        if (type == "medium") {
-            return "Joint_M";
-        }
-        if (type == "large") {
-            return "Joint_L";
-        }
-        return "";
-    }
-    // Use this for initialization
-    void Start () {	
-	}
-	// Update is called once per frame
-	void Update () {        
-    }
-    public bool IsJoined() {
-        if (!m_currentColl)
+    override public bool OnConvergence(Socket s) {
+        print("OnConvergence");
+        Socket compatS = base.GetCompatibleSocket(s);
+        if (!compatS) {            
+            OnDivergence();
             return false;
-        return m_currentColl.tag == "Jointed";
-    }
-    virtual public void OnConnected(Collider coll) {        
-        m_currentColl = coll;
-        coll.tag = "Jointed";
-        //print(coll.tag);
-    }
+        }
 
-    virtual public void OnDisconnected() {
-        m_currentColl.tag = GetJointCompatibility();
-        m_currentColl = null;        
+		//transform.rotation = Quaternion.Slerp(transform.rotation, s.transform.rotation * transform.rotation, 0.2f);
+		//transform.rotation = s.transform.rotation * transform.rotation;
+
+
+
+        gameObject.transform.position =             
+            gameObject.transform.position -
+            compatS.gameObject.transform.position +
+            s.gameObject.transform.position;
+
+		transform.rotation = s.transform.rotation;
+		transform.Rotate (Vector3.up * 180);
+		//base.alignUp(s.transform.up);
+		//base.alignRight(s.transform.right);
+		//base.alignForward(-s.transform.forward);
+		//transform.Rotate( s.transform.rotation.eulerAngles - compatS.transform.localRotation.eulerAngles );
+
+        return true;
+    }
+    override public bool OnDivergence() {
+		
+		transform.position = m_currentHit.point;//moveTarget
+		base.alignForward(-m_currentHit.normal);
+		//transform.Rotate (Vector3.up * 180);
+
+        return true;
     }
 }

@@ -8,9 +8,6 @@ TagManager:
   - Stackable
   - Fire
   - Joint_S
-  - Joint_M
-  - Joint_L
-  - Jointed
   layers:
   - Default
   - TransparentFX

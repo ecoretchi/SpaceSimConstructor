@@ -29,7 +29,7 @@ public class ProcessingStackables : HitSelectObjectByTag {
     int maxFreeLookBorderV = 100;
     int maxFreeLookBorderH = 100;
 
-    bool connected;
+    bool m_convergence;
     Collider m_jointsColl;
 
     override public void OnTargetHitHold(Transform target) {
@@ -37,7 +37,7 @@ public class ProcessingStackables : HitSelectObjectByTag {
     }
     override public void OnHitRelease() {
 
-        if (connected) {
+        if (m_convergence) {
             DoJoin();            
             return;
         }
@@ -48,7 +48,7 @@ public class ProcessingStackables : HitSelectObjectByTag {
 
         if ((strategicCamera.IsMoving() ||
             strategicCamera.IsZooming() ||
-            strategicCamera.IsOrbitRotating()) && !connected)
+            strategicCamera.IsOrbitRotating()) && !m_convergence)
             return;
 
         if (this.target == target ) {
@@ -60,33 +60,29 @@ public class ProcessingStackables : HitSelectObjectByTag {
 
     }
     void DoJoin() {
-        Socket s = target.GetComponentInChildren<Socket>();
-        Connector c = target.GetComponent<Connector>();        
+
+        //TODO: impl new joint version
         releaseTarget();        
-        c.OnConnected(m_jointsColl);
-        if(s)
-            s.OnConnected();
+
     }
     void DoUnjoin(Transform target, Connector c) {
-        c.OnDisconnected();
-        Socket s = target.GetComponentInChildren<Socket>();
-        if(s)
-            s.OnDisconnected();
+
+        //TODO: impl new unjoint version
     }
     void releaseTarget() {
         target.gameObject.layer = 8;
         this.target = null;
-        connected = false;
+        m_convergence = false;
         Cursor.visible = true;
     }
     void captureTarget(Transform target) {
         Connector c = target.GetComponent<Connector>();
-        if (c && c.IsJoined()) {
+        if (c && c.IsConvergence()) {
             DoUnjoin(target, c);
         }
 
         target.gameObject.layer = 1;
-        Cursor.visible = false;
+        //Cursor.visible = false;
         this.target = target;
         Vector3 pos = target.position;
         pos.y = 0;
@@ -131,29 +127,34 @@ public class ProcessingStackables : HitSelectObjectByTag {
     void DoMoveObject() {
         //is any target on hold
         if (!target || lockTargetMoving)
-            return;
-        
+            return;        
 
         Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
-        float rayDistance;
+        
         RaycastHit hit;
         int layerMask = (1 << 8);//the constructs layer only
-        //layerMask = ~layerMask;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) {
             DoMoveOverConstructon(hit);
         }
         else
-        if (curPlane.Raycast(ray, out rayDistance)) {
-            projectedMousePosOnPlane = ray.GetPoint(rayDistance);
-            if (flowSpeed < 1) {
-                target.position = Vector3.Lerp(target.position, projectedMousePosOnPlane, flowSpeed);
-                Vector3 offset = projectedMousePosOnPlane - target.position;
-                if (offset.magnitude < 1)
-                    flowSpeed = 1;
-            }
-            else {
-                moveTarget( projectedMousePosOnPlane);
-            }
+            DoMoveOverPlane(ray);
+        
+    }
+    void DoMoveOverPlane(Ray ray)
+    {
+        float rayDistance;
+        if (!curPlane.Raycast(ray, out rayDistance))
+            return;
+        projectedMousePosOnPlane = ray.GetPoint(rayDistance);
+        if (flowSpeed < 1) {
+            target.position = Vector3.Lerp(target.position, projectedMousePosOnPlane, flowSpeed);
+            Vector3 offset = projectedMousePosOnPlane - target.position;
+            if (offset.magnitude < 1)
+                flowSpeed = 1;
+        }
+        else {
+            Stackable s = target.parent.GetComponent<Stackable>();
+            s.gameObject.transform.position = projectedMousePosOnPlane;//moveStackable
         }
     }
     void DoMoveOverConstructon(RaycastHit hit) {
@@ -166,46 +167,58 @@ public class ProcessingStackables : HitSelectObjectByTag {
         //Debug.DrawLine(cam.transform.position, hit.point, Color.red);
         //Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
 
-        Vector3 pos;
-        Vector3 normal;
-        ProcessConnection(hit, out pos, out normal);
-        moveTarget(pos);
-        rotateTarget(normal);
-    }
-
-    void ProcessConnection(RaycastHit hit, out Vector3 pos, out Vector3 normal) {
-
-        pos = hit.point;
-        normal = hit.normal;
-    
-        Connector c = target.GetComponent<Connector>();
-        if (!c)
+        Stackable s = target.parent.GetComponent<Stackable>();
+        if (s == null)
             return;
-        Collider coll = hit.collider;
-        connected = coll.tag == c.GetJointCompatibility();
-        if (connected) {
-            m_jointsColl = coll;
-            pos = coll.transform.position;
-            normal = coll.transform.forward;                        
-        }
-        //else
-        //if (hit.collider.tag == "Construction") {
-        //}
+        s.OnMoveOverConstructon(hit);
+        m_convergence = s.IsConvergence();
 
     }
-    void moveTarget(Vector3 pos) {
-        //Rigidbody rg = target.GetComponent<Rigidbody>();
-        //if (rg)
-        //    rg.MovePosition(pos);
-        //else
-            target.position = pos;
+    void rotateTarget(Transform t, Vector3 normal) {
+        Quaternion rotate = Quaternion.FromToRotation(t.forward, normal);
+        t.rotation = Quaternion.Slerp(t.rotation, rotate * t.rotation, 0.2f);
     }
 
-    void rotateTarget22(Vector3 normal) {
-        Vector3 newForward = Vector3.RotateTowards(target.forward, normal,
-                                             Mathf.Deg2Rad + 10, 0);
-        target.rotation = Quaternion.LookRotation(target.forward, newForward);
-    }
+    //    Vector3 pos;
+    //    Vector3 normal;
+    //    ProcessConnection(hit, out pos, out normal);
+    //    moveTarget(pos);
+    //    rotateTarget(normal);
+    //}
+
+    //void ProcessConnection(RaycastHit hit, out Vector3 pos, out Vector3 normal) {
+
+    //    pos = hit.point;
+    //    normal = hit.normal;
+
+    //    Connector c = target.GetComponent<Connector>();
+    //    if (!c)
+    //        return;
+    //    Collider coll = hit.collider;
+    //    connected = coll.tag == c.GetJointCompatibility();
+    //    if (connected) {
+    //        m_jointsColl = coll;
+    //        pos = coll.transform.position;
+    //        normal = coll.transform.forward;                        
+    //    }
+    //    //else
+    //    //if (hit.collider.tag == "Construction") {
+    //    //}
+
+    //}
+    //void moveTarget(Vector3 pos) {
+    //    //Rigidbody rg = target.GetComponent<Rigidbody>();
+    //    //if (rg)
+    //    //    rg.MovePosition(pos);
+    //    //else
+    //    target.position = pos;
+    //}
+
+    //void rotateTarget22(Vector3 normal) {
+    //    Vector3 newForward = Vector3.RotateTowards(target.forward, normal,
+    //                                         Mathf.Deg2Rad + 10, 0);
+    //    target.rotation = Quaternion.LookRotation(target.forward, newForward);
+    //}
 
     void rotateTarget(Vector3 normal) {
         //if (normal == target.forward)
@@ -217,9 +230,9 @@ public class ProcessingStackables : HitSelectObjectByTag {
         //else
         //target.rotation = rotate * target.rotation;
 
-        Debug.DrawRay(target.position, target.forward * 1000, Color.blue);
-        target.rotation = Quaternion.Slerp(target.rotation, rotate * target.rotation, 0.2f) ;
+        //Debug.DrawRay(target.position, target.forward * 1000, Color.blue);
 
+        target.rotation = Quaternion.Slerp(target.rotation, rotate * target.rotation, 0.2f);
     }
     void DoMoveFollow() {
         if (!target)

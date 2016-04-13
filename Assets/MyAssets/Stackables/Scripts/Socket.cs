@@ -3,17 +3,19 @@ using System.Collections;
 
 public class Socket : MonoBehaviour {
 
-    // Use this for initialization
-    void Start() {
+    enum SocketT {
+        st_small,
+        st_medium,
+        st_large,
+    };
 
+    public int type = (int)SocketT.st_small;
+
+    public bool IsCompatible(Socket s) {
+        return this.type == s.type;
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    public void OnConnected() {        
+    public void OnJoin(Socket s) {        
         gameObject.layer = 8;
     }
 
