@@ -7,7 +7,6 @@ TagManager:
   - Construction
   - Stackable
   - Fire
-  - Joint_S
   layers:
   - Default
   - TransparentFX

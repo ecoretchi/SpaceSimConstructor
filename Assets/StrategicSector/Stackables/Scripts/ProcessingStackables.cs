@@ -133,7 +133,8 @@ public class ProcessingStackables : HitSelectObjectByTag {
         
         RaycastHit hit;
         int layerMask = (1 << 8);//the constructs layer only
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) {
+        bool isOnConstructionCast = Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask);
+        if (isOnConstructionCast) {
             DoMoveOverConstructon(hit);
         }
         else

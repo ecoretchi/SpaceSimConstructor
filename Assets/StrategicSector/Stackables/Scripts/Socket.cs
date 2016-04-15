@@ -21,14 +21,15 @@ public class Socket : MonoBehaviour {
 
     public Socket joined{ get; protected set; }
 
-    [System.ComponentModel.DefaultValue(Type.Empty)]
-    public Type type { get; set; }
+    public Type type;
 
     [System.ComponentModel.DefaultValue(State.Disabled)]
     public State state { get; set; }
 
     public bool IsCompatible(Socket s) {
-        return this.type == s.type;
+        if (s.IsEnabled() && s.type!=Type.Empty)
+            return this.type == s.type;
+        return false;
     }
     public bool IsDisabled() {
         return state == State.Disabled;
@@ -55,6 +56,7 @@ public class Socket : MonoBehaviour {
         if (!IsSticked())
             return false;
         state = State.Connected;
+        gameObject.layer = 0;// LayerMask.NameToLayer("Construction");
         return true;
     }
     public bool OnWeld() {
@@ -63,10 +65,12 @@ public class Socket : MonoBehaviour {
         state = State.Welded;
         return true;
     }
-
+    
     public void OnRelease() {
         joined = null;
         state = State.Enabled;
+
+        gameObject.layer =  LayerMask.NameToLayer("Construction");
     }
 
     public bool Enable(bool flag) {
