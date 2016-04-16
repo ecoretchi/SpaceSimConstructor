@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+
 namespace Stackables {
-    public class Connector : Stackable {
+    public class Module : Stackable {
 
         override public bool OnConvergence(Socket hitSock) {
             //print("OnConvergence");
-            //Module m = s.GetComponentInParents<Module>(2);
-            //if (!m) {
-            //    OnDivergence();
-            //    return false;
-            //}
+
+            Connector m = hitSock.GetComponentInParents<Connector>(2);
+            if (!m) {
+                OnDivergence();
+                return false;
+            }
             Socket compatS = base.GetCompatibleSocket(hitSock);
             if (!compatS) {
                 OnDivergence();
@@ -24,14 +26,8 @@ namespace Stackables {
                 compatS.gameObject.transform.position +
                 hitSock.gameObject.transform.position;
 
-            Quaternion rotate = hitSock.transform.rotation;
-            //Quaternion.Euler(Vector3.up * 180);
-            //Vector3 e = rotate.eulerAngles;
-
-            transform.rotation = rotate;
+            transform.rotation = hitSock.transform.rotation;
             transform.Rotate(Vector3.up * 180);
-            
-
             //base.alignUp(s.transform.up);
             //base.alignRight(s.transform.right);
             //base.alignForward(-s.transform.forward);
@@ -39,6 +35,6 @@ namespace Stackables {
 
             return base.OnConvergence(hitSock);
         }
-
     }
-} //namespace Stackables
+
+} // namespace Stackables

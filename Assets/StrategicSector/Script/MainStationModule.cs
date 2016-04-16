@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Stackables;
 
-public class MainStationModule : MonoBehaviour {
+public class MainStationModule : Stackables.Module {
 
 	// Use this for initialization
 	void Start () {

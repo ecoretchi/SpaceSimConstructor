@@ -4,7 +4,6 @@ using System.Collections;
 
 public class HitSelectObjectByTag : MonoBehaviour 
 {
-
 	public Camera currCamera { get; set; }
 
 	int MouseHitID = 0;
@@ -14,24 +13,39 @@ public class HitSelectObjectByTag : MonoBehaviour
     [Header("HitSelectObjectByTag")]
 
     public bool through_hit = true;
-    protected new string tag = "Construction";
-    void Awake() {        
+    protected new string hitTag = "Construction";
+
+    //==================  AWAKE  ==================
+    void Awake() {
         hitInfo = new RaycastHit();
     }
-	protected void Start()
-	{		
-		if(!currCamera)
-			currCamera = (Camera) GameObject.FindObjectOfType(typeof(Camera));
-	}
+    //==================  START  ==================
+    void Start() {
+        if (!currCamera)
+            currCamera = Camera.main;
+        OnStart();
+    }
+    virtual public void OnStart() { }
+    //==================  UPDATE  ==================
+    protected void Update() {
+        if (Input.GetMouseButtonDown(MouseHitID)) {
+            OnHitHold();
+        }
+        if (Input.GetMouseButtonUp(MouseHitID)) {
+            OnHitRelease();
+        }
 
-	bool GetHitTransform(out Transform t, string tag)
-	{
-		if (!currCamera) {
-			t = null;
-			return false;
-		}
+        OnUpdate();
+    }
+    virtual public void OnUpdate() { }
+    
+    bool GetHitTransform(out Transform t, string tag) {
+        if (!currCamera) {
+            t = null;
+            return false;
+        }
         int mask = GetHitTransformMask();
-		Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
         if (!through_hit) {
             bool res = Physics.Raycast(ray, out hitInfo, Mathf.Infinity, mask);
             t = hitInfo.transform;
@@ -40,33 +54,20 @@ public class HitSelectObjectByTag : MonoBehaviour
 
         t = null;
         RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, mask);
-        for(int i = 0; i < hits.Length; ++i) {
+        for (int i = 0; i < hits.Length; ++i) {
             hitInfo = hits[i];
             t = hitInfo.transform;
             if (t.tag == tag)
                 return true;
-        }        		
-		return false;
-	}
-
-	protected void Update()
-	{
-
-		if (Input.GetMouseButtonDown(MouseHitID))
-		{
-            OnHitHold();
-		}
-		if (Input.GetMouseButtonUp(MouseHitID) )
-		{
-            OnHitRelease();
-		}
-	}
+        }
+        return false;
+    }
     virtual public int GetHitTransformMask() {
-        return 1 << 8;
+        return 1 << LayerMask.NameToLayer("Construction"); ;
     }
     virtual public void OnHitHold() {
         Transform hitTransform;
-        if (GetHitTransform(out hitTransform, tag)) {
+        if (GetHitTransform(out hitTransform, hitTag)) {
             print("Target selected");
             tmpHitSelected = hitTransform;
             OnTargetHitHold(hitTransform);
@@ -77,12 +78,11 @@ public class HitSelectObjectByTag : MonoBehaviour
     }
     virtual public void OnHitRelease() {
         Transform hitTransform;
-        if (GetHitTransform(out hitTransform, tag) && hitTransform == tmpHitSelected) {
+        if (GetHitTransform(out hitTransform, hitTag) && hitTransform == tmpHitSelected) {
             print("Target changes");
             OnTargetHitRelease(hitTransform);
         }
     }
-
     virtual public void OnTargetHitHold(Transform target)
 	{
 	}

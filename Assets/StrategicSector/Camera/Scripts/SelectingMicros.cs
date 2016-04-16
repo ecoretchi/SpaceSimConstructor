@@ -8,7 +8,6 @@ public class SelectingMicros : MonoBehaviour
 	Camera camera;
 	Transform tmpHitSelected;
 	RaycastHit hitInfo;
-	public string tag = "Construction";
 
 	protected void Start()
 	{

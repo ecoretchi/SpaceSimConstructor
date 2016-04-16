@@ -98,7 +98,18 @@ public class StrategicCamera : HitSelectObjectByTag {
     override public int GetHitTransformMask() {
         return ( 1 << 8 ) | 1;
     }
-    // ------------ Public Interface Implementation Begin ------------ 
+    // ------------ Public Interface Implementation Begin ------------     
+    public bool IsOnActionByMouse(int buttonId) {
+	    if(buttonId == MouseButtonIDMoving)
+            return IsMoving();
+	    if(buttonId == MouseButtonIDRotateH)
+            return IsRotatingHorizontal();
+	    if(buttonId == MouseButtonIDRotateV)
+            return IsRotatingVertical();
+	    if(buttonId == MouseButtonZoomID)
+            return IsZooming();
+        return false;
+    }
     public void SetTarget(Vector3 pos) {
         print("SetTaret");
         target.position = pos;
@@ -152,36 +163,23 @@ public class StrategicCamera : HitSelectObjectByTag {
     void Awake() {
         print("Strategic camera Awake");
         targetObj = new GameObject();
-
         if (!target) {
             target = targetObj.transform;
         }
-
     }
-    void Start () {
-        print("Strategic camera Start");
-        base.Start ();
+    override public void OnStart() {
 		source = base.currCamera.transform;
-
 		offset = source.position - target.position;
-
         source.LookAt(target.position);
-
         remFlowSpeed = flowSpeed;
         remFlowDamping = flowDamping;
     }
 	// Update is called once per frame
-	void Update () {
-		
-		base.Update ();
-
+    override public void OnUpdate() {	
         bool ret = CalcTorques();
-
         if (ret)
             SetupExValueByDefault();
-
 		Debug.DrawLine(target.position, source.position);
-
 		DoRotateVertical();			
 		DoRotateHorizontal ();
 		DoZooming ();
@@ -189,24 +187,23 @@ public class StrategicCamera : HitSelectObjectByTag {
 		DoFlow ();
 	}
     void SetupExValueByDefault() {
-
         flowSpeed = remFlowSpeed;
         flowDamping = remFlowDamping;
     }
-    // ------------ overriding class methods HitSelectObjectByTag ------------ 
-    override public void OnTargetHitHold(Transform target)
-	{
+    // ------------ overriding class methods HitSelectObjectByTag ------------
+    public bool prohibitTargetHit { get; set; }
+
+    override public void OnTargetHitHold(Transform target)	{
 	}
-	override public void OnTargetHitRelease(Transform target)
-	{
-        SetDesiredTarget(target.position, 1);        
+	override public void OnTargetHitRelease(Transform target)	{
+        if(!prohibitTargetHit)
+            SetDesiredTarget(target.position, 1);
 	}
 	// ------------ Main Implementation End ------------ 
 	public bool IsOrbitRotating(){
 		return IsRotatingVertical() || IsRotatingHorizontal();
 	}
-	bool CalcTorques()
-	{
+	bool CalcTorques()	{
         bool ret = false;
         if (Input.GetMouseButton(MouseButtonIDRotateV)) {
             torqueVertical = Input.GetAxis("Mouse Y") * rotateVSpeed;
@@ -269,7 +266,7 @@ public class StrategicCamera : HitSelectObjectByTag {
         //flowTransform.position = Vector3.RotateTowards(flowTransform.position, targetTransform.position, 0.0001f, 0f);
         source.LookAt(target.position);
     }		
-	// --------------- Verical Rotate Begin Implementation ---------------
+	// --------------- Vertical Rotate Begin Implementation ---------------
 	void DoRotateVertical () {
 
 		if (!IsRotatingVertical ())
