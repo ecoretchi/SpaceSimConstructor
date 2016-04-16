@@ -15220,7 +15220,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1381815997}
-  - 114: {fileID: 1381815996}
   - 114: {fileID: 1381815998}
   m_Layer: 0
   m_Name: Spaceship_02A
@@ -15229,33 +15228,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1381815996
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1381815995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2343780caab162b4885d0ca97c5b91e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  engineLights: {fileID: 1225737167}
-  enginePowerSlider: {fileID: 0}
-  enginePowerText: {fileID: 0}
-  enginePowerSliderPositiveColor: {r: 0, g: 0, b: 1, a: 1}
-  enginePowerSliderNegativeColor: {r: 1, g: 0, b: 0, a: 1}
-  controlledByPlayer: 1
-  shipName: Test Ship
-  nominalMass: 300
-  inertiaDamper: 1
-  maxMainEngineForce: 15000
-  rotationXForce: 8000
-  rotationYForce: 8000
-  rotationZForce: 15000
-  instantVelocity: 0
-  instantAcceleration: 0
-  maxAcceleration: 0
 --- !u!4 &1381815997
 Transform:
   m_ObjectHideFlags: 0
@@ -15285,6 +15257,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c25dbc4fecb73944f94b2cf8e8a6ec68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  engineLights: {fileID: 0}
+  controlledByPlayer: 0
+  shipName: Test Ship
+  nominalMass: 300
+  inertiaDamper: 1
+  maxMainEngineForce: 15000
+  rotationXForce: 5000
+  rotationYForce: 8000
+  rotationZForce: 8000
 --- !u!1 &1397612570
 GameObject:
   m_ObjectHideFlags: 0
