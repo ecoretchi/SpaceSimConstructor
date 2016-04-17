@@ -45,6 +45,8 @@ GameObject:
   - 23: {fileID: 2398586}
   - 95: {fileID: 9542800}
   - 136: {fileID: 13697428}
+  - 54: {fileID: 5403972}
+  - 114: {fileID: 11449858}
   m_Layer: 8
   m_Name: mesh_connector_m
   m_TagString: Stackable
@@ -113,9 +115,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151236}
-  m_LocalRotation: {x: 0.5000001, y: 0.5, z: 0.5, w: 0.49999994}
-  m_LocalPosition: {x: 108.8, y: 2.1, z: 108.47}
-  m_LocalScale: {x: 4.05, y: 4.0499997, z: 3}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071067}
+  m_LocalPosition: {x: 100, y: 0, z: 108.87}
+  m_LocalScale: {x: 4.0499973, y: 4.049997, z: 3}
   m_Children:
   - {fileID: 480330}
   m_Father: {fileID: 0}
@@ -155,6 +157,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 168350}
   m_Mesh: {fileID: 4300002, guid: c6279fb5efa975944b01f78d5a21d1a1, type: 3}
+--- !u!54 &5403972
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168350}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!95 &9542800
 Animator:
   serializedVersion: 3
@@ -184,6 +201,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
+--- !u!114 &11449858
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfb4894f5487f5a4e8912f3aafee6852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11476220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -217,7 +245,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.77
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &13564414
 SphereCollider:
@@ -229,7 +257,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.77
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &13697428
 CapsuleCollider:

@@ -83,11 +83,8 @@ namespace Stackables {
             releaseTarget();            
         }
         void DoUnjoin() {
-            Stackable s = target.parent.GetComponent<Stackable>();
-            if (s) {
                 print("Stackables.Stackable.OnDisconnect");
-                s.OnDisconnect();
-            }
+                
         }
         void releaseTarget() {
             strategicCamera.prohibitTargetHit = false;
@@ -104,7 +101,11 @@ namespace Stackables {
             Vector3 pos = target.position;
             pos.y = 0;
             curPlane = new Plane(Vector3.up, pos);
-            DoUnjoin();
+
+            Stackable s = target.parent.GetComponent<Stackable>();
+            if (s) {
+                s.OnCaptured();
+            }
         }
         //==================  START  ==================
         override public void OnStart() {
@@ -146,9 +147,10 @@ namespace Stackables {
             bool isOnConstructionCast = Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask);
             if (isOnConstructionCast) {
                 DoMoveOverConstructon(hit);
-            }
-            else
+            } else {
+                OnMoveOutConstructon();
                 DoMoveOverPlane(ray);
+            }
 
         }
         void DoMoveOverPlane(Ray ray) {
@@ -179,11 +181,14 @@ namespace Stackables {
             //Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
 
             Stackable s = target.parent.GetComponent<Stackable>();
-            if (s == null)
-                return;
             s.OnMoveOverConstructon(hit);
             m_convergence = s.IsConvergence();
 
+        }
+        void OnMoveOutConstructon() {
+            m_convergence = false;
+            Stackable s = target.parent.GetComponent<Stackable>();
+            s.OnDivergence();
         }
         void rotateTarget(Transform t, Vector3 normal) {
             Quaternion rotate = Quaternion.FromToRotation(t.forward, normal);

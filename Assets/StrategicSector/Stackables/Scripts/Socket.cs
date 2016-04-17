@@ -3,7 +3,7 @@ using System.Collections;
 namespace Stackables {
     public class Socket : MonoBehaviour {
 
-        //using to shure that socket are compatible each other, only same type could be joined and connected
+        //using to sure that socket are compatible each other, only same type could be joined and connected
         public enum Type {
             Empty, //empty socket does not interact
             Small,
@@ -27,7 +27,7 @@ namespace Stackables {
         [System.ComponentModel.DefaultValue(State.Disabled)]
         public State state { get; set; }
 
-        public T GetComponentInParents<T>(int deep){
+        public T GetComponentInParents<T>(int deep = 2){
             Transform tr = transform;
             T t = tr.GetComponentInParent<T>();
             if(t == null)

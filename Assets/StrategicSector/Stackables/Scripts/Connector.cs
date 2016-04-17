@@ -4,41 +4,31 @@ namespace Stackables {
     public class Connector : Stackable {
 
         override public bool OnConvergence(Socket hitSock) {
-            //print("OnConvergence");
-            //Module m = s.GetComponentInParents<Module>(2);
-            //if (!m) {
-            //    OnDivergence();
-            //    return false;
-            //}
+
             Socket compatS = base.GetCompatibleSocket(hitSock);
-            if (!compatS) {
+            if (!compatS) { //compatible socket not found
                 OnDivergence();
                 return false;
             }
 
-            //transform.rotation = Quaternion.Slerp(transform.rotation, s.transform.rotation * transform.rotation, 0.2f);
-            //transform.rotation = s.transform.rotation * transform.rotation;
+            //Do stick to found compatible socket
 
             gameObject.transform.position =
                 gameObject.transform.position -
                 compatS.gameObject.transform.position +
                 hitSock.gameObject.transform.position;
 
-            Quaternion rotate = hitSock.transform.rotation;
-            //Quaternion.Euler(Vector3.up * 180);
-            //Vector3 e = rotate.eulerAngles;
-
+            Quaternion rotate = hitSock.transform.rotation;            
             transform.rotation = rotate;
             transform.Rotate(Vector3.up * 180);
-            
 
-            //base.alignUp(s.transform.up);
-            //base.alignRight(s.transform.right);
-            //base.alignForward(-s.transform.forward);
-            //transform.Rotate( s.transform.rotation.eulerAngles - compatS.transform.localRotation.eulerAngles );
-
-            return base.OnConvergence(hitSock);
+            return base.OnConvergence(hitSock);//set stick state as result
         }
-
+        override public Transform GetDraggingTransform() {
+            Socket[] ss = this.GetComponentsInChildren<Socket>();
+            if (ss.Length > 0)
+                return ss[0].gameObject.transform;
+            return transform; 
+        }
     }
 } //namespace Stackables
