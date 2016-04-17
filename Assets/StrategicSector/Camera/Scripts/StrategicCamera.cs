@@ -191,6 +191,14 @@ public class StrategicCamera : HitSelectObjectByTag {
         flowDamping = remFlowDamping;
     }
     // ------------ overriding class methods HitSelectObjectByTag ------------
+    public void StopMove() {
+        torqueForward = 0;
+        torqueHorizontal = 0;
+        torqueLaterally = 0;
+        torqueVertical = 0;
+        torqueZoomForward = 0;
+        torqueZoomWheel = 0;
+    }
     public bool prohibitTargetHit { get; set; }
 
     override public void OnTargetHitHold(Transform target)	{
@@ -205,6 +213,9 @@ public class StrategicCamera : HitSelectObjectByTag {
 	}
 	bool CalcTorques()	{
         bool ret = false;
+        float axisX = Input.GetAxis("Mouse X");
+        float axisY = Input.GetAxis("Mouse Y");
+
         if (Input.GetMouseButton(MouseButtonIDRotateV)) {
             torqueVertical = Input.GetAxis("Mouse Y") * rotateVSpeed;
             ret = true;
@@ -220,9 +231,10 @@ public class StrategicCamera : HitSelectObjectByTag {
 
 			if (expanentMove>0)
 				moveSpeed = offset.magnitude * expanentMove;
-			
-			torqueForward = Input.GetAxis ("Mouse Y") * moveSpeed_;
-			torqueLaterally = Input.GetAxis ("Mouse X") * moveSpeed_;
+            //if (Mathf.Abs( axisX) > 0.05f || torqueLaterally > 0)
+                torqueLaterally = axisX * moveSpeed_;
+            //if (Mathf.Abs(axisY) > 0.05f || torqueForward > 0)
+                torqueForward = axisY * moveSpeed_;
 				
 			if (Input.GetMouseButtonDown (MouseButtonIDMoving)) {				
 				//flowTarget.position = source.position + offset;
@@ -234,7 +246,6 @@ public class StrategicCamera : HitSelectObjectByTag {
 		}
 
 		torqueZoomWheel = Input.GetAxis ("Mouse ScrollWheel") * 0.1f;
-
 
 		if (IsZooming()) {
             ret = true;
@@ -366,7 +377,6 @@ public class StrategicCamera : HitSelectObjectByTag {
                 
         }
 	}
-
 	bool IsMovingForward(){
 		return  Mathf.Abs (torqueForward) > 1;
 	}

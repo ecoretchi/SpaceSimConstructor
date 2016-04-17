@@ -46,19 +46,28 @@ namespace Stackables {
             }else
             if (this.target) {
                 if (m_camOnAction)
-                    m_camOnAction = false;
+                    m_camOnAction = false;                
                 else
                     releaseTarget();
             }
+
             base.OnHitRelease();
         }
         override public void OnTargetHitRelease(Transform target) {
 
-            if ((strategicCamera.IsMoving() ||
+            if (strategicCamera.IsMoving() ||
                 strategicCamera.IsZooming() ||
-                strategicCamera.IsOrbitRotating())
-                )//&& !m_convergence)
-                return;
+                strategicCamera.IsOrbitRotating()){
+
+                if(this.target)
+                    return;
+                
+                //avoid annoying drag cam during try to select the object
+                // (-) duplicate hit release if call sequence incorrect
+                strategicCamera.OnHitRelease();
+                strategicCamera.StopMove();
+            }
+        
 
             else if (!this.target) {
                 captureTarget(target);

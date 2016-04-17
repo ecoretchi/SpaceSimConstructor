@@ -41,8 +41,13 @@ namespace Stackables {
                 OnDivergence();            
         }
         virtual public bool OnConvergence(Socket hitSock) {
-            hitSock.OnStick(m_lastCompatibleSocket);
-            m_lastCompatibleSocket.OnStick(hitSock);
+
+            if (CheckCollision(hitSock)) {
+                hitSock.OnDisable();
+            } else {
+                hitSock.OnStick(m_lastCompatibleSocket);
+                m_lastCompatibleSocket.OnStick(hitSock);
+            }
             return true; 
         }
         virtual public bool OnDivergence() {
@@ -93,14 +98,20 @@ namespace Stackables {
             }
             return m_compatibleSockets;
         }
-
+        void SetCompatibleSocket(int n = -1) {
+            if(n>-1)
+                m_curCompatibleNum = n;
+            if (m_curCompatibleNum >= m_compatibleSockets.Count)
+                m_curCompatibleNum = 0;
+            if (m_lastCompatibleSocket)
+                m_lastCompatibleSocket.OnDisable();
+            m_lastCompatibleSocket = m_compatibleSockets[m_curCompatibleNum];
+        }
         public Socket GetCompatibleSocket(Socket s) {
             if (!m_lastCompatibleSocket || !m_lastCompatibleSocket.IsCompatible(s)) {
                 if (GetCompatibleSockets(s).Count == 0)
                     return null;
-                if (m_curCompatibleNum >= m_compatibleSockets.Count)
-                    m_curCompatibleNum = 0;
-                m_lastCompatibleSocket = m_compatibleSockets[m_curCompatibleNum];
+                SetCompatibleSocket();
                 AdaptMeshToSocket(m_lastCompatibleSocket);
             }
             return m_lastCompatibleSocket;
@@ -109,15 +120,12 @@ namespace Stackables {
             if (!m_lastCompatibleSocket || !m_lastCompatibleSocket.IsCompatible(s) || m_compatibleSockets.Count == 0) {
                 if (GetCompatibleSockets(s).Count == 0)
                     return null;
-                m_curCompatibleNum = 0;
-                m_lastCompatibleSocket = m_compatibleSockets[0];
+                
+                SetCompatibleSocket(0);
                 AdaptMeshToSocket(m_lastCompatibleSocket);
                 return m_lastCompatibleSocket;
-            }
-            ++m_curCompatibleNum;
-            if (m_curCompatibleNum >= m_compatibleSockets.Count)
-                m_curCompatibleNum = 0;
-            m_lastCompatibleSocket = m_compatibleSockets[m_curCompatibleNum];
+            }            
+            SetCompatibleSocket(m_curCompatibleNum+1);
             AdaptMeshToSocket(m_lastCompatibleSocket);
             return m_lastCompatibleSocket;
         }
@@ -162,6 +170,10 @@ namespace Stackables {
             tMesh.localRotation = Quaternion.Inverse(tSock.transform.localRotation);
             tMesh.position = tMesh.position - tSock.position + gameObject.transform.position;
             //transform.rotation = tSock.transform.rotation;
+        }
+        bool CheckCollision(Socket hitSock) {
+
+            return false;
         }
     }
 
