@@ -34,6 +34,19 @@ namespace Stackables {
         Collider m_jointsColl;
 
         bool m_camOnAction = false;
+        public bool IsTarget() {
+            return target != null;
+        }
+        public void OnInstantiateByGUIButton(GameObject st) {
+            MeshFilter mf = st.GetComponentInChildren<MeshFilter>();
+            if (!mf)
+                return;
+            Transform tr = mf.gameObject.transform;
+            m_camOnAction = true;
+            captureTarget(tr);
+            Cursor.lockState = CursorLockMode.Locked;
+
+        }
         public bool IsMoving() { //user hold the target and could move it or release or etc.
             return target;
         }
@@ -45,10 +58,15 @@ namespace Stackables {
                 return;
             }else
             if (this.target) {
-                if (m_camOnAction)
-                    m_camOnAction = false;                
-                else
+                if (m_camOnAction) {
+                    m_camOnAction = false;
+                    Cursor.lockState = CursorLockMode.None;
+                } else {
+                    Stackable s = this.target.GetComponentInParent<Stackable>();
+                    if(s)
+                        Destroy(s.gameObject);
                     releaseTarget();
+                }
             }
 
             base.OnHitRelease();
@@ -82,10 +100,6 @@ namespace Stackables {
             }
             releaseTarget();            
         }
-        void DoUnjoin() {
-                print("Stackables.Stackable.OnDisconnect");
-                
-        }
         void releaseTarget() {
             strategicCamera.prohibitTargetHit = false;
             target.gameObject.layer = 8;
@@ -93,10 +107,10 @@ namespace Stackables {
             m_convergence = false;
             Cursor.visible = true;
         }
-        void captureTarget(Transform target) {
+        public void captureTarget(Transform target) {
             strategicCamera.prohibitTargetHit = true;
             target.gameObject.layer = 0;
-            //Cursor.visible = false;
+            Cursor.visible = false;
             this.target = target;
             Vector3 pos = target.position;
             pos.y = 0;
@@ -131,8 +145,8 @@ namespace Stackables {
             curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
             //print(curMeredianAngle);
 
-            DoLookFollow();
-            DoMoveFollow();
+            //DoLookFollow();
+            //DoMoveFollow();
         }
 
         void DoMoveObject() {

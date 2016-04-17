@@ -13,9 +13,10 @@ namespace Stackables {
         private Socket m_lastCompatibleSocket = null;
         protected RaycastHit m_currentHit;
         public bool IsConvergence() {
-            return m_hitSocket;
+            return m_hitSocket && m_collisionInfo.IsCollision(m_hitSocket, m_lastCompatibleSocket) == false;
         }
         int debugSockNum =0 ;
+        
         void Update() { 
             if (Input.GetKeyDown(KeyCode.Space)) {
                 if (m_hitSocket) {
