@@ -10,18 +10,8 @@ public class GameController : Singleton<GameController> {
 	}
 		
 	void Update() {
-		// Reading input //////////////////////////////
-		if (Input.GetKeyDown(KeyCode.LeftAlt) ){
-			isCursorLocked = false;
-		}
-
-		// на всякий случай, будем следить не за getkeyup, а за не нажатым состоянием - по идее, после альт-таба может так быть
-		if( isNoCursorMode && !isCursorLocked && !Input.GetKey(KeyCode.LeftAlt) ) {
-			isCursorLocked = true;
-		}
-
 		// Выход. Пока вот такой вот простой
-		if (Input.GetKeyUp(KeyCode.Escape)) {
+		if (Input.GetButtonUp( "Cancel" )) {
 			quitApplication();
 		}
 
@@ -37,8 +27,6 @@ public class GameController : Singleton<GameController> {
 
 
 	// Properties //////////////////////////////////////////////////////////////////////////////////////////////
-
-	[SerializeField]
 	public bool isCursorLocked {
 		set {
 			Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
