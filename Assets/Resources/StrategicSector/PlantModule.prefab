@@ -27,7 +27,7 @@ GameObject:
   - 135: {fileID: 13521102}
   - 114: {fileID: 11498598}
   m_Layer: 0
-  m_Name: socket_m
+  m_Name: socket_M
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ GameObject:
   - 135: {fileID: 13522678}
   - 114: {fileID: 11417506}
   m_Layer: 0
-  m_Name: socket_s
+  m_Name: socket_S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,7 +84,7 @@ GameObject:
   - 135: {fileID: 13555356}
   - 114: {fileID: 11478246}
   m_Layer: 0
-  m_Name: socket_s
+  m_Name: socket_S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,7 +148,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 138492}
   m_LocalRotation: {x: -0.00000011520229, y: -0.70710695, z: -0.7071066, w: 0.00000011520235}
-  m_LocalPosition: {x: 93.03, y: -0, z: 90.59}
+  m_LocalPosition: {x: 112.251526, y: 15.066609, z: 99.225655}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 480516}
@@ -279,7 +279,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea519a12ef940443b7aba6b3f8fb846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  dimType: 1
+  orientedType: 1
 --- !u!114 &11441220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -302,7 +303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea519a12ef940443b7aba6b3f8fb846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  dimType: 1
+  orientedType: 1
 --- !u!114 &11498598
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -314,7 +316,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea519a12ef940443b7aba6b3f8fb846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 2
+  dimType: 0
+  orientedType: 1
 --- !u!135 &13521102
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -4,12 +4,21 @@ namespace Stackables {
     public class Socket : MonoBehaviour {
 
         //using to sure that socket are compatible each other, only same type could be joined and connected
-        public enum Type {
+        public enum DimensionType {
             Empty, //empty socket does not interact
             Small,
             Medium,
             Large,
         };
+
+        public enum OrientationType {
+            Hybrit, //could be any connected to any
+            Straight, //horizontal oriented, module could connected over horizontals plane
+            Up, //vertical oriented
+            Down //vertical oriented
+        };
+
+        //public enum Type {
 
         public enum State {
             Disabled,
@@ -19,13 +28,22 @@ namespace Stackables {
             Welded // mean that user confirm the connection state for constructions
         }
 
-        [HideInInspector]
         public Socket joined { get; protected set; }
-
-        public Type type;
-
-        [System.ComponentModel.DefaultValue(State.Disabled)]
+        public DimensionType dimType;
+        public OrientationType orientedType;
         public State state { get; set; }
+
+        void Awake() {
+
+            if (dimType == DimensionType.Empty) {
+                if (name == "socket_S")
+                    dimType = DimensionType.Small;
+                else if (name == "socket_M")
+                    dimType = DimensionType.Medium;
+                else if (name == "socket_L")
+                    dimType = DimensionType.Large;
+            }
+        }
 
         public T GetComponentInParents<T>(int deep = 2){
             Transform tr = transform;
@@ -42,13 +60,33 @@ namespace Stackables {
             }
             return t;
         }
-        public bool IsCompatible(Socket s) {
-            if (IsSticked())
+        public bool IsCompatible(Socket mother, Socket father = null) {
+            if(father == null)
+                father = this;
+            if (father.IsSticked())
                 return true; //already sticked
-            if( (s.IsEnabled() || s.IsSticked() ) && s.type != Type.Empty)
-                return this.type == s.type;
+            if ((mother.IsEnabled() || mother.IsSticked()) && mother.dimType != DimensionType.Empty) {
+
+                return father.dimType == mother.dimType && IsOrientedEachOther(mother,father);
+            }
             return false;
         }
+        public bool IsOrientedEachOther(Socket mother, Socket father = null) {
+            if (father == null)
+                father = this;
+            if (mother.orientedType == OrientationType.Hybrit)
+                return true;
+            if (father.orientedType == OrientationType.Hybrit)
+                return true;
+            if (mother.orientedType == OrientationType.Straight)
+                return father.orientedType == OrientationType.Straight;
+            if (mother.orientedType == OrientationType.Up)
+                return father.orientedType == OrientationType.Down;
+            if (mother.orientedType == OrientationType.Down)
+                return father.orientedType == OrientationType.Up;
+            return false;
+        }
+
         public bool IsDisabled() {
             return state == State.Disabled;
         }

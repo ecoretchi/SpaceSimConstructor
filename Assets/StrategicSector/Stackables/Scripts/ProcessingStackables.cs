@@ -71,7 +71,12 @@ namespace Stackables {
 
             base.OnHitRelease();
         }
+        //disabled method
+        public bool disableMethod_OnTargetHitRelease = false;
         override public void OnTargetHitRelease(Transform target) {
+
+            if (disableMethod_OnTargetHitRelease)
+                return;
 
             if (strategicCamera.IsMoving() ||
                 strategicCamera.IsZooming() ||
@@ -118,7 +123,7 @@ namespace Stackables {
 
             Stackable s = target.parent.GetComponent<Stackable>();
             if (s) {
-                s.OnCaptured();
+                s.OnCapture();
             }
         }
         //==================  START  ==================

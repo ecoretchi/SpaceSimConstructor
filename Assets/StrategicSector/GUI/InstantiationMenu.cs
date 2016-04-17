@@ -9,20 +9,20 @@ public class InstantiationMenu : MonoBehaviour {
     GameObject plantModule;
     
     Stackables.ProcessingStackables stackablesProcessing;
-    Rect getCellRect(int row, int col = 0, int x = 0, int y = 0, int dx = 200, int dy = 25) {
+    Rect getCellRect(int row, int col = 0, int x = 25, int y = 25, int dx = 200, int dy = 25) {
         return new Rect(x + dx * col, y + dy * row, dx, dy);
     }
     void OnGUI() {
             int row = 0;
             GUI.Label(getCellRect(row++), "Build Station Version 0.0.1");
             
-            if (GUI.Button(getCellRect(row++), "Connector S (key S)")) {
+            if (GUI.Button(getCellRect(row++), "SmallConnector (key S)")) {
                 stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorS));
             }
-            if (GUI.Button(getCellRect(row++), "Connector M (key M)")) {
+            if (GUI.Button(getCellRect(row++), "MediumConnector (key M)")) {
                 stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorM));
             }
-            if (GUI.Button(getCellRect(row++), "Connector L (key L)")) {
+            if (GUI.Button(getCellRect(row++), "LargeConnector (key L)")) {
                 stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorL));
             }
             if (GUI.Button(getCellRect(row++), "PlantModule (key P)")) {

@@ -47,7 +47,7 @@ GameObject:
   - 135: {fileID: 13573294}
   - 114: {fileID: 11409322}
   m_Layer: 0
-  m_Name: socket_L (1)
+  m_Name: socket_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,7 +103,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 107742}
   m_LocalRotation: {x: -0.50000006, y: -0.49999994, z: -0.49999994, w: 0.50000006}
-  m_LocalPosition: {x: 90.47, y: 5.81, z: 111.86}
+  m_LocalPosition: {x: 101.73912, y: 9.854771, z: 107.58321}
   m_LocalScale: {x: 4.05, y: 4.0499997, z: 3}
   m_Children:
   - {fileID: 409876}
@@ -183,7 +183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea519a12ef940443b7aba6b3f8fb846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  dimType: 3
+  orientedType: 0
 --- !u!114 &11425770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -217,7 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea519a12ef940443b7aba6b3f8fb846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  dimType: 3
+  orientedType: 0
 --- !u!135 &13541424
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -34,16 +34,34 @@ namespace Stackables {
         }
         CollisionInfo m_collisionInfo;
         virtual public Transform GetDraggingTransform() { return null; }
-        virtual public void OnCaptured() {
+        virtual public void OnCapture() {
             Socket[] ss = this.GetComponentsInChildren<Socket>();
             foreach (Socket s in ss) {
                 s.OnDisable();
+                OnDisabled(m_hitSocket, s);
             }
-            if (m_hitSocket)
+            if (m_hitSocket) {
                 m_hitSocket.OnRelease();
+                OnReleased(m_hitSocket);
+            }
 
             AdaptMeshToPoint(GetDraggingTransform());
         }
+        //
+        // Summary: 
+        //      construction was captured by user, disconnection in progress 
+        // Argument:
+        //      current mother socket is still connected, other already has disconnected
+        //  
+        virtual protected void OnDisabled(Socket mother, Socket other) { }
+        //
+        // Summary: 
+        //      construction was captured by user, disconnection finished
+        // Argument:
+        //      mother socket that has disconnected
+        //  
+        virtual protected void OnReleased(Socket mother) { }
+
         virtual public void OnMoveOverConstructon(RaycastHit hit) {
             m_currentHit = hit;
             Socket hitSock = hit.collider.gameObject.GetComponent<Socket>();
@@ -98,16 +116,37 @@ namespace Stackables {
         //
         virtual public void OnConnect() {
             Socket[] ss = this.GetComponentsInChildren<Socket>();
+            Socket father = null;
             foreach (Socket s in ss) {
-                if(s.IsDisabled())
+                if (s.IsDisabled()) {
                     s.OnRelease();
-                else
-                    s.OnConnect();
+                    OnReleased(m_hitSocket, s);
+                } else if(s.IsSticked()) {
+                    Assert.IsNull(father); //could be only one sticked own socket 
+                    father = s;
+                }
             }
-            if (m_hitSocket)
+            if (m_hitSocket && father) {
                 m_hitSocket.OnConnect();
+                father.OnConnect();
+                OnConnected(m_hitSocket, father);
+            }
             m_hitSocket = null;
         }
+        //
+        // Summary: 
+        //      connection in progress 
+        // Argument:
+        //      released others children socket as sticked(connected)
+        //  
+        virtual protected void OnReleased(Socket mother, Socket released) { }
+        //
+        // Summary: 
+        //      all connection finished
+        // Argument:
+        //      current connected HitSocket as mother and own connected socket as father
+        //  
+        virtual protected void OnConnected(Socket mother, Socket father) { } 
         public List<Socket> GetSockets() {         
             if(m_sockets != null)
                 return m_sockets;
