@@ -9,9 +9,14 @@ namespace Stackables {
         protected Socket m_hitSocket = null;
         private int m_curCompatibleNum = 0;
         private List<Socket> m_sockets;
+        private List<Socket.DimensionType> m_socketsTypes;
         private List<Socket> m_compatibleSockets = new List<Socket>();
         private Socket m_lastCompatibleSocket = null;
         protected RaycastHit m_currentHit;
+        /// <summary>
+        ///  helper flag represent the motion over construction for mouse cursor or out
+        /// </summary>
+        bool m_moveOver = false;
         public bool IsConvergence() {
             return m_hitSocket && m_collisionInfo.IsCollision(m_hitSocket, m_lastCompatibleSocket) == false;
         }
@@ -62,6 +67,30 @@ namespace Stackables {
         //  
         virtual protected void OnReleased(Socket mother) { }
 
+        virtual protected void OnMoveOverConstructonIn() {
+            MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
+            if (mg) {
+                List<Socket.DimensionType> st = GetSocketsType();
+                foreach (Socket.DimensionType t in st) {
+                    mg.ShowMarkers(t);
+                }
+            }
+        }
+        virtual protected void OnMoveOverConstructonOut() {
+            MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
+            if (mg) {
+                mg.HideAll();
+            }
+        }
+        public bool IsMoveOver() {
+            return m_moveOver;
+        }
+        virtual public void OnMoveOutConstructon() {
+            if (IsMoveOver()) {
+                m_moveOver = false;
+                OnMoveOverConstructonOut();
+            }
+        }
         virtual public void OnMoveOverConstructon(RaycastHit hit) {
             m_currentHit = hit;
             Socket hitSock = hit.collider.gameObject.GetComponent<Socket>();
@@ -75,12 +104,17 @@ namespace Stackables {
                 OnDivergence();
 
             if (!m_hitSocket || m_collisionInfo.IsCollision(hitSock, m_lastCompatibleSocket)) {
-                //DoMoveOverConstruction
-                transform.position = m_currentHit.point;//moveTarget
-                alignForwardLerp(-m_currentHit.normal);
+                DoMoveOverConstruction();
             }
-            
-        }        
+            if (!IsMoveOver()) {
+                m_moveOver = true;
+                OnMoveOverConstructonIn();
+            }            
+        }
+        virtual protected void DoMoveOverConstruction() {
+            transform.position = m_currentHit.point;//moveTarget
+            alignForwardLerp(-m_currentHit.normal);
+        }
         virtual public bool OnConvergence(Socket hitSock) {
 
             m_collisionInfo.m_state = CheckCollision(hitSock, this);
@@ -146,7 +180,31 @@ namespace Stackables {
         // Argument:
         //      current connected HitSocket as mother and own connected socket as father
         //  
-        virtual protected void OnConnected(Socket mother, Socket father) { } 
+        virtual protected void OnConnected(Socket mother, Socket father) { }
+        /// <summary>
+        /// return all sockets type that present on current stackable, list hold only unique types
+        /// </summary>
+        /// <returns></returns>
+        List<Socket.DimensionType> GetSocketsType() {
+
+            if(m_socketsTypes != null)
+                return m_socketsTypes;
+            
+            m_socketsTypes = new List<Socket.DimensionType>();
+            List<Socket> ss = GetSockets();
+            foreach (Socket s in ss) {
+                int helperCount = 0;
+                foreach (Socket.DimensionType t in m_socketsTypes) {
+                    if (s.dimType != t) {
+                        ++helperCount;
+                        break;
+                    }
+                }
+                if (helperCount==m_socketsTypes.Count)//that type not added yet, let add
+                    m_socketsTypes.Add(s.dimType);
+            }
+            return m_socketsTypes;
+        }
         public List<Socket> GetSockets() {         
             if(m_sockets != null)
                 return m_sockets;

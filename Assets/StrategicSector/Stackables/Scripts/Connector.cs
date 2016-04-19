@@ -34,7 +34,7 @@ namespace Stackables {
             released.orientedType = mother.orientedType;
         }
         override protected void OnDisabled(Socket mother, Socket released) {
-            released.orientedType = Socket.OrientationType.Hybrit;//all connector`s socket is hybrid during disconnected
+            released.orientedType = Socket.OrientationType.Hybrid;//all connector`s socket is hybrid during disconnected
         }
     }
 } //namespace Stackables

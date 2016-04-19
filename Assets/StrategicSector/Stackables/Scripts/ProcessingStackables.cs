@@ -102,6 +102,7 @@ namespace Stackables {
             if (s) {
                 print("Stackables.Stackable.OnConnect");
                 s.OnConnect();
+                s.OnMoveOutConstructon();
             }
             releaseTarget();            
         }
@@ -207,6 +208,7 @@ namespace Stackables {
         void OnMoveOutConstructon() {
             m_convergence = false;
             Stackable s = target.parent.GetComponent<Stackable>();
+            s.OnMoveOutConstructon();
             s.OnDivergence();
         }
         void rotateTarget(Transform t, Vector3 normal) {

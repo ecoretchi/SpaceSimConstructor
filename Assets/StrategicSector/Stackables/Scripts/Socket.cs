@@ -12,7 +12,7 @@ namespace Stackables {
         };
 
         public enum OrientationType {
-            Hybrit, //could be any connected to any
+            Hybrid, //could be any connected to any
             Straight, //horizontal oriented, module could connected over horizontals plane
             Up, //vertical oriented
             Down //vertical oriented
@@ -74,9 +74,9 @@ namespace Stackables {
         public bool IsOrientedEachOther(Socket mother, Socket father = null) {
             if (father == null)
                 father = this;
-            if (mother.orientedType == OrientationType.Hybrit)
+            if (mother.orientedType == OrientationType.Hybrid)
                 return true;
-            if (father.orientedType == OrientationType.Hybrit)
+            if (father.orientedType == OrientationType.Hybrid)
                 return true;
             if (mother.orientedType == OrientationType.Straight)
                 return father.orientedType == OrientationType.Straight;

@@ -28,6 +28,7 @@ namespace Stackables {
 
             transform.rotation = hitSock.transform.rotation;
             transform.Rotate(Vector3.up * 180);
+
             //base.alignUp(s.transform.up);
             //base.alignRight(s.transform.right);
             //base.alignForward(-s.transform.forward);
@@ -35,6 +36,10 @@ namespace Stackables {
 
             return base.OnConvergence(hitSock);
         }
+        override protected void DoMoveOverConstruction() {
+            transform.position = m_currentHit.point;//moveTarget
+        }
+
     }
 
 } // namespace Stackables
