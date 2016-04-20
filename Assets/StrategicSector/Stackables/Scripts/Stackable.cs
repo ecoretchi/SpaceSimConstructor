@@ -85,13 +85,16 @@ namespace Stackables {
         public bool IsMoveOver() {
             return m_moveOver;
         }
-        virtual public void OnMoveOutConstructon() {
+        virtual public void OnMoveOutConstruction() {
             if (IsMoveOver()) {
                 m_moveOver = false;
                 OnMoveOverConstructonOut();
             }
         }
-        virtual public void OnMoveOverConstructon(RaycastHit hit) {
+        virtual public void OnMoveOverConstruction (RaycastHit hit) {
+			if (m_currentHit.collider != hit.collider) {
+				OnMoveOutConstruction();
+			}
             m_currentHit = hit;
             Socket hitSock = hit.collider.gameObject.GetComponent<Socket>();
             if (m_collisionInfo == null)
@@ -109,7 +112,7 @@ namespace Stackables {
             if (!IsMoveOver()) {
                 m_moveOver = true;
                 OnMoveOverConstructonIn();
-            }            
+            }
         }
         virtual protected void DoMoveOverConstruction() {
             transform.position = m_currentHit.point;//moveTarget
