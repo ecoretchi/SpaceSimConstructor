@@ -44,6 +44,12 @@ namespace Stackables {
         }
         CollisionInfo m_collisionInfo;
         virtual public Transform GetDraggingTransform() { return null; }
+                //
+        // Summary: 
+        //      construction was captured by user, disconnection start
+        // Argument:
+        //      mother socket that will disconnected
+        // 
         virtual public void OnCapture() {
             Socket[] ss = this.GetComponentsInChildren<Socket>();
             foreach (Socket s in ss) {
@@ -54,7 +60,6 @@ namespace Stackables {
                 m_hitSocket.OnRelease();
                 OnReleased(m_hitSocket);
             }
-
             AdaptMeshToPoint(GetDraggingTransform());
         }
         //
@@ -125,6 +130,7 @@ namespace Stackables {
             m_collisionInfo.m_state = CheckCollision(hitSock, this);
             if (m_collisionInfo.m_state) {
                 OnDivergence();
+                OnCollision(hitSock, m_lastCompatibleSocket);
             } else {
                 //Do set Stick states
                 hitSock.OnStick(m_lastCompatibleSocket);
@@ -186,6 +192,15 @@ namespace Stackables {
         //      current connected HitSocket as mother and own connected socket as father
         //  
         virtual protected void OnConnected(Socket mother, Socket father) { }
+        /// <summary>
+        /// collision was occur for socket, we could not connect thous sockets 
+        /// reason is: not enough space for positioning
+        /// </summary>
+        /// <param name="mother">socket where to place</param>
+        /// <param name="father">socket witch placing</param>
+        virtual protected void OnCollision(Socket mother, Socket father) {
+            mother.OnCollision(father);
+        }
         /// <summary>
         /// return all sockets type that present on current stackable, list hold only unique types
         /// </summary>
@@ -319,7 +334,7 @@ namespace Stackables {
                 if (s == enterSocket) //avoid regression
                     continue;
                 if (s.IsConnected() && s.joined) {
-                    if (CheckCollision(s.joined, orign, curRecursionDeep + 1))
+                    if (CheckCollision(s.joined, orign, curRecursionDeep + 1))                        
                         return true;
                 }
             }
@@ -336,7 +351,6 @@ namespace Stackables {
             Bounds bounds1 = r1.bounds;
             Bounds bounds2 = r2.bounds;
 
-
             ShowMeshBounds.DrawBounds( bounds1, Color.green);
             ShowMeshBounds.DrawBounds( bounds2, Color.green);
 
@@ -349,15 +363,12 @@ namespace Stackables {
                         return true;
                     }
                 }
-                foreach (Collider c2 in cols2) {
-                    if (obj1.m_collisions != null && obj1.m_collisions.Exists(x => x == c2)) {
-                        return true;
-                    }
-                }
-               
-            }
-
-           
+                //foreach (Collider c2 in cols2) {
+                //    if (obj1.m_collisions != null && obj1.m_collisions.Exists(x => x == c2)) {
+                //        return true;
+                //    }
+                //}               
+            }           
             return false;
         }
 

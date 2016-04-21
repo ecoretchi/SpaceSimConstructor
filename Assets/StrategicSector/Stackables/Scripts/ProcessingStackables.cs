@@ -68,7 +68,6 @@ namespace Stackables {
                     releaseTarget();
                 }
             }
-
             base.OnHitRelease();
         }
         //disabled method
@@ -89,9 +88,7 @@ namespace Stackables {
                 // (-) duplicate hit release if call sequence incorrect
                 strategicCamera.OnHitRelease();
                 strategicCamera.StopMove();
-            }
-        
-
+            }     
             else if (!this.target) {
                 captureTarget(target);
                 m_camOnAction = false;

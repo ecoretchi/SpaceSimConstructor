@@ -37,7 +37,7 @@ namespace Stackables {
         public DimensionType dimType;
         public OrientationType orientedType;
         public State state { get; set; }
-        public SocketHandler marker { get; set; }
+        public SocketMarker marker { get; set; }
 
         void Awake() {
 
@@ -50,15 +50,14 @@ namespace Stackables {
                     dimType = DimensionType.Large;
             }
         }
-
-        public bool IsCompatible(Socket mother, Socket father = null) {
-            if(father == null)
-                father = this;
-            if (father.IsSticked())
+        public bool IsCompatible(Socket mother) {        
+            if (IsSticked())
                 return true; //already sticked
+            return IsCompatibles(mother, this);
+        }
+        public static bool IsCompatibles(Socket mother, Socket father) {
             if ((mother.IsEnabled() || mother.IsSticked()) && mother.dimType != DimensionType.Empty) {
-
-                return father.dimType == mother.dimType && IsOrientedEachOther(mother,father);
+                return father.dimType == mother.dimType && IsOrientedEachOther(mother, father);
             }
             return false;
         }
@@ -67,16 +66,12 @@ namespace Stackables {
                 return false;
             List<Socket> tds = st.GetTypedSockets();
             foreach (Socket s in tds) {
-                if (s.IsSticked())
-                    return false;
-                if(IsCompatible(this, s))
+                if (IsCompatibles(this,s))
                     return true;
             }            
             return false;
         }
-        public bool IsOrientedEachOther(Socket mother, Socket father = null) {
-            if (father == null)
-                father = this;
+        public static bool IsOrientedEachOther(Socket mother, Socket father) {
             if (mother.orientedType == OrientationType.Hybrid)
                 return true;
             if (father.orientedType == OrientationType.Hybrid)

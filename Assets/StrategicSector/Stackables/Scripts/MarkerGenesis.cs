@@ -10,8 +10,8 @@ namespace Stackables {
     /// 
 public class MarkerGenesis : MonoBehaviour {
 
-    List<SocketHandler> sockMarkers = new List<SocketHandler> ();
-    List<SocketHandler> lastAllMarkers;
+    List<SocketMarker> sockMarkers = new List<SocketMarker> ();
+    List<SocketMarker> lastAllMarkers;
     Stackable stackableObj;
 
     Vector3 vScalesF = new Vector3(1, 1, 1);
@@ -28,7 +28,7 @@ public class MarkerGenesis : MonoBehaviour {
             List<Socket> ss = stackableObj.GetSockets();
             foreach (Socket s in ss) {
                 GameObject markerNew = Instantiate(marker);
-                SocketHandler sh = markerNew.GetComponent<SocketHandler>();
+                SocketMarker sh = markerNew.GetComponent<SocketMarker>();
                 if (!sh)
                     continue;
 
@@ -67,7 +67,7 @@ public class MarkerGenesis : MonoBehaviour {
     /// set marker transform the same as socket handler transform
     /// </summary>
     /// <param name="sh">Socket handler for marker at moste</param>
-    protected void CalibrateMarker(SocketHandler sh) {
+    protected void CalibrateMarker(SocketMarker sh) {
         Socket s = sh.sock;
         Transform tSocket = s.GetComponent<Transform>();
         Transform tMarker = sh.GetComponent<Transform>();
@@ -77,10 +77,28 @@ public class MarkerGenesis : MonoBehaviour {
     }
 
     static bool matchEnabled(Socket s) { return s.IsEnabled(); }
+
+    SocketMarker collisionMarker = null;
+
+    //static void OnSocket()
     public void ShowMarkers(Stackable st) {
-        
-        List<Socket> socks = ConstructorManager.GetSockets(s => s.IsEnabled() && s.IsCompatible(st) );
+       
+        List<Socket> socks = ConstructorManager.GetSockets(( ref List<Socket> ss, Socket s) => {
+            if (s.IsRejected())
+                collisionMarker = s.marker;
+            else
+            if (s.IsEnabled() && s.IsCompatible(st))
+                ss.Add(s);            
+        });
+        if (collisionMarker!=null) {
+            //collisionMarker.GetComponent<>;
+            collisionMarker.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+            //collisionMarker.gameObject.GetComponent<Material>().color = Color.red;
+            collisionMarker.gameObject.SetActive(true);
+            CalibrateMarker(collisionMarker);
+        }
         foreach (Socket s in socks) {
+            s.marker.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
             s.marker.gameObject.SetActive(true);
             CalibrateMarker(s.marker);
         }

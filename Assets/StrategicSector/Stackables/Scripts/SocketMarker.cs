@@ -2,7 +2,7 @@
 using System.Collections;
 
 namespace Stackables {
-    public class SocketHandler : MonoBehaviour {
+    public class SocketMarker : MonoBehaviour {
         public Socket sock {get; protected set;}
         public void Init(Socket s) {
             sock = s;

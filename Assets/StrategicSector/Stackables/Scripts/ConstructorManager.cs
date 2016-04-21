@@ -5,38 +5,35 @@ using UnityEngine.Assertions;
 
 namespace Stackables {
 
-    public delegate bool DelegateSocketMatch(Socket s);
+    public delegate void DelegateOnSocket(ref List<Socket> ss, Socket s);
     public class ConstructorManager : MonoBehaviour {
 
         void Start() {
         }
-        static bool DelegateAllMatch(Socket s) { return true; }
+        static void DelegateAll(ref List<Socket> ss, Socket s) { ss.Add(s); }
         public static List<Socket> GetAllSockets() {
-            return GetSockets(DelegateAllMatch);
+            return GetSockets( DelegateAll );
         }
-        public static List<Socket> GetSockets(DelegateSocketMatch sMatch) {
+        public static List<Socket> GetSockets(DelegateOnSocket sMatch) {
             MainStationModule m_cms = FindObjectOfType<MainStationModule>();
             //TODO: assert m_cms not null
             List<Socket> res = new List<Socket>();
             GetSockets(ref res, m_cms, sMatch);
             return res;
         }
-
-        static int GetSockets(ref List<Socket> socks, Stackable st, DelegateSocketMatch sMatch, Socket jEnter = null) {
+        static int GetSockets(ref List<Socket> socks, Stackable st, DelegateOnSocket onSocket, Socket jEnter = null) {
             Socket[] ss = st.GetComponentsInChildren<Socket>();
             int res = ss.Length;
             if (res == 0)
                 return 0;
 
             foreach (Socket s in ss) {
-                if (sMatch(s))
-                    socks.Add(s);
+                onSocket(ref socks, s);
                 if (s.IsConnected() && s.joined != jEnter) {
                     Stackable stNext = s.joined.GetComponentInParent<Stackable>();
-                    res += GetSockets(ref socks, stNext, sMatch, s);
+                    res += GetSockets(ref socks, stNext, onSocket, s);
                 }
             }// foreach
-
             return res;
         } // int GetSockets 
 
