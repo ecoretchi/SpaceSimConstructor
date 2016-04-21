@@ -7,7 +7,7 @@ namespace Stackables {
         override public bool OnConvergence(Socket hitSock) {
             //print("OnConvergence");
 
-            Connector m = hitSock.GetComponentInParents<Connector>();
+            Connector m = hitSock.GetComponentInParent<Connector>();
             if (!m) {
                 OnDivergence();
                 return false;

@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.Assertions;
+
 namespace Stackables {
     public class Socket : MonoBehaviour {
 
@@ -23,7 +26,7 @@ namespace Stackables {
         public enum State {
             Disabled,
             Enabled, // if socket enabled it can interact with other construction
-			Rejected, // if parent socket could be conencted in case collision his stackable owner 
+			Rejected, // if parent socket could be connected in case collision his stackable owner 
             Sticked, // convergence with other socket (on other construction)
             Connected, // connected with other socket (on other construction), mean that user release construction during it was sticked
             Welded // mean that user confirm the connection state for constructions
@@ -34,6 +37,7 @@ namespace Stackables {
         public DimensionType dimType;
         public OrientationType orientedType;
         public State state { get; set; }
+        public SocketHandler marker { get; set; }
 
         void Awake() {
 
@@ -47,21 +51,6 @@ namespace Stackables {
             }
         }
 
-        public T GetComponentInParents<T>(int deep = 2){
-            Transform tr = transform;
-            T t = tr.GetComponentInParent<T>();
-            if(t == null)
-            for (int i = 0; i < deep; ++i)
-            {
-                tr = tr.parent;
-                if (tr == null)
-                    break;
-                t = tr.GetComponentInParent<T>();
-                if (t != null)
-                    break;
-            }
-            return t;
-        }
         public bool IsCompatible(Socket mother, Socket father = null) {
             if(father == null)
                 father = this;
@@ -71,6 +60,18 @@ namespace Stackables {
 
                 return father.dimType == mother.dimType && IsOrientedEachOther(mother,father);
             }
+            return false;
+        }
+        public bool IsCompatible(Stackable st) {            
+            if (!GetComponentInParent<Stackable>().IsCompatible(st))
+                return false;
+            List<Socket> tds = st.GetTypedSockets();
+            foreach (Socket s in tds) {
+                if (s.IsSticked())
+                    return false;
+                if(IsCompatible(this, s))
+                    return true;
+            }            
             return false;
         }
         public bool IsOrientedEachOther(Socket mother, Socket father = null) {

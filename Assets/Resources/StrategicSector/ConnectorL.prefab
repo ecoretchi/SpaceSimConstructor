@@ -29,6 +29,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 445162}
   - 114: {fileID: 11469942}
+  - 114: {fileID: 11400948}
   m_Layer: 8
   m_Name: ConnectorL
   m_TagString: Untagged
@@ -103,7 +104,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 107742}
   m_LocalRotation: {x: -0.50000006, y: -0.49999994, z: -0.49999994, w: 0.50000006}
-  m_LocalPosition: {x: 101.73912, y: 9.854771, z: 107.58321}
+  m_LocalPosition: {x: 96.494286, y: 2.6803117, z: 102.378944}
   m_LocalScale: {x: 4.05, y: 4.0499997, z: 3}
   m_Children:
   - {fileID: 409876}
@@ -172,6 +173,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11400948
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 107742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e08a1155352046d41a1befd44a2eac28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11409322
 MonoBehaviour:
   m_ObjectHideFlags: 1

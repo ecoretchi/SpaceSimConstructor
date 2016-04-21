@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 485746}
   - 114: {fileID: 11414422}
+  - 114: {fileID: 11471514}
   m_Layer: 0
   m_Name: PlantModule
   m_TagString: Untagged
@@ -148,7 +149,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 138492}
   m_LocalRotation: {x: -0.00000011520229, y: -0.70710695, z: -0.7071066, w: 0.00000011520235}
-  m_LocalPosition: {x: 112.251526, y: 15.066609, z: 99.225655}
+  m_LocalPosition: {x: 99.6121, y: 1.3185701, z: 96.63568}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 480516}
@@ -290,6 +291,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfb4894f5487f5a4e8912f3aafee6852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11471514
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 138492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e08a1155352046d41a1befd44a2eac28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11478246

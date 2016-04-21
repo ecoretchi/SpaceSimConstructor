@@ -11,12 +11,15 @@ namespace Stackables {
 public class MarkerGenesis : MonoBehaviour {
 
     List<SocketHandler> sockMarkers = new List<SocketHandler> ();
+    List<SocketHandler> lastAllMarkers;
     Stackable stackableObj;
 
     Vector3 vScalesF = new Vector3(1, 1, 1);
 
+    bool recursionShow = true;
 	// Use this for initialization
 	void Start () {
+
         string folder = "StrategicSector/";
         GameObject marker = (GameObject)Resources.Load(folder + "Marker", typeof(GameObject));
 
@@ -28,10 +31,10 @@ public class MarkerGenesis : MonoBehaviour {
                 SocketHandler sh = markerNew.GetComponent<SocketHandler>();
                 if (!sh)
                     continue;
+
                 Transform tSocket = s.GetComponent<Transform>();
                 Transform tMarker = sh.GetComponent<Transform>();
-                tMarker.position = tSocket.position;
-                tMarker.rotation = tSocket.rotation;
+
                 Vector3 scaleV = tMarker.localScale;
 
                 switch (s.dimType) {
@@ -60,16 +63,70 @@ public class MarkerGenesis : MonoBehaviour {
 	void Update () {
         //color marker effect animation
 	}
+    /// <summary>
+    /// set marker transform the same as socket handler transform
+    /// </summary>
+    /// <param name="sh">Socket handler for marker at moste</param>
+    protected void CalibrateMarker(SocketHandler sh) {
+        Socket s = sh.sock;
+        Transform tSocket = s.GetComponent<Transform>();
+        Transform tMarker = sh.GetComponent<Transform>();
+        tMarker.position = tSocket.position;
+        tMarker.rotation = tSocket.rotation;
 
-    public void ShowMarkers(Socket.DimensionType type) {
-        foreach (SocketHandler sh in sockMarkers) {            
-                sh.gameObject.SetActive(sh.sock.dimType == type);            
-        }
     }
 
+    static bool matchEnabled(Socket s) { return s.IsEnabled(); }
+    public void ShowMarkers(Stackable st) {
+        
+        List<Socket> socks = ConstructorManager.GetSockets(s => s.IsEnabled() && s.IsCompatible(st) );
+        foreach (Socket s in socks) {
+            s.marker.gameObject.SetActive(true);
+            CalibrateMarker(s.marker);
+        }
+
+    }
+
+    ///First version:
+    //public void ShowMarkers(Stackable st) {
+    //    lastAllMarkers = new List<SocketHandler>();
+    //    GetCompatibleMarkers(ref lastAllMarkers, st);
+    //    List<Socket> uniqSocks = st.GetTypedSockets();
+    //    foreach (Socket s in uniqSocks) {   
+    //        foreach (SocketHandler sh in lastAllMarkers) {
+    //            if (!sh.sock.IsConnected()) {
+    //                if (sh.sock.dimType == s.dimType)
+    //                    if (sh.sock.IsOrientedEachOther(s))
+    //                        sh.gameObject.SetActive(true);
+    //                CalibrateMarker(sh);
+    //            }
+    //        }
+    //    }
+    //}
+    //public void GetCompatibleMarkers(ref List<SocketHandler> markers, Stackable st, Socket enterSocket = null) {
+    //    Stackable curSt;
+    //    if (enterSocket) {
+    //        curSt = enterSocket.GetComponentInParents<Stackable>();            
+    //    }else
+    //        curSt = this.GetComponent<Stackable>();
+    //    bool compatible = curSt.IsCompatible(st);            
+    //    foreach (SocketHandler sh in sockMarkers) {
+    //        if(!sh.sock.IsConnected()){
+    //            if (compatible)
+    //                markers.Add(sh);
+    //        } else if (enterSocket != sh.sock && sh.sock.joined) {
+    //            MarkerGenesis mg = sh.sock.joined.GetComponentInParents<MarkerGenesis>();
+    //            if(recursionShow)
+    //                mg.GetCompatibleMarkers(ref markers, st, sh.sock.joined);
+    //        }                    
+    //    }
+    //}
     public void HideAll() {
-        foreach (SocketHandler sh in sockMarkers) {
-            sh.gameObject.SetActive(false);
+
+        List<Socket> socks = ConstructorManager.GetAllSockets();
+        foreach (Socket s in socks) {
+            s.marker.gameObject.SetActive(false);
+            //CalibrateMarker(s.marker);
         }
 
     }

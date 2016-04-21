@@ -6,6 +6,7 @@ namespace Stackables {
         public Socket sock {get; protected set;}
         public void Init(Socket s) {
             sock = s;
+            s.marker = this;
         }
     }
 

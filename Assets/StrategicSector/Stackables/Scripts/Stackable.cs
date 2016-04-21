@@ -9,7 +9,7 @@ namespace Stackables {
         protected Socket m_hitSocket = null;
         private int m_curCompatibleNum = 0;
         private List<Socket> m_sockets;
-        private List<Socket.DimensionType> m_socketsTypes;
+        private List<Socket> m_socketsUniqTypes;
         private List<Socket> m_compatibleSockets = new List<Socket>();
         private Socket m_lastCompatibleSocket = null;
         protected RaycastHit m_currentHit;
@@ -20,8 +20,13 @@ namespace Stackables {
         public bool IsConvergence() {
             return m_hitSocket && m_collisionInfo.IsCollision(m_hitSocket, m_lastCompatibleSocket) == false;
         }
-        int debugSockNum =0 ;
+        virtual public bool IsCompatible(Stackable st) {
+            if (st.GetComponent<Connector>())
+                return true;
+            return false;
+        }
         
+        int debugSockNum = 0;        
         void Update() { 
             if (Input.GetKeyDown(KeyCode.Space)) {
                 if (m_hitSocket) {
@@ -70,10 +75,7 @@ namespace Stackables {
         virtual protected void OnMoveOverConstructonIn() {
             MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
             if (mg) {
-                List<Socket.DimensionType> st = GetSocketsType();
-                foreach (Socket.DimensionType t in st) {
-                    mg.ShowMarkers(t);
-                }
+                mg.ShowMarkers(this);
             }
         }
         virtual protected void OnMoveOverConstructonOut() {
@@ -188,25 +190,25 @@ namespace Stackables {
         /// return all sockets type that present on current stackable, list hold only unique types
         /// </summary>
         /// <returns></returns>
-        List<Socket.DimensionType> GetSocketsType() {
+        public List<Socket> GetTypedSockets() {
 
-            if(m_socketsTypes != null)
-                return m_socketsTypes;
+            if(m_socketsUniqTypes != null)
+                return m_socketsUniqTypes;
             
-            m_socketsTypes = new List<Socket.DimensionType>();
+            m_socketsUniqTypes = new List<Socket>();
             List<Socket> ss = GetSockets();
             foreach (Socket s in ss) {
                 int helperCount = 0;
-                foreach (Socket.DimensionType t in m_socketsTypes) {
-                    if (s.dimType != t) {
+                foreach (Socket t in m_socketsUniqTypes) {
+                    if (s.dimType != t.dimType) {
                         ++helperCount;
                         break;
                     }
                 }
-                if (helperCount==m_socketsTypes.Count)//that type not added yet, let add
-                    m_socketsTypes.Add(s.dimType);
+                if (helperCount==m_socketsUniqTypes.Count)//that type not added yet, let add
+                    m_socketsUniqTypes.Add(s);
             }
-            return m_socketsTypes;
+            return m_socketsUniqTypes;
         }
         public List<Socket> GetSockets() {         
             if(m_sockets != null)
@@ -307,7 +309,7 @@ namespace Stackables {
             //transform.rotation = tSock.transform.rotation;
         }
         bool CheckCollision(Socket enterSocket, Stackable orign, int curRecursionDeep = 0) {
-            Stackable nextSt = enterSocket.GetComponentInParents<Stackable>();
+            Stackable nextSt = enterSocket.GetComponentInParent<Stackable>();
             if (curRecursionDeep > 0) {
                 if (CheckCollision(orign, nextSt))
                     return true;
