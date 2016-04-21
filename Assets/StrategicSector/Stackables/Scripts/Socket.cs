@@ -23,11 +23,13 @@ namespace Stackables {
         public enum State {
             Disabled,
             Enabled, // if socket enabled it can interact with other construction
+			Rejected, // if parent socket could be conencted in case collision his stackable owner 
             Sticked, // convergence with other socket (on other construction)
             Connected, // connected with other socket (on other construction), mean that user release construction during it was sticked
             Welded // mean that user confirm the connection state for constructions
         }
 
+        public Socket collision { get; protected set; }
         public Socket joined { get; protected set; }
         public DimensionType dimType;
         public OrientationType orientedType;
@@ -93,6 +95,9 @@ namespace Stackables {
         public bool IsEnabled() {
             return state == State.Enabled;
         }
+        public bool IsRejected() {
+            return state == State.Rejected;
+        }
         public bool IsSticked() {
             return state == State.Sticked;
         }
@@ -102,6 +107,10 @@ namespace Stackables {
         public bool IsWelded() {
             return state == State.Welded;
         }
+		public void OnCollision (Socket s) {
+			collision = s;
+			state = State.Rejected;
+		}
         public void OnStick(Socket s) {
             joined = s;
             state = State.Sticked;
@@ -121,6 +130,7 @@ namespace Stackables {
         }
         public void OnRelease() {
             joined = null;
+			collision = null;
             state = State.Enabled;
 
             gameObject.layer = LayerMask.NameToLayer("Construction");
@@ -129,6 +139,7 @@ namespace Stackables {
             if (joined)
                 joined.OnRelease();
             joined = null;
+			collision = null;
             state = State.Disabled;
 
             gameObject.layer = 0; //LayerMask.NameToLayer("Default");
@@ -139,7 +150,7 @@ namespace Stackables {
                 return true;
             }
             return false;
-        }
+        } 
 
     }
 
