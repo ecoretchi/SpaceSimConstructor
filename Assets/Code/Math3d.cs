@@ -878,7 +878,7 @@ public class Math3d {
     /// A low number of samples can give a jittery result due to rounding errors.
     /// If more samples are used, the output is more smooth but has a higher latency.
     /// </remarks>
-    public static bool LinearAcceleration( out Vector3 vector, Vector3 position, int samples ) {
+    public static bool LinearAcceleration( out Vector3 vector, Vector3 position, int samples, bool useFixedTime = false ) {
 
         Vector3 averageSpeedChange = Vector3.zero;
         vector = Vector3.zero;
@@ -910,7 +910,7 @@ public class Math3d {
             posTimeRegister[i] = posTimeRegister[i + 1];
         }
         positionRegister[positionRegister.Length - 1] = position;
-        posTimeRegister[posTimeRegister.Length - 1] = Time.time;
+        posTimeRegister[posTimeRegister.Length - 1] = useFixedTime ? Time.fixedTime : Time.time; //FIXED: Changed from Time.time to fixedTime, because i call it from FixedUpdate
 
         positionSamplesTaken++;
 

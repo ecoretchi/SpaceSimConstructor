@@ -12,22 +12,22 @@ public class GameController : Singleton<GameController> {
 	void Update() {
 		// Выход. Пока вот такой вот простой
 		if (Input.GetButtonUp( "Cancel" )) {
-			quitApplication();
+			QuitApplication();
 		}
 
 	}
 
 	void OnEnable() {
-		isNoCursorMode = true;
+		IsNoCursorMode = true;
 	}
 
 	void OnDisable() {
-		isNoCursorMode = false;
+		IsNoCursorMode = false;
 	}
 
 
 	// Properties //////////////////////////////////////////////////////////////////////////////////////////////
-	public bool isCursorLocked {
+	public bool IsCursorLocked {
 		set {
 			Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
 			Cursor.visible = !value;
@@ -41,11 +41,11 @@ public class GameController : Singleton<GameController> {
 	/// <summary>
 	/// true если мы в режиме убранной мыши
 	/// </summary>
-	public bool isNoCursorMode { get; set; }
+	public bool IsNoCursorMode { get; set; }
 
 
 	// Public methods //////////////////////////////////////////////////////////////////////////////////////////
-	public void quitApplication() {
+	public void QuitApplication() {
 #if UNITY_EDITOR
 		UnityEditor.EditorApplication.isPlaying = false;
 #else

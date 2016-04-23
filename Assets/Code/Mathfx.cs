@@ -20,9 +20,12 @@ static class Mathfx{
 	public static float lerpUnclamped(float from, float to, float value) {
 		return (1.0f - value) * from + value * to;
 	}
-		
-	// Линейный старт, плавная остановка
-	public static float sinerp(float start, float end, float value) {
+
+    /// <summary>
+    /// Линейный старт, плавная остановка
+    /// </summary>
+    /// <returns></returns>
+    public static float sinerp(float start, float end, float value) {
 		return lerp(start, end, Mathf.Sin(value * Mathf.PI * 0.5f));
 	}
 	
@@ -38,8 +41,10 @@ static class Mathfx{
 		return start + (end - start) * value;
 	}
 
-	//Плавный старт, плавный финиш
-	public static float smoothStep(float from, float to, float value) {
+    /// <summary>
+    /// Плавный старт, плавный финиш
+    /// </summary>
+    public static float smoothStep(float from, float to, float value) {
 		if(value < 0.0f)
 			return from;
 		else if(value > 1.0f)

@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
+
+/// <summary>
+/// Temporary realisation of Ship UI
+/// </summary>
 public class ShipUI : MonoBehaviour {
 
     public Text speedTxt;
     public Slider speedSlider;
+    public Text descField;
 
     public float speed {
         get {
@@ -17,8 +21,17 @@ public class ShipUI : MonoBehaviour {
         }
     }
 
+    public string description {
+        get {
+            return descField.text;
+        }
+        set {
+            descField.text = value;
+        }
+    }
+
     public void setSpeedLabel( float speed ) {
-        speedTxt.text = System.Math.Round( speed, 1 ).ToString();
+        speedTxt.text = System.Math.Round( speed, 2 ).ToString("0.00");
 
         if ((speed > -0.1f) && (speed < 0.1f) && (speed != 0)){
             speed = 0;
