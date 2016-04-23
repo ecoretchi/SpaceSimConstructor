@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1f2773c5ad97ba847a0e8d61ce2d04ad
-timeCreated: 1460407424
+guid: 6b34ed449727c644e892d434047eb4ba
+timeCreated: 1461441216
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,9 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: "\u043F\u0448\u0435\u043D\u0438\u0447\u043D\u044B\u0435 \u043F\u043B\u0430\u043D\u0442\u0430\u0446\u0438\u0438001"
-    4300002: oxygenPlant_LOD
-    9500000: //RootNode
+    4300000: barnYard001
   materials:
     importMaterials: 1
     materialName: 0
@@ -70,7 +68,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

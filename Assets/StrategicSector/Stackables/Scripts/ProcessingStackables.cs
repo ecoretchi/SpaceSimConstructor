@@ -34,6 +34,9 @@ namespace Stackables {
         Collider m_jointsColl;
 
         bool m_camOnAction = false;
+
+        MainStationModule m_mainStation;
+
         public bool IsTarget() {
             return target != null;
         }
@@ -43,7 +46,7 @@ namespace Stackables {
                 return;
             Transform tr = mf.gameObject.transform;
             m_camOnAction = true;
-            captureTarget(tr);
+            OnTargetCapture(tr);
             Cursor.lockState = CursorLockMode.Locked;
 
         }
@@ -65,7 +68,7 @@ namespace Stackables {
                     Stackable s = this.target.GetComponentInParent<Stackable>();
                     if(s)
                         Destroy(s.gameObject);
-                    releaseTarget();
+                    OnTargetRelease();
                 }
             }
             base.OnHitRelease();
@@ -90,45 +93,65 @@ namespace Stackables {
                 strategicCamera.StopMove();
             }     
             else if (!this.target) {
-                captureTarget(target);
+                OnTargetCapture(target);
                 m_camOnAction = false;
             }
         }
         void DoJoin() {
-            Stackable s = target.parent.GetComponent<Stackable>();
+            Stackable s = target.GetComponentInParent<Stackable>();
             if (s) {
                 print("Stackables.Stackable.OnConnect");
                 s.OnConnect();
                 s.OnMoveOutConstruction();
             }
-            releaseTarget();            
+            OnTargetRelease();            
         }
-        void releaseTarget() {
+        void OnTargetRelease() {
             strategicCamera.prohibitTargetHit = false;
-            target.gameObject.layer = 8;
+            target.GetComponentInChildren<Collider>().gameObject.layer = LayerMask.NameToLayer("Construction");
             this.target = null;
             m_convergence = false;
             Cursor.visible = true;
+            OnTargetReleased();
         }
-        public void captureTarget(Transform target) {
+        public void OnTargetCapture(Transform target) {
             strategicCamera.prohibitTargetHit = true;
-            target.gameObject.layer = 0;
+            target.GetComponentInChildren<Collider>().gameObject.layer = 0;
             Cursor.visible = false;
             this.target = target;
             Vector3 pos = target.position;
             pos.y = 0;
             curPlane = new Plane(Vector3.up, pos);
 
-            Stackable s = target.parent.GetComponent<Stackable>();
+            Stackable s = target.GetComponentInParent<Stackable>();
             if (s) {
                 s.OnCapture();
+                OnTargetCaptured();
             }
         }
+        protected void OnTargetCaptured() {
+            if(m_mainStation) {
+                MarkerGenesis mg = m_mainStation.gameObject.GetComponentInParent<MarkerGenesis>();
+                Stackable st = target.gameObject.GetComponentInParent<Stackable>();
+                if (mg && st) 
+                    mg.ShowMarkers(st);                
+            }
+        }
+        protected void OnTargetReleased() {
+            if (m_mainStation) {
+                MarkerGenesis mg = m_mainStation.gameObject.GetComponentInParent<MarkerGenesis>();
+                if (mg) {
+                    mg.HideAll();
+                }
+            }
+        }
+
         //==================  START  ==================
         override public void OnStart() {
             hitTag = "Stackable";
-            strategicCamera = (StrategicCamera)GameObject.FindObjectOfType(typeof(StrategicCamera));
+            strategicCamera = GameObject.FindObjectOfType<StrategicCamera>();
             strategicCamera.SetDesiredTarget(new Vector3(100, 0, 100), 1);
+            m_mainStation = GameObject.FindObjectOfType<MainStationModule>();
         }
         //==================  UPDATE  ==================
         override public void OnUpdate() {        
@@ -182,7 +205,7 @@ namespace Stackables {
                     flowSpeed = 1;
             }
             else {
-                Stackable s = target.parent.GetComponent<Stackable>();
+                Stackable s = target.GetComponentInParent<Stackable>();
                 if(s)
                     s.gameObject.transform.position = projectedMousePosOnPlane;//moveStackable
             }
@@ -197,14 +220,14 @@ namespace Stackables {
             //Debug.DrawLine(cam.transform.position, hit.point, Color.red);
             //Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
 
-            Stackable s = target.parent.GetComponent<Stackable>();
+            Stackable s = target.GetComponentInParent<Stackable>();
             s.OnMoveOverConstruction(hit);
             m_convergence = s.IsConvergence();
 
         }
         void OnMoveOutConstructon() {
             m_convergence = false;
-            Stackable s = target.parent.GetComponent<Stackable>();
+            Stackable s = target.GetComponentInParent<Stackable>();
             s.OnMoveOutConstruction();
             s.OnDivergence();
         }

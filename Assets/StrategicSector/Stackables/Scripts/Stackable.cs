@@ -25,23 +25,37 @@ namespace Stackables {
                 return true;
             return false;
         }
-        
-        int debugSockNum = 0;        
+                
+        //void Start() {
+        //    StartCoroutine("Countdown", 0);
+            
+        //}
+
         void Update() { 
             if (Input.GetKeyDown(KeyCode.Space)) {
                 if (m_hitSocket) {
+                    m_hitSocket.OnRelease();
+                    MarkerGenesis.MarkerRelease(m_hitSocket.marker);
                     GetNextCompatibleSocket(m_hitSocket);
                 }
-                else {                    
-                    //Socket[] ss = this.GetComponentsInChildren<Socket>();
-                    //++debugSockNum;
-                    //if(debugSockNum>=ss.Length)
-                    //   debugSockNum = 0;
-                    //Socket s = ss[debugSockNum];
-                    //AdaptMeshToSocket(s);
+                else {
+                    ShowNextSocketMarker();
                 }
             }
         }
+        //private IEnumerator Countdown(int time) {
+        //    while (time <10 ) {
+
+        //        if(time == 0) {
+        //            ++time;
+        //            yield return new WaitForEndOfFrame();// Seconds(0.1);
+        //        }
+        //        ++time;                
+        //        ShowNextSocket();
+        //        yield return new WaitForSeconds(0.05f);
+        //    }            
+        //}
+        
         CollisionInfo m_collisionInfo;
         virtual public Transform GetDraggingTransform() { return null; }
                 //
@@ -78,16 +92,16 @@ namespace Stackables {
         virtual protected void OnReleased(Socket mother) { }
 
         virtual protected void OnMoveOverConstructonIn() {
-            MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
-            if (mg) {
-                mg.ShowMarkers(this);
-            }
+            //MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
+            //if (mg) {
+            //    mg.ShowMarkers(this);
+            //}
         }
         virtual protected void OnMoveOverConstructonOut() {
-            MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
-            if (mg) {
-                mg.HideAll();
-            }
+            //MarkerGenesis mg = m_currentHit.collider.GetComponentInParent<MarkerGenesis>();
+            //if (mg) {
+            //    mg.HideAll();
+            //}
         }
         public bool IsMoveOver() {
             return m_moveOver;
@@ -99,6 +113,8 @@ namespace Stackables {
             }
         }
         virtual public void OnMoveOverConstruction (RaycastHit hit) {
+            HideCurSocketMarker();
+
 			if (m_currentHit.collider != hit.collider) {
 				OnMoveOutConstruction();
 			}
@@ -200,9 +216,11 @@ namespace Stackables {
         /// <param name="father">socket witch placing</param>
         virtual protected void OnCollision(Socket mother, Socket father) {
             mother.OnCollision(father);
+            MarkerGenesis.MarkerReject(mother.marker);
         }
         /// <summary>
-        /// return all sockets type that present on current stackable, list hold only unique types
+        /// return all sockets type that present on current stackable, list hold only unique types, 
+        /// including and other orientated sockets
         /// </summary>
         /// <returns></returns>
         public List<Socket> GetTypedSockets() {
@@ -215,7 +233,8 @@ namespace Stackables {
             foreach (Socket s in ss) {
                 int helperCount = 0;
                 foreach (Socket t in m_socketsUniqTypes) {
-                    if (s.dimType != t.dimType) {
+                    if (s.dimType != t.dimType || 
+                        s.orientedType != t.orientedType) {
                         ++helperCount;
                         break;
                     }
@@ -264,6 +283,23 @@ namespace Stackables {
             }
             return m_lastCompatibleSocket;
         }
+        int m_curMarkerSocket = -1;
+        public void ShowNextSocketMarker(){
+            //++m_curMarkerSocket;
+            //List<Socket> ss = GetSockets();
+            //if (m_curMarkerSocket >= ss.Count)
+            //    m_curMarkerSocket = 0;
+            //foreach(Socket s in ss)
+            //    s.marker.gameObject.SetActive(false);
+            //Socket curMsocket = ss[m_curMarkerSocket];
+            //MarkerGenesis.ShowMarker(curMsocket.marker, Color.blue);            
+        }
+        public void HideCurSocketMarker() {
+            //List<Socket> ss = GetSockets();
+            //if (ss.Count >= (m_curMarkerSocket+1) && ss.Count > 0)
+            //    ss[m_curMarkerSocket].marker.gameObject.SetActive(false);            
+        }
+
         public Socket GetNextCompatibleSocket(Socket s) {
             if (!m_lastCompatibleSocket || !m_lastCompatibleSocket.IsCompatible(s) || m_compatibleSockets.Count == 0) {
                 if (GetCompatibleSockets(s).Count == 0)
@@ -356,13 +392,18 @@ namespace Stackables {
 
             if (bounds1.Intersects(bounds2)) {
 
-                Collider[] cols1 = r1.gameObject.GetComponents<Collider>();
-                Collider[] cols2 = r2.gameObject.GetComponents<Collider>();
+                CollisionProxy cp1 = obj1.GetComponentInChildren<CollisionProxy>();
+                CollisionProxy cp2 = obj2.GetComponentInChildren<CollisionProxy>();
+
+                Collider[] cols1 = cp1.gameObject.GetComponents<Collider>();
+                Collider[] cols2 = cp2.gameObject.GetComponents<Collider>();
+
                 foreach (Collider c1 in cols1) {
                     if (obj2.m_collisions != null && obj2.m_collisions.Exists(x => x == c1)) {
                         return true;
                     }
                 }
+
                 //foreach (Collider c2 in cols2) {
                 //    if (obj1.m_collisions != null && obj1.m_collisions.Exists(x => x == c2)) {
                 //        return true;

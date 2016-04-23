@@ -28,6 +28,7 @@ public class MarkerGenesis : MonoBehaviour {
             List<Socket> ss = stackableObj.GetSockets();
             foreach (Socket s in ss) {
                 GameObject markerNew = Instantiate(marker);
+                
                 SocketMarker sh = markerNew.GetComponent<SocketMarker>();
                 if (!sh)
                     continue;
@@ -42,19 +43,26 @@ public class MarkerGenesis : MonoBehaviour {
                         scaleV = scaleV * 2.5f;
                         break;
                     case Socket.DimensionType.Medium:
-                        scaleV = scaleV * 2;
+                        scaleV = scaleV * 1.9f;
                         break;
                     case Socket.DimensionType.Small:
-                        //tMarker.localScale += vScalesF;
+                        scaleV = scaleV * 0.9f;
                         break;
                 }
-                scaleV.z = tMarker.localScale.z;
-                tMarker.localScale = scaleV;
 
                 sh.gameObject.SetActive(false);
                 
                 sh.Init(s);
                 sockMarkers.Add(sh);
+
+                scaleV.z = tMarker.localScale.z;
+                tMarker.localScale = scaleV;
+
+                CalibrateMarker(sh);
+
+                sh.transform.parent = s.gameObject.transform;
+                //sh.transform.localPosition = Vector3.zero;
+                
             }
         }
 	}
@@ -67,22 +75,24 @@ public class MarkerGenesis : MonoBehaviour {
     /// set marker transform the same as socket handler transform
     /// </summary>
     /// <param name="sh">Socket handler for marker at moste</param>
-    protected void CalibrateMarker(SocketMarker sh) {
+    static protected void CalibrateMarker(SocketMarker sh) {
         Socket s = sh.sock;
         Transform tSocket = s.GetComponent<Transform>();
         Transform tMarker = sh.GetComponent<Transform>();
-        tMarker.position = tSocket.position;
+        tMarker.localPosition = Vector3.zero;// tSocket.position;
+        //tMarker.position = tSocket.position;
         tMarker.rotation = tSocket.rotation;
 
     }
 
-    static bool matchEnabled(Socket s) { return s.IsEnabled(); }
-
     SocketMarker collisionMarker = null;
 
-    //static void OnSocket()
-    public void ShowMarkers(Stackable st) {
-       
+    static public void ShowMarker(SocketMarker sm, Color c) {
+        sm.gameObject.GetComponent<MeshRenderer>().material.color = c;
+        sm.gameObject.SetActive(true);
+        CalibrateMarker(sm);        
+    }
+    public void ShowMarkers(Stackable st) {       
         List<Socket> socks = ConstructorManager.GetSockets(( ref List<Socket> ss, Socket s) => {
             if (s.IsRejected())
                 collisionMarker = s.marker;
@@ -91,56 +101,17 @@ public class MarkerGenesis : MonoBehaviour {
                 ss.Add(s);            
         });
         if (collisionMarker!=null) {
-            //collisionMarker.GetComponent<>;
-            collisionMarker.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
-            //collisionMarker.gameObject.GetComponent<Material>().color = Color.red;
-            collisionMarker.gameObject.SetActive(true);
-            CalibrateMarker(collisionMarker);
+            collisionMarker.sock.OnRelease();
+            ShowMarker(collisionMarker, Color.green);
+            collisionMarker = null;
         }
         foreach (Socket s in socks) {
-            s.marker.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
-            s.marker.gameObject.SetActive(true);
-            CalibrateMarker(s.marker);
+            ShowMarker(s.marker, Color.green);
         }
-
     }
-
-    ///First version:
-    //public void ShowMarkers(Stackable st) {
-    //    lastAllMarkers = new List<SocketHandler>();
-    //    GetCompatibleMarkers(ref lastAllMarkers, st);
-    //    List<Socket> uniqSocks = st.GetTypedSockets();
-    //    foreach (Socket s in uniqSocks) {   
-    //        foreach (SocketHandler sh in lastAllMarkers) {
-    //            if (!sh.sock.IsConnected()) {
-    //                if (sh.sock.dimType == s.dimType)
-    //                    if (sh.sock.IsOrientedEachOther(s))
-    //                        sh.gameObject.SetActive(true);
-    //                CalibrateMarker(sh);
-    //            }
-    //        }
-    //    }
-    //}
-    //public void GetCompatibleMarkers(ref List<SocketHandler> markers, Stackable st, Socket enterSocket = null) {
-    //    Stackable curSt;
-    //    if (enterSocket) {
-    //        curSt = enterSocket.GetComponentInParents<Stackable>();            
-    //    }else
-    //        curSt = this.GetComponent<Stackable>();
-    //    bool compatible = curSt.IsCompatible(st);            
-    //    foreach (SocketHandler sh in sockMarkers) {
-    //        if(!sh.sock.IsConnected()){
-    //            if (compatible)
-    //                markers.Add(sh);
-    //        } else if (enterSocket != sh.sock && sh.sock.joined) {
-    //            MarkerGenesis mg = sh.sock.joined.GetComponentInParents<MarkerGenesis>();
-    //            if(recursionShow)
-    //                mg.GetCompatibleMarkers(ref markers, st, sh.sock.joined);
-    //        }                    
-    //    }
-    //}
     public void HideAll() {
 
+        collisionMarker = null;
         List<Socket> socks = ConstructorManager.GetAllSockets();
         foreach (Socket s in socks) {
             s.marker.gameObject.SetActive(false);
@@ -148,6 +119,14 @@ public class MarkerGenesis : MonoBehaviour {
         }
 
     }
+
+    public static void MarkerRelease(SocketMarker marker) {        
+        ShowMarker(marker, Color.green);
+    }
+    public static void MarkerReject(SocketMarker marker) {
+        ShowMarker(marker, Color.red);
+    }
+
 }
 
 }//namespace Stackables
