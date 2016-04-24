@@ -29,7 +29,7 @@ RenderSettings:
   m_HaloStrength: 0.173
   m_FlareStrength: 1
   m_FlareFadeSpeed: 4.75
-  m_HaloTexture: {fileID: 2800000, guid: 93b0ebc2bb0c1d34c8ee1563e7cce1e3, type: 3}
+  m_HaloTexture: {fileID: 2800000, guid: 1dfa0d4ee60346d4aae11ba833ecc6e1, type: 3}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
@@ -11054,7 +11054,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &651178245
 Transform:
   m_ObjectHideFlags: 0
@@ -11073,7 +11073,7 @@ Camera:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 651178244}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 3
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
@@ -13492,7 +13492,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 296.76, y: 0}
+  m_SizeDelta: {x: 370, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1045676439
 MonoBehaviour:
@@ -14025,7 +14025,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: 20
-  m_PreferredWidth: 130
+  m_PreferredWidth: 150
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -14068,7 +14068,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 488676356}
   m_HandleRect: {fileID: 1485334294}
   m_Direction: 0
-  m_MinValue: -0.4
+  m_MinValue: -1
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 0
@@ -14598,9 +14598,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
+  m_MinWidth: 30
   m_MinHeight: 20
-  m_PreferredWidth: 30
+  m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -15215,6 +15215,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1225737168}
+  - 114: {fileID: 1225737169}
   m_Layer: 0
   m_Name: Engines
   m_TagString: Untagged
@@ -15238,6 +15239,17 @@ Transform:
   - {fileID: 536385583}
   m_Father: {fileID: 1381815997}
   m_RootOrder: 1
+--- !u!114 &1225737169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1225737167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3700a264a02eb284ab7bfa2f2d7ed44e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1234026581
 GameObject:
   m_ObjectHideFlags: 0
@@ -15701,7 +15713,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1381815995}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -67, y: 0, z: 14.511982}
+  m_LocalPosition: {x: -70, y: 0, z: 17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 195597658}
@@ -15726,12 +15738,12 @@ MonoBehaviour:
   engineLights: {fileID: 1225737167}
   shipName: Test Ship a1
   nominalMass: 1
-  inertiaDamper: 0
-  angInertiaDamper: 0
-  maxMainEngineForce: 1
-  rotationXForce: 0
-  rotationYForce: 0
-  rotationZForce: 0
+  centerOfMass: {fileID: 195597658}
+  maxSupportedSpeed: {x: 50, y: 50, z: 50}
+  maxLinearAcceleration: {x: 10, y: 10, z: 25}
+  maxRotateAcceleration: {x: 5, y: 5, z: 25}
+  tempRotationDrag: 2
+  cruiseEnginesFactor: 2
 --- !u!1 &1397612570
 GameObject:
   m_ObjectHideFlags: 0
@@ -16514,6 +16526,7 @@ GameObject:
   - 224: {fileID: 1494278910}
   - 222: {fileID: 1494278913}
   - 114: {fileID: 1494278912}
+  - 114: {fileID: 1494278911}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -16538,6 +16551,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &1494278911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1494278909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: -1
 --- !u!114 &1494278912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20961,10 +20992,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'New Text
-
-    New text
-
-    New text
 
     New text'
 --- !u!222 &1835490647

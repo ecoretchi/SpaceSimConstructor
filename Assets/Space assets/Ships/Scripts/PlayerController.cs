@@ -22,8 +22,8 @@ namespace Spacecraft {
 
 		private Spacecraft_Generic  _ship; // shortcut to master object
 
-        private float       desiredSpeed        = 0;    // current desired speed
-        private float       rememberedSpeed     = 0; // desired speed for "no override mode"
+        private float       desiredThrottle		= 0;    // current desired speed
+        private float       rememberedThrottle	= 0; // desired speed for "no override mode"
         private bool        mouseShownByAlt     = false;
 
 
@@ -34,6 +34,7 @@ namespace Spacecraft {
 			Assert.IsNotNull(_ship, "PlayerController::Start: No parent Spacecraft_Generic found!");
 
             InitialiseCameras();
+			GameController.instance.IsCursorLocked = true;
 		}	
 
 		void Update() {
@@ -42,7 +43,7 @@ namespace Spacecraft {
                 SwithCamera();
             }
 
-            ProcessSpeedControl();
+            ProcessCruiseEnginesThrottleControl();
 
             if (!mouseShownByAlt && Input.GetKeyDown( KeyCode.LeftAlt )) {
                 GameController.instance.IsCursorLocked = false;
@@ -59,13 +60,22 @@ namespace Spacecraft {
                 GameController.instance.IsCursorLocked = !GameController.instance.IsCursorLocked;
             }
 
-            _ship.SetShipControls( Input.GetAxis( "Horisontal Strafe" ),        // direction x
-                                   Input.GetAxis( "Vertical Strafe" ),          // direction y
-                                   desiredSpeed,                                // direction z
-                                   GameController.instance.IsCursorLocked ? Input.GetAxis( "Vertical" ) : 0,                 // rotation x
-                                   GameController.instance.IsCursorLocked ? Input.GetAxis( "Horizontal" ) : 0,               // rotation y
-                                   Input.GetAxis( "Roll" ) );                    // rotation z
-            
+
+			_ship.ControlShipMovement( Input.GetAxis( "Horisontal Strafe" ),        // direction x
+								   Input.GetAxis( "Vertical Strafe" ),          // direction y
+								   desiredThrottle );                                // direction z
+
+			_ship.ControlShipRotations( GameController.instance.IsCursorLocked ? Input.GetAxis( "Vertical" ) : 0,                 // rotation x
+								   GameController.instance.IsCursorLocked ? Input.GetAxis( "Horizontal" ) : 0,               // rotation y
+								   Input.GetAxis( "Roll" ) );                    // rotation z
+
+
+			//////////////////////////////////////////// temp
+			if (Input.GetKeyDown( KeyCode.Backspace )) {
+				GetComponentInParent<Rigidbody>().velocity = Vector3.zero;
+				GetComponentInParent<Rigidbody>().angularVelocity = Vector3.zero;
+			}
+			////////////////////////////////////////////
 
         }
 
@@ -97,33 +107,30 @@ namespace Spacecraft {
             StringBuilder sb = new StringBuilder();
             sb.Append( "Ship " ).Append( rb.gameObject.name ).AppendLine();
             sb.Append( "Mass " ).Append( rb.mass ).AppendLine();
+			sb.Append( "Max speed (m/s): " ).Append( _ship.maxSupportedSpeed.ToString() ).AppendLine();
+			sb.Append( "Cruise engines factor: " ).Append( _ship.cruiseEnginesFactor.ToString() ).AppendLine();
+			sb.Append( "Max acceleration (m/s²): " ).Append( _ship.maxLinearAcceleration.ToString() ).AppendLine();
             sb.AppendLine( "=======================" );
 
-            sb.Append("speed control: ").AppendLine(desiredSpeed.ToString());
+            sb.Append("Throttle: ").AppendLine(desiredThrottle.ToString());
             sb.Append( "Position: " ).Append( rb.position.ToString() ).Append( " Time: " ).AppendLine( Time.time.ToString() );
 
             var vel = rb.velocity;
-            sb.Append( "Velocity: " ).Append( vel.ToString() ).Append(" magn: ").Append( vel.magnitude.ToString("000.00") );
-            //sb.AppendLine( "\n" );
-            sb.AppendLine();
+            sb.Append( "Glb Velocity: " ).Append( vel.ToString() ).Append(" magn: ").AppendLine( vel.magnitude.ToString("000.00") );
+			var locVel = transform.InverseTransformDirection( vel );
+			sb.Append( "Loc Velocity: " ).Append( locVel.ToString() ).Append( " magn: " ).AppendLine( locVel.magnitude.ToString( "000.00" ) );
+
+			sb.Append( "Ang.Velocity: " ).Append( rb.angularVelocity.ToString() ).Append( " magn: " ).AppendLine( rb.angularVelocity.magnitude.ToString( "000.00" ) );
 
             Vector3 helper = rb.transform.position + rb.transform.up * 3f;
-            Debug.DrawLine( helper, helper + vel, Color.yellow );
             Debug.DrawLine( helper, helper + rb.transform.forward * 3f, Color.blue );
             Debug.DrawLine( helper, helper + rb.transform.up * 3f, Color.green );
             Debug.DrawLine( helper, helper + rb.transform.right * 3f, Color.red );
+			Debug.DrawLine( helper, helper + vel, Color.yellow );
 
-            var fwdSpeed = Vector3.Dot( vel, transform.forward );
+			var fwdSpeed = Vector3.Dot( vel, transform.forward );
             sb.Append( "Forward speed: " ).Append( fwdSpeed.ToString( "0.00" ) );
             sb.AppendLine();
-
-            Vector3 instantAcceleration = Vector3.zero;
-            if(Math3d.LinearAcceleration(out instantAcceleration, rb.position, 15, true )) {
-                sb.Append( "Acceleration: " ).Append( instantAcceleration.ToString() ).Append(" magn:").Append(instantAcceleration.magnitude.ToString("000.00"));
-                sb.AppendLine();
-                sb.Append( "F = " ).Append( (instantAcceleration.magnitude * rb.mass * Time.fixedDeltaTime).ToString( "000.00" ) );
-            }
-
 
             shipUI.description = sb.ToString();
         }
@@ -157,60 +164,60 @@ namespace Spacecraft {
 
         }
 
-        private void ProcessSpeedControl() {
-            float tempSpeed = desiredSpeed;
+        private void ProcessCruiseEnginesThrottleControl() {
+            float tempThrottle = desiredThrottle;
 
-            if (tempSpeed == 0 && Input.GetKeyDown( KeyCode.Z )) {
-                tempSpeed = -0.1f;
+            if (tempThrottle == 0 && Input.GetKeyDown( KeyCode.Z )) {
+                tempThrottle = -0.1f;
             } else {
                 if (Input.GetKey( KeyCode.Z )) {
-                    tempSpeed = tempSpeed - 0.6f * Time.deltaTime;
-                    if (tempSpeed < -0.4f) {
-                        tempSpeed = -0.4f;
+                    tempThrottle = tempThrottle - 0.6f * Time.deltaTime;
+                    if (tempThrottle < -1f) {
+                        tempThrottle = -1f;
                     }
                 }
             }
 
-            if (tempSpeed == 0 && Input.GetKeyDown( KeyCode.X )) {
-                tempSpeed = 0.1f;
+            if (tempThrottle == 0 && Input.GetKeyDown( KeyCode.X )) {
+                tempThrottle = 0.1f;
             } else {
                 if (Input.GetKey( KeyCode.X )) {
-                    tempSpeed = tempSpeed + 0.6f * Time.deltaTime;
-                    if (tempSpeed > 1f) {
-                        tempSpeed = 1f;
+                    tempThrottle = tempThrottle + 0.6f * Time.deltaTime;
+                    if (tempThrottle > 1f) {
+                        tempThrottle = 1f;
                     }
                 }
             }
 
             if (Input.GetButtonDown( "Forward" )) {
-                // temporary override speed control
-                rememberedSpeed = tempSpeed;
-                tempSpeed = 1f;
+                // temporary override throttle control
+                rememberedThrottle = tempThrottle;
+                tempThrottle = 1f;
             }
 
             if (Input.GetButtonDown( "Backward" )) {
-                // temporary override speed control
-                rememberedSpeed = tempSpeed;
-                tempSpeed = -0.4f;
+                // temporary override throttle control
+                rememberedThrottle = tempThrottle;
+                tempThrottle = -1f;
             }
 
             if (Input.GetButtonUp( "Forward" )) {
                 // return control to speed widget
-                tempSpeed = rememberedSpeed;
+                tempThrottle = rememberedThrottle;
             }
 
             if (Input.GetButtonUp( "Backward" )) {
                 // return control to speed widget
-                tempSpeed = rememberedSpeed;
+                tempThrottle = rememberedThrottle;
             }
 
             // update widget only on changes
-            if (!Mathf.Approximately( tempSpeed, desiredSpeed )) {
-                desiredSpeed = tempSpeed;
-                shipUI.speed = desiredSpeed;
+            if (!Mathf.Approximately( tempThrottle, desiredThrottle )) {
+                desiredThrottle = tempThrottle;
+                shipUI.speed = desiredThrottle;
             } else {
                 // ship speed is controlled by widget
-                desiredSpeed = shipUI.speed;
+                desiredThrottle = shipUI.speed;
             }
         }
 

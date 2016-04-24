@@ -17,7 +17,6 @@ public class ShipUI : MonoBehaviour {
         }
         set {
             speedSlider.value = value;
-            //speedTxt.text = System.Math.Round( speed, 1 ).ToString();
         }
     }
 
