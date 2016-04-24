@@ -14,9 +14,6 @@ public class MarkerGenesis : MonoBehaviour {
     List<SocketMarker> lastAllMarkers;
     Stackable stackableObj;
 
-    Vector3 vScalesF = new Vector3(1, 1, 1);
-
-    bool recursionShow = true;
 	// Use this for initialization
 	void Start () {
 
@@ -33,7 +30,7 @@ public class MarkerGenesis : MonoBehaviour {
                 if (!sh)
                     continue;
 
-                Transform tSocket = s.GetComponent<Transform>();
+                //Transform tSocket = s.GetComponent<Transform>();
                 Transform tMarker = sh.GetComponent<Transform>();
 
                 Vector3 scaleV = tMarker.localScale;

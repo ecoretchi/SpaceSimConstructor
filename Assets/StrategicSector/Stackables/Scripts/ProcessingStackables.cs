@@ -24,8 +24,6 @@ namespace Stackables {
         StrategicCamera strategicCamera;
 
         Vector3 projectedMousePosOnPlane;
-        float curAngle;
-        float curMeredianAngle;
 
         int maxFreeLookBorderV = 100;
         int maxFreeLookBorderH = 100;
@@ -159,16 +157,18 @@ namespace Stackables {
                 m_camOnAction = strategicCamera.IsOnActionByMouse(MouseButtonIDMoving);
 
             DoMoveObject(); //move the selected target
-            DoFlowCam(); //flow cam toward target, if target out from free movement window
+            //DoFlowCam(); //flow cam toward target, if target out from free movement window
         }
+        //float curAngle;
+        //float curMeredianAngle;
         void DoFlowCam() {
-            //prepare params
-            Transform cam = currCamera.transform;
-            Vector3 curCamLookAt = cam.forward;
-            Vector3 offset = projectedMousePosOnPlane - cam.position;
-            curAngle = Vector3.Angle(curCamLookAt, offset);
+            ////prepare params
+            //Transform cam = currCamera.transform;
+            //Vector3 curCamLookAt = cam.forward;
+            //Vector3 offset = projectedMousePosOnPlane - cam.position;
+            //curAngle = Vector3.Angle(curCamLookAt, offset);
 
-            curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
+            //curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
             //print(curMeredianAngle);
 
             //DoLookFollow();

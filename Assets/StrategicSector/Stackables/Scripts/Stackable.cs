@@ -283,7 +283,7 @@ namespace Stackables {
             }
             return m_lastCompatibleSocket;
         }
-        int m_curMarkerSocket = -1;
+        //int m_curMarkerSocket = -1;
         public void ShowNextSocketMarker(){
             //++m_curMarkerSocket;
             //List<Socket> ss = GetSockets();
@@ -393,10 +393,10 @@ namespace Stackables {
             if (bounds1.Intersects(bounds2)) {
 
                 CollisionProxy cp1 = obj1.GetComponentInChildren<CollisionProxy>();
-                CollisionProxy cp2 = obj2.GetComponentInChildren<CollisionProxy>();
+                //CollisionProxy cp2 = obj2.GetComponentInChildren<CollisionProxy>();
 
                 Collider[] cols1 = cp1.gameObject.GetComponents<Collider>();
-                Collider[] cols2 = cp2.gameObject.GetComponents<Collider>();
+                //Collider[] cols2 = cp2.gameObject.GetComponents<Collider>();
 
                 foreach (Collider c1 in cols1) {
                     if (obj2.m_collisions != null && obj2.m_collisions.Exists(x => x == c1)) {

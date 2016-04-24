@@ -13,7 +13,7 @@ public class HitSelectObjectByTag : MonoBehaviour
     [Header("HitSelectObjectByTag")]
 
     public bool through_hit = true;
-    protected new string hitTag = "Construction";
+    protected string hitTag = "Construction";
 
     //==================  AWAKE  ==================
     void Awake() {

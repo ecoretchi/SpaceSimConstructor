@@ -5,23 +5,23 @@ using System.Collections;
 public class SelectingMicros : MonoBehaviour
 {    
 	AbstractThirdCamera thirdCam;
-	Camera camera;
+	Camera sceneCamera;
 	Transform tmpHitSelected;
 	RaycastHit hitInfo;
 
 	protected void Start()
 	{
 		hitInfo = new RaycastHit();
-		if(!camera)
-			camera = GetComponent<Camera>();
+		if(!sceneCamera)
+			sceneCamera = GetComponent<Camera>();
 
-		thirdCam = camera.GetComponent<AbstractThirdCamera>();
+		thirdCam = sceneCamera.GetComponent<AbstractThirdCamera>();
 	}
 
 	bool GetHitTransform(out Transform t, string tag)
 	{
 		
-		Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+		Ray ray = sceneCamera.ScreenPointToRay(Input.mousePosition);
 		bool res = Physics.Raycast(ray, out hitInfo);
 		t = hitInfo.transform;        
 		return res && t.tag == tag;
