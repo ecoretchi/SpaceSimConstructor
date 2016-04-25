@@ -10,30 +10,33 @@ public class StructuralFeature : MonoBehaviour {
     };
 
     /// <summary>
-    /// Structure could be Big or small 
+    /// Structure could be Big or small, this value could using by inform the user how structure big are
     /// </summary>
-    public Type type { get; set; }
+    public Type type;
+    /// <summary>
+    /// All cycle properties using this value to update corresponded property
+    /// </summary>
+    public float minutesPerCycle;
     /// <summary>
     /// Is the main vital station value, if hull decreasing to zero the structure completely be destroyed 
     /// </summary>
-    public float hull { get; set; }
+    public float hull;
     /// <summary>
-    /// Important property to normal functional the station 
+    /// Add improves the station structural or it declines
     /// </summary>
-    public PlantProperty maintanance { get; set; }
+    public InfluenceProperty[] influences;
     /// <summary>
-    /// GWats energy production and consumation by structure
+    /// Add specific consumation or production results here
     /// </summary>
-    public PlantProperty energy { get; set; }
+    public Facility[] facilities;
     /// <summary>
-    /// Some negative factor that could decrease hull, or positive that increase it.
-    /// This value is the absolute, means that the value apply once.
+    /// apartments 
     /// </summary>
-    public FluenceProperty hullFluence { get; set; }
-
-    StructuralFeature() {
-
-    }
+    public Apartments[] apartments;
+    /// <summary>
+    /// Add improves the storage and it capacity or it declines
+    /// </summary>
+    public StorageProperty[] storage;
 
 	// Use this for initialization
 	void Start () {

@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 400012}
   - 114: {fileID: 11429190}
   - 114: {fileID: 11404118}
+  - 114: {fileID: 11459784}
   m_Layer: 0
   m_Name: PlantModule_barnyard
   m_TagString: Untagged
@@ -93,7 +94,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 130942}
   m_LocalRotation: {x: 0.000000021855694, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 105.02019, y: 15.263472, z: 95.35239}
+  m_LocalPosition: {x: 94.39549, y: 11.624624, z: 106.05054}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 442218}
@@ -255,6 +256,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dimType: 2
   orientedType: 2
+--- !u!114 &11459784
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 130942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746a28eee35515c4d95dd4112ea318e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  minutesPerCycle: 0
+  hull: 0
+  influences: []
+  facilities: []
+  apartments: []
+  storage: []
 --- !u!114 &11489360
 MonoBehaviour:
   m_ObjectHideFlags: 1

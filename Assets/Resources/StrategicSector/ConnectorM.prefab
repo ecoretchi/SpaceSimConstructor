@@ -27,6 +27,7 @@ GameObject:
   - 4: {fileID: 490792}
   - 114: {fileID: 11476220}
   - 114: {fileID: 11483928}
+  - 114: {fileID: 11435210}
   m_Layer: 8
   m_Name: ConnectorM
   m_TagString: Untagged
@@ -117,7 +118,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151236}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100.300354, y: 5.3713593, z: 113.92886}
+  m_LocalPosition: {x: 91.18905, y: 6.366383, z: 102.17347}
   m_LocalScale: {x: 4.0499973, y: 4.049997, z: 3}
   m_Children:
   - {fileID: 480330}
@@ -190,6 +191,44 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11435210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 151236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746a28eee35515c4d95dd4112ea318e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  minutesPerCycle: 0
+  hull: 100
+  influences:
+  - nameID: GWatt Conductivity
+    enabled: 1
+    value: 3
+    productionRequire: 0
+    productionsID: []
+  - nameID: GWatt Energy
+    enabled: 1
+    value: -0.1
+    productionRequire: 0
+    productionsID: []
+  - nameID: Maintenance
+    enabled: 1
+    value: -6
+    productionRequire: 0
+    productionsID: []
+  - nameID: Hull weakening %
+    enabled: 1
+    value: 4
+    productionRequire: 0
+    productionsID: []
+  facilities: []
+  apartments: []
+  storage: []
 --- !u!114 &11442468
 MonoBehaviour:
   m_ObjectHideFlags: 1

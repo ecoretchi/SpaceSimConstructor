@@ -161,19 +161,19 @@ namespace Stackables {
         }
         //float curAngle;
         //float curMeredianAngle;
-        void DoFlowCam() {
-            ////prepare params
-            //Transform cam = currCamera.transform;
-            //Vector3 curCamLookAt = cam.forward;
-            //Vector3 offset = projectedMousePosOnPlane - cam.position;
-            //curAngle = Vector3.Angle(curCamLookAt, offset);
+        //void DoFlowCam() {
+        //    ////prepare params
+        //    //Transform cam = currCamera.transform;
+        //    //Vector3 curCamLookAt = cam.forward;
+        //    //Vector3 offset = projectedMousePosOnPlane - cam.position;
+        //    //curAngle = Vector3.Angle(curCamLookAt, offset);
 
-            //curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
-            //print(curMeredianAngle);
+        //    //curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
+        //    //print(curMeredianAngle);
 
-            //DoLookFollow();
-            //DoMoveFollow();
-        }
+        //    //DoLookFollow();
+        //    //DoMoveFollow();
+        //}
 
         void DoMoveObject() {
             //is any target on hold
