@@ -31,7 +31,7 @@ public class DistantSun : MonoBehaviour {
 
 			axis.transform.rotation = Quaternion.Euler( new Vector3(-latitude, longitude, 0f) );
 
-			Vector3 position = axis.transform.TransformDirection( new Vector3(0, 0, 1000f) ) + cameraPosition.transform.position;
+			Vector3 position = axis.transform.TransformDirection( new Vector3(0, 0, 10000f) ) + cameraPosition.transform.position;
 
 			if (Application.isPlaying) {
 				Object.Destroy(axis);

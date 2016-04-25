@@ -11,7 +11,7 @@ namespace Spacecraft {
 
 
         [SerializeField]
-		private  GameObject  engineLights;
+		private  ShipEngines  engines;
 
 		[Header( "=== Сharacteristics ===" )]
 		public string shipName = "Test Ship";
@@ -19,12 +19,6 @@ namespace Spacecraft {
 		public Transform centerOfMass;
 		
 		[Header( "=== Engines ===" )]
-
-		//temp - will be calculated from max accelerations
-		//public float maxMainEngineForce = 100f; // Максимальная мощность маршевого двигателя, kN (килоньютоны, если масса в тоннах)
-		//public float rotationXForce = 40f;  // Мощность поворотных двигателей (она же половина мощности стрейфа) (ось X, вертикальная, kN (килоньютоны))
-		//public float rotationYForce = 30f;  // Мощность поворотных двигателей (она же половина мощности стрейфа) (ось Y, горизонтальная, kN (килоньютоны))
-		//public float rotationZForce = 20f;  // Мощность поворотных двигателей (ось Z, ось движения, kN (килоньютоны))
 
 		/// <summary>
 		/// Maximum speed in m/s at 3 axis, supported by ship avionics (0 means no capability to strafe in that direction)
@@ -79,27 +73,10 @@ namespace Spacecraft {
 			var currentVelocity = m_rigidbody.velocity;
 			Vector3 moveForce = desiredShipMovementVelocity - transform.InverseTransformDirection( currentVelocity );
 
-			//TODO: Выпилить все это в отдельный модуль, который будет кешировать все нужные ссылки и в нужные моменты включать нужные эффекты
-			if (engineLights) {
-				foreach (Light l in engineLights.GetComponentsInChildren<Light>()) {
-					l.intensity = Mathf.Clamp01( moveForce.z / (maxLinearAcceleration.z * moveForce.z > 0 ? cruiseEnginesFactor : 1) );
-				}
-			}
-
-			//TODO: move to EngineFX controller ///////////////////////////////////////////////////////////////
-			if (moveForce.z > 0.1f) {
-				foreach (ParticleSystem p in GetComponentsInChildren<ParticleSystem>( true )) {
-					ParticleSystem.EmissionModule em = p.emission;
-					em.enabled = true;
-				}
-			} else {
-				foreach (ParticleSystem p in GetComponentsInChildren<ParticleSystem>( true )) {
-					ParticleSystem.EmissionModule em = p.emission;
-					em.enabled = false;
-				}
-			}
-			//////////////////////////////////////////////////////////////////////////////////////////////////
-
+			engines.SetEngineForces(	Mathf.Clamp( moveForce.x / maxLinearAcceleration.x, -1f, 1f ),
+										Mathf.Clamp( moveForce.y / maxLinearAcceleration.y, -1f, 1f ),
+										Mathf.Clamp( moveForce.z / (maxLinearAcceleration.z * moveForce.z > 0 ? cruiseEnginesFactor : 1), -1f, 1f ) 
+									);
 
 			moveForce.x = Mathf.Clamp( moveForce.x / maxLinearAcceleration.x, -1f, 1f ) * maxLinearAcceleration.x * m_rigidbody.mass;
 			moveForce.y = Mathf.Clamp( moveForce.y / maxLinearAcceleration.y, -1f, 1f ) * maxLinearAcceleration.y * m_rigidbody.mass;
@@ -157,7 +134,6 @@ namespace Spacecraft {
 			m_rigidbody.mass = nominalMass;
             m_rigidbody.useGravity = false;
 
-            //temporary!
             m_rigidbody.drag = 0f;
 			m_rigidbody.angularDrag = tempRotationDrag;
 
