@@ -75,7 +75,7 @@ public class Apartments {
     /// <summary>
     /// Population by default living from scratch 
     /// </summary>
-    public int defPopulation;
+    public int defaultPopulation;
     /// <summary>
     /// 
     /// </summary>

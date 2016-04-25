@@ -28,7 +28,12 @@ public class StationCharacteristics {
 	public int theHull {get;set;}
 	public int hullWeakening {get;set;}
 	public double energyGWatts {get;set;}
-	public double maintenance {get;set;}
+    public double maintenance { get; set; }
+    /// <summary>
+    /// how many civil has life supporting
+    /// </summary>
+    public double civilSupport{ get; set; }
+    public double civilSupportMax { get; set; }
 	public double civilLoyalty {get;set;}
 
 	public int transportRoutesMax {get;set;}
