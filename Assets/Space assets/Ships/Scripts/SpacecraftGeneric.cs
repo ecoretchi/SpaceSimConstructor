@@ -47,7 +47,7 @@ namespace Spacecraft {
 
 		protected	Vector3 m_CurrentAcceleration;
 		/// <summary>
-		/// Returns current acceleration (in world space)
+		/// Returns current acceleration (in local space)
 		/// </summary>
 		public		Vector3 CurrentAcceleration { get { return m_CurrentAcceleration; } }
 

@@ -83,7 +83,7 @@ namespace Spacecraft {
 			// если это перенести в LateUpdate, то камера адово дергается
 			if (_isDamping) {
 				//cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
-				cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.InverseTransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
+				cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
 				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
 			}
 
@@ -134,8 +134,8 @@ namespace Spacecraft {
             sb.AppendLine();
 
 			sb.Append( "Acceleration: " ).Append( _ship.CurrentAcceleration.ToString() ).AppendLine();
-
-            shipUI.description = sb.ToString();
+			
+			shipUI.description = sb.ToString();
         }
 
         
