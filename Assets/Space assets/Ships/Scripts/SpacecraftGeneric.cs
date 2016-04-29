@@ -7,11 +7,11 @@ namespace Spacecraft {
 	/// <summary>
 	/// Generic spacecraft class
 	/// </summary>
-	public class Spacecraft_Generic : MonoBehaviour, ISpaceEntity {
+	public class SpacecraftGeneric : MonoBehaviour, ISpaceEntity {
 
 
         [SerializeField]
-		private  ShipEngines  engines;
+		protected ShipEngines  engines;
 
 		[Header( "=== Сharacteristics ===" )]
 		public string shipName = "Test Ship";
@@ -39,22 +39,32 @@ namespace Spacecraft {
 		public float cruiseEnginesFactor;
 
 
-        private Rigidbody   m_rigidbody;                // Shortcut for ship's rigidbody
-        private Vector3     desiredShipMovementVelocity;   // Direction and engines power (0,1), set by ship controls (linear forces)
-		private Vector3		desiredShipRotation;		// Desired ship rotation and engines power (0,1), set by controls (torques along axes)
+		protected	Vector3 m_CurrentThrottles;
+		/// <summary>
+		/// Returns current throttles (in local space)
+		/// </summary>
+		public		Vector3 CurrentThrottles { get { return m_CurrentThrottles; } }
+
+		protected	Vector3 m_CurrentAcceleration;
+		/// <summary>
+		/// Returns current acceleration (in world space)
+		/// </summary>
+		public		Vector3 CurrentAcceleration { get { return m_CurrentAcceleration; } }
+
+		protected Vector3 m_CurrentVelocity;
+		public Vector3 CurrentVelocity { get { return m_CurrentVelocity; } }
+
+		protected Rigidbody		m_rigidbody;					// Shortcut for ship's rigidbody
+        protected Vector3		desiredShipMovementVelocity;	// Direction and engines power (0,1), set by ship controls (linear forces)
+		protected Vector3		desiredShipRotation;			// Desired ship rotation and engines power (0,1), set by controls (torques along axes)
 
 
-		private string      _guid;
+		protected string _guid;
+		public string GUID { get { return _guid; } }
+		public string e_name { get { return shipName; } }
 
 
-		public string GUID {
-			get { return _guid; }
-		}
-
-		public string e_name {
-			get { return shipName; }
-		}
-
+		//=================================================================== Methods
 
 		void Awake() {
             //prepare physics
@@ -70,19 +80,19 @@ namespace Spacecraft {
 
 		void FixedUpdate() {
 			
-			var currentVelocity = m_rigidbody.velocity;
-			Vector3 moveForce = desiredShipMovementVelocity - transform.InverseTransformDirection( currentVelocity );
+			m_CurrentVelocity = m_rigidbody.velocity;
+			Vector3 shipCourse = desiredShipMovementVelocity - transform.InverseTransformDirection( m_CurrentVelocity );
 
-			engines.SetEngineForces(	Mathf.Clamp( moveForce.x / maxLinearAcceleration.x, -1f, 1f ),
-										Mathf.Clamp( moveForce.y / maxLinearAcceleration.y, -1f, 1f ),
-										Mathf.Clamp( moveForce.z / (maxLinearAcceleration.z * moveForce.z > 0 ? cruiseEnginesFactor : 1), -1f, 1f ) 
-									);
+			m_CurrentThrottles.x = Mathf.Clamp( shipCourse.x / maxLinearAcceleration.x, -1f, 1f );
+			m_CurrentThrottles.y = Mathf.Clamp( shipCourse.y / maxLinearAcceleration.y, -1f, 1f );
+			m_CurrentThrottles.z = Mathf.Clamp( shipCourse.z / (maxLinearAcceleration.z * shipCourse.z > 0 ? cruiseEnginesFactor : 1), -1f, 1f );
 
-			moveForce.x = Mathf.Clamp( moveForce.x / maxLinearAcceleration.x, -1f, 1f ) * maxLinearAcceleration.x * m_rigidbody.mass;
-			moveForce.y = Mathf.Clamp( moveForce.y / maxLinearAcceleration.y, -1f, 1f ) * maxLinearAcceleration.y * m_rigidbody.mass;
-			moveForce.z = Mathf.Clamp( moveForce.z / (maxLinearAcceleration.z * moveForce.z > 0 ? cruiseEnginesFactor : 1), -1f, 1f ) * maxLinearAcceleration.z * m_rigidbody.mass * cruiseEnginesFactor;
+			//TODO:  take current mass into account
+			m_CurrentAcceleration.x = m_CurrentThrottles.x * maxLinearAcceleration.x;
+			m_CurrentAcceleration.y = m_CurrentThrottles.y * maxLinearAcceleration.y;
+			m_CurrentAcceleration.z = m_CurrentThrottles.z * maxLinearAcceleration.z * cruiseEnginesFactor;
 		   	            			            
-			m_rigidbody.AddRelativeForce( moveForce, ForceMode.Force );
+			m_rigidbody.AddRelativeForce( m_CurrentAcceleration, ForceMode.Acceleration );
 			m_rigidbody.AddRelativeTorque( desiredShipRotation.x * nominalMass * maxRotateAcceleration.x,
 				desiredShipRotation.y * nominalMass * maxRotateAcceleration.y,
 				desiredShipRotation.z * nominalMass * maxRotateAcceleration.z,

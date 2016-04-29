@@ -20,7 +20,7 @@ namespace Spacecraft {
 		private bool        _isDamping      = false;
 		private float       _dampSpeed      = 10f;
 
-		private Spacecraft_Generic  _ship; // shortcut to master object
+		private SpacecraftGeneric  _ship; // shortcut to master object
 
         private float       desiredThrottle		= 0;    // current desired speed
         private float       rememberedThrottle	= 0; // desired speed for "no override mode"
@@ -30,8 +30,8 @@ namespace Spacecraft {
         // Unity callbacks ////////////////////////////////
 
         void Start() {
-			_ship = GetComponentInParent<Spacecraft_Generic>();
-			Assert.IsNotNull(_ship, "PlayerController::Start: No parent Spacecraft_Generic found!");
+			_ship = GetComponentInParent<SpacecraftGeneric>();
+			Assert.IsNotNull(_ship, "PlayerController::Start: No parent SpacecraftGeneric found!");
 
             InitialiseCameras();
 			GameController.instance.IsCursorLocked = true;
@@ -82,7 +82,8 @@ namespace Spacecraft {
         void FixedUpdate() {
 			// если это перенести в LateUpdate, то камера адово дергается
 			if (_isDamping) {
-				cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
+				//cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
+				cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.InverseTransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
 				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
 			}
 
@@ -131,6 +132,8 @@ namespace Spacecraft {
 			var fwdSpeed = Vector3.Dot( vel, transform.forward );
             sb.Append( "Forward speed: " ).Append( fwdSpeed.ToString( "0.00" ) );
             sb.AppendLine();
+
+			sb.Append( "Acceleration: " ).Append( _ship.CurrentAcceleration.ToString() ).AppendLine();
 
             shipUI.description = sb.ToString();
         }

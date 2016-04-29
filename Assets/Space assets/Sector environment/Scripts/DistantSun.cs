@@ -10,6 +10,7 @@ public class DistantSun : MonoBehaviour {
 
 	public float longitude;
 	public float latitude;
+	public float distanceFromCamera;
 	public Camera cameraPosition; //Камера, по которой центрируется вид
 
 	private Vector3 oldCamPosition;
@@ -31,7 +32,7 @@ public class DistantSun : MonoBehaviour {
 
 			axis.transform.rotation = Quaternion.Euler( new Vector3(-latitude, longitude, 0f) );
 
-			Vector3 position = axis.transform.TransformDirection( new Vector3(0, 0, 10000f) ) + cameraPosition.transform.position;
+			Vector3 position = axis.transform.TransformDirection( new Vector3(0, 0, distanceFromCamera ) ) + cameraPosition.transform.position;
 
 			if (Application.isPlaying) {
 				Object.Destroy(axis);
