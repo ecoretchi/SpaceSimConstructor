@@ -23,15 +23,15 @@ public class StationManager : MonoBehaviour {
 }
 public class StationData {
 
-	public double lifeSupportLimit;
-	public double lifeSupport;
+	public int lifeSupportLimit;
+	public int lifeSupport;
 	public double credits;
 	public double freelanceTaxFactor;
 	public double freelanceTaxCreditRate;//credit tax rate
 
-	public double socialApartments;
-	public double conventionalApartments;
-	public double luxApartments;
+	public int socialApartments;
+	public int conventionalApartments;
+	public int luxApartments;
 
 	public double stuffWorkers; // citizen for maintenance
 	public double freelanceWorkers; // citizen for freelance
@@ -65,18 +65,18 @@ public class StationData {
 	public int CalcLifeSupportFree(){ 
 		double O7 = CalcCivil();
 		double E7 = CalcLifeSupportFree();
-		return E7-O7;
+		return (int)(E7-O7);
 	}
 	public double CalcTaxProfit(){ 
 		return freelanceTaxFactor * freelanceTaxCreditRate;
 	}
-	public int CalcCivil(){ 
-		return stuffWorkers + freelanceWorkers + luxCivil;
+	public int CalcCivil(){
+        return (int)(stuffWorkers + freelanceWorkers + luxCivil);
 	}
 	public int CalcApartmentsTotal(){ 
-	 return socialApartments + 
+	 return (int)(socialApartments + 
 	 	conventionalApartments +
-	 	luxApartments;
+	 	luxApartments);
 	}
 	public double CalcMaintenanceConsume(){ 
 		double AB = maintenanceFunds;
@@ -104,20 +104,19 @@ public class StationData {
 	public int CalcWantComeStuffWorkers(){ 
 		double C7 = CalcStationAppeal(50);
 		double freeRooms = socialApartments - stuffWorkers;
-		wantComeStuffWorkers = stuffWorkersFactorCome * C7 * freeRooms;
+		wantComeStuffWorkers = (int)(stuffWorkersFactorCome * C7 * freeRooms);
 		return wantComeStuffWorkers;
-	 	return ;
 	}
 	public int CalcWantComeFreelanceWorkers(){ 
 		double C7 = CalcStationAppeal(60);
 		double freeRooms = conventionalApartments - freelanceWorkers;
-		wantComeFreelanceWorkers =  freelanceWorkersFactorCome * C7 * freeRooms;	 
+		wantComeFreelanceWorkers =  (int)(freelanceWorkersFactorCome * C7 * freeRooms);
 		return wantComeFreelanceWorkers;
 	}
 	public int CalcWantComeLuxCivil(){ 
 		double C7 = CalcStationAppeal(70);
 		double freeRooms = luxApartments - luxCivil;
-		wantComeLuxCivil = luxCivilFactorCome * C7 * freeRooms;
+		wantComeLuxCivil = (int)(luxCivilFactorCome * C7 * freeRooms);
 	 	return wantComeLuxCivil;
 	}
 	public int CalcWantComeCivil(){ 
@@ -133,9 +132,9 @@ public class StationData {
 		double AJ_f = AJ/heft;
 		double AL_f = AH/heft;
 
-		newAcceptedStuffWorkers = AH > H ? AH: H*AH_f;
-	  	newAcceptedFreelanceWorkers = AJ > H ? AJ: H*AJ_f;
-	  	newAcceptedLuxCivil = AL > H ? AL: H*AL_f;
+		newAcceptedStuffWorkers = (int)(AH > H ? AH: H*AH_f);
+        newAcceptedFreelanceWorkers = (int)(AJ > H ? AJ : H * AJ_f);
+	  	newAcceptedLuxCivil = (int)(AL > H ? AL: H*AL_f);
 	}
 }
 //http://answers.unity3d.com/questions/901770/invoke-method-with-reflection-c.html
