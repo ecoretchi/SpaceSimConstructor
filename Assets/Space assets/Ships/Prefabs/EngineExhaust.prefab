@@ -101,7 +101,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 2
-  m_Color: {r: 0.28982213, g: 0.19074394, b: 0.41176468, a: 1}
+  m_Color: {r: 0.19074394, g: 0.39347336, b: 0.41176468, a: 1}
   m_Intensity: 0.52
   m_Range: 50
   m_SpotAngle: 30
@@ -230,7 +230,7 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     startLifetime:
-      scalar: 0.3
+      scalar: 0.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -265,7 +265,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
     startSpeed:
-      scalar: 32
+      scalar: 40
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -542,7 +542,7 @@ ParticleSystem:
     serializedVersion: 2
     m_Type: 0
     rate:
-      scalar: 80
+      scalar: 150
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -597,14 +597,14 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.4821982
-          inSlope: 22.340551
-          outSlope: 22.340551
+          value: 0.8265929
+          inSlope: -0.9094219
+          outSlope: -0.9094219
           tangentMode: 0
-        - time: 0.006385207
-          value: 0.6492229
-          inSlope: 0.06347895
-          outSlope: 0.06347895
+        - time: 0.045643155
+          value: 0.6458068
+          inSlope: -0.5492542
+          outSlope: -0.5492542
           tangentMode: 0
         - time: 1
           value: 0.22058833
@@ -613,7 +613,7 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minCurve:
         serializedVersion: 2
         m_Curve:
@@ -1714,7 +1714,7 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     startLifetime:
-      scalar: 0.75
+      scalar: 0.55
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1725,21 +1725,21 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.6666666
+          value: 0.72727275
           inSlope: 0
           outSlope: 0
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minMaxState: 3
     startSpeed:
-      scalar: 32
+      scalar: 40
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1868,7 +1868,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: 6
+      scalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1879,18 +1879,18 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.6666667
+          value: 0.8
           inSlope: 0
           outSlope: 0
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minMaxState: 3
     startRotationX:
       scalar: 1
@@ -2016,7 +2016,7 @@ ParticleSystem:
     serializedVersion: 2
     m_Type: 0
     rate:
-      scalar: 60
+      scalar: 100
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2071,9 +2071,14 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.09623331
-          inSlope: 2.58101
-          outSlope: 2.58101
+          value: 0.8485269
+          inSlope: -0.063970655
+          outSlope: -0.063970655
+          tangentMode: 0
+        - time: 0.0924743
+          value: 0.6707492
+          inSlope: -0.2527237
+          outSlope: -0.2527237
           tangentMode: 0
         - time: 1
           value: 0.32146552
@@ -2082,7 +2087,7 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minCurve:
         serializedVersion: 2
         m_Curve:

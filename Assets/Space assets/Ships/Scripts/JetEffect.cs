@@ -27,7 +27,7 @@ public class JetEffect : MonoBehaviour {
 	private void Update() {
 		// update the particle system based on the jets throttle
 		m_System.startLifetime = Mathf.Lerp( 0.0f, m_OriginalLifetime, effectSize );
-		m_System.startSize = Mathf.Lerp( m_OriginalStartSize * .3f, m_OriginalStartSize, effectSize );
+		m_System.startSize = Mathf.Lerp( m_OriginalStartSize * .03f, m_OriginalStartSize, effectSize );
 		m_System.startColor = Color.Lerp( Color.black, m_OriginalStartColor, effectSize );
 	}
 }
