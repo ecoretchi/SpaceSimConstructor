@@ -122,8 +122,9 @@ namespace Spacecraft {
 			sb.Append( "Loc Velocity: " ).Append( locVel.ToString() ).Append( " magn: " ).AppendLine( locVel.magnitude.ToString( "000.00" ) );
 
 			sb.Append( "Ang.Velocity: " ).Append( rb.angularVelocity.ToString() ).Append( " magn: " ).AppendLine( rb.angularVelocity.magnitude.ToString( "000.00" ) );
-
-            Vector3 helper = rb.transform.position + rb.transform.up * 3f;
+			sb.Append( "RPM:          " ).Append( (transform.InverseTransformDirection( rb.angularVelocity ) * 9.549296586f ).ToString() ).AppendLine();
+			
+			Vector3 helper = rb.transform.position + rb.transform.up * 3f;
             Debug.DrawLine( helper, helper + rb.transform.forward * 3f, Color.blue );
             Debug.DrawLine( helper, helper + rb.transform.up * 3f, Color.green );
             Debug.DrawLine( helper, helper + rb.transform.right * 3f, Color.red );

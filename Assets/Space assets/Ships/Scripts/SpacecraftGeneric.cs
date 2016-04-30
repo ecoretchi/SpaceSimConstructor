@@ -10,8 +10,8 @@ namespace Spacecraft {
 	public class SpacecraftGeneric : MonoBehaviour, ISpaceEntity {
 
 
-        [SerializeField]
-		protected ShipEngines  engines;
+        //[SerializeField]
+		//protected ShipEngines  engines;
 
 		[Header( "=== Сharacteristics ===" )]
 		public string shipName = "Test Ship";
@@ -55,8 +55,8 @@ namespace Spacecraft {
 		public Vector3 CurrentVelocity { get { return m_CurrentVelocity; } }
 
 		protected Rigidbody		m_rigidbody;					// Shortcut for ship's rigidbody
-        protected Vector3		desiredShipMovementVelocity;	// Direction and engines power (0,1), set by ship controls (linear forces)
-		protected Vector3		desiredShipRotation;			// Desired ship rotation and engines power (0,1), set by controls (torques along axes)
+        protected Vector3		desiredShipMovementVelocity;
+		protected Vector3		desiredShipRotation;
 
 
 		protected string _guid;
@@ -80,9 +80,23 @@ namespace Spacecraft {
 
 		void FixedUpdate() {
 			
+			// get current velocity
 			m_CurrentVelocity = m_rigidbody.velocity;
-			Vector3 shipCourse = desiredShipMovementVelocity - transform.InverseTransformDirection( m_CurrentVelocity );
 
+			// reduce very low speed to 0
+			if (Mathfx.approx( m_CurrentVelocity.x, 0, 0.001f )) {
+				m_CurrentVelocity.x = 0;
+			}
+			if (Mathfx.approx( m_CurrentVelocity.y, 0, 0.001f )) {
+				m_CurrentVelocity.y = 0;
+			}
+			if (Mathfx.approx( m_CurrentVelocity.z, 0, 0.001f )) {
+				m_CurrentVelocity.z = 0;
+			}
+			m_rigidbody.velocity = m_CurrentVelocity;
+
+			// correct course
+			Vector3 shipCourse = desiredShipMovementVelocity - transform.InverseTransformDirection( m_CurrentVelocity );
 			m_CurrentThrottles.x = Mathf.Clamp( shipCourse.x / maxLinearAcceleration.x, -1f, 1f );
 			m_CurrentThrottles.y = Mathf.Clamp( shipCourse.y / maxLinearAcceleration.y, -1f, 1f );
 			m_CurrentThrottles.z = Mathf.Clamp( shipCourse.z / (maxLinearAcceleration.z * shipCourse.z > 0 ? cruiseEnginesFactor : 1), -1f, 1f );
@@ -92,13 +106,12 @@ namespace Spacecraft {
 			m_CurrentAcceleration.y = m_CurrentThrottles.y * maxLinearAcceleration.y;
 			m_CurrentAcceleration.z = m_CurrentThrottles.z * maxLinearAcceleration.z * cruiseEnginesFactor;
 		   	            			            
+			// apply forces
 			m_rigidbody.AddRelativeForce( m_CurrentAcceleration, ForceMode.Acceleration );
 			m_rigidbody.AddRelativeTorque( desiredShipRotation.x * nominalMass * maxRotateAcceleration.x,
 				desiredShipRotation.y * nominalMass * maxRotateAcceleration.y,
 				desiredShipRotation.z * nominalMass * maxRotateAcceleration.z,
 				ForceMode.Force);
-
-			
 		}
 
 		/*
@@ -117,7 +130,7 @@ namespace Spacecraft {
 		*/
 
 		public void ControlShipMovement( float x, float y, float z ) {
-			desiredShipMovementVelocity.x = x * maxSupportedSpeed.x; //TODO: consider mass changes
+			desiredShipMovementVelocity.x = x * maxSupportedSpeed.x; //TODO: consider mass changes?
 			desiredShipMovementVelocity.y = y * maxSupportedSpeed.y;
 			desiredShipMovementVelocity.z = (z > 0) ? (z * maxSupportedSpeed.z * cruiseEnginesFactor) : (z * maxSupportedSpeed.z);
 		}
@@ -153,7 +166,7 @@ namespace Spacecraft {
 		}
 
 
-        //FIXME: move it somewhere to GUID-or-somthing manager?
+        //FIXME: move it somewhere to GUID-or-something manager?
         static int ships;
 
         protected void SetupGUID() {

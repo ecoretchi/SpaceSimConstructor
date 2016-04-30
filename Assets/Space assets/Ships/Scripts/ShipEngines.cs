@@ -36,7 +36,8 @@ public class ShipEngines : MonoBehaviour {
 			}
 			foreach (JetEffect j in t.GetComponentsInChildren<JetEffect>()) {
 				j.effectSize = Mathf.Clamp( _ship.CurrentThrottles.z, 0, 1f );
-			}
+			}		
+			t.gameObject.SetActive( !Mathfx.approx(_ship.CurrentThrottles.z, 0, 0.1f) );
 		}
 
 		foreach (Transform t in backwardEngines) {
@@ -46,6 +47,7 @@ public class ShipEngines : MonoBehaviour {
 			foreach (JetEffect j in t.GetComponentsInChildren<JetEffect>()) {
 				j.effectSize = -Mathf.Clamp( _ship.CurrentThrottles.z, -1f, 0 );
 			}
+			t.gameObject.SetActive( !Mathfx.approx( _ship.CurrentThrottles.z, 0, 0.1f ) );
 		}
 
 		foreach (Transform t in rightEngines) {
@@ -55,6 +57,7 @@ public class ShipEngines : MonoBehaviour {
 			foreach (JetEffect j in t.GetComponentsInChildren<JetEffect>()) {
 				j.effectSize = Mathf.Clamp( _ship.CurrentThrottles.x, 0, 1f );
 			}
+			t.gameObject.SetActive( !Mathfx.approx( _ship.CurrentThrottles.x, 0, 0.1f ) );
 		}
 
 		foreach (Transform t in leftEngines) {
@@ -64,6 +67,7 @@ public class ShipEngines : MonoBehaviour {
 			foreach (JetEffect j in t.GetComponentsInChildren<JetEffect>()) {
 				j.effectSize = -Mathf.Clamp( _ship.CurrentThrottles.x, -1f, 0 );
 			}
+			t.gameObject.SetActive( !Mathfx.approx( _ship.CurrentThrottles.x, 0, 0.1f ) );
 		}
 
 		foreach (Transform t in upEngines) {
@@ -73,6 +77,7 @@ public class ShipEngines : MonoBehaviour {
 			foreach (JetEffect j in t.GetComponentsInChildren<JetEffect>()) {
 				j.effectSize = Mathf.Clamp( _ship.CurrentThrottles.y, 0, 1f );
 			}
+			t.gameObject.SetActive( !Mathfx.approx( _ship.CurrentThrottles.y, 0, 0.1f ) );
 		}
 
 		foreach (Transform t in downEngines) {
@@ -82,6 +87,7 @@ public class ShipEngines : MonoBehaviour {
 			foreach (JetEffect j in t.GetComponentsInChildren<JetEffect>()) {
 				j.effectSize = -Mathf.Clamp( _ship.CurrentThrottles.y, -1f, 0 );
 			}
+			t.gameObject.SetActive( !Mathfx.approx( _ship.CurrentThrottles.y, 0, 0.1f ) );
 		}
 
 	}
@@ -92,7 +98,7 @@ public class ShipEngines : MonoBehaviour {
 	}
 
 	private void SearchEngines() {
-		foreach (Transform t in GetComponentsInChildren<Transform>( true )) {
+		foreach (Transform t in transform) {
 			if (t.name.Contains( "Forward_" )) {
 				forwardEngines.Add( t );
 			}
@@ -111,7 +117,7 @@ public class ShipEngines : MonoBehaviour {
 			if (t.name.Contains( "Down_" )) {
 				downEngines.Add( t );
 			}
+			t.gameObject.SetActive( false );
 		}
 	}
-
 }

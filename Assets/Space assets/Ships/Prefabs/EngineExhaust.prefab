@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 456380}
   - 108: {fileID: 10818202}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Engine light 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ GameObject:
   - 135: {fileID: 13547324}
   - 114: {fileID: 11414948}
   - 114: {fileID: 11437408}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: EngineExhaust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,8 +47,8 @@ GameObject:
   - 199: {fileID: 19902224}
   - 198: {fileID: 19831608}
   - 114: {fileID: 11468566}
-  m_Layer: 0
-  m_Name: Glow
+  m_Layer: 2
+  m_Name: Outer Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,8 +72,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 101950}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: -0.13000274, y: -0.17999999, z: 0.74000067}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 499990}
@@ -84,8 +84,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 164420}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: -4.44, y: -0.03, z: -4.45}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: -13.14, y: 2.54, z: 1.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 431480}
@@ -102,7 +102,7 @@ Light:
   serializedVersion: 6
   m_Type: 2
   m_Color: {r: 0.28982213, g: 0.19074394, b: 0.41176468, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 0.52
   m_Range: 50
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -405,18 +405,18 @@ ParticleSystem:
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.8571429
+          value: 0.7777778
           inSlope: 0
           outSlope: 0
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
+        m_RotationOrder: 0
       minMaxState: 3
     startRotationX:
       scalar: 1
@@ -745,19 +745,19 @@ ParticleSystem:
       maxGradient:
         key0:
           serializedVersion: 2
-          rgba: 13957119
+          rgba: 16773588
         key1:
           serializedVersion: 2
-          rgba: 510452735
+          rgba: 520077932
         key2:
           serializedVersion: 2
-          rgba: 4032763
+          rgba: 16507709
         key3:
           serializedVersion: 2
           rgba: 16740265
         key4:
           serializedVersion: 2
-          rgba: 16753539
+          rgba: 16745361
         key5:
           serializedVersion: 2
           rgba: 16753539
@@ -2214,7 +2214,7 @@ ParticleSystem:
       maxGradient:
         key0:
           serializedVersion: 2
-          rgba: 13957119
+          rgba: 16774868
         key1:
           serializedVersion: 2
           rgba: 150957957

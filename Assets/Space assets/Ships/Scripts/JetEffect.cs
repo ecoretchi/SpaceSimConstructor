@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class JetEffect : MonoBehaviour {
 
 	// this script controls the jet's exhaust particle system, controlling the
@@ -15,7 +15,7 @@ public class JetEffect : MonoBehaviour {
 	private float m_OriginalLifetime; // The original lifetime of the particle system
 	private Color m_OriginalStartColor; // The original starting colout of the particle system
 
-	private void OnEnable() {
+	private void Start() {
 		m_System = GetComponent<ParticleSystem>();
 
 		// set the original properties from the particle system
@@ -24,8 +24,6 @@ public class JetEffect : MonoBehaviour {
 		m_OriginalStartColor = m_System.startColor;
 	}
 
-
-	// Update is called once per frame
 	private void Update() {
 		// update the particle system based on the jets throttle
 		m_System.startLifetime = Mathf.Lerp( 0.0f, m_OriginalLifetime, effectSize );
