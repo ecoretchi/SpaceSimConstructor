@@ -4,13 +4,14 @@ using System.Collections;
 public class StationManager : MonoBehaviour {
 
 	//station characteristics
-	StationCharacteristics m_stationInfo;
+    StationData m_stationInfo;
+
     MainStationModule m_cms;
     // Use this for initialization
     void Start () {
         m_cms = FindObjectOfType<MainStationModule>();
 
-        // begin from build scrach, but we must save the station state in future
+        // begin from build scratch, but we must save the station state in future
 
         m_cms.Release();
 
@@ -22,6 +23,12 @@ public class StationManager : MonoBehaviour {
 	}
 }
 public class StationData {
+
+    public int theHull;
+    public int hullWeakening;
+    public double energyGWatts;
+    public int transportRoutesMax;
+    public int transportRoutes;
 
 	public int lifeSupportLimit;
 	public int lifeSupport;
@@ -35,7 +42,7 @@ public class StationData {
 
 	public double stuffWorkers; // citizen for maintenance
 	public double freelanceWorkers; // citizen for freelance
-	public double luxCivil; // VIP citizen for high busness
+	public double luxCivil; // VIP citizen for high business
 
 	public double maintenanceLevel; // current station maintenance level
 	public double maintenanceFunds; // current fund by user 
@@ -52,7 +59,6 @@ public class StationData {
 	public int newAcceptedStuffWorkers;
 	public int newAcceptedFreelanceWorkers;
 	public int newAcceptedLuxCivil;
-
 
 	//civil like this station
 	public double CalcStationAppeal (int minLevel = 50) {
@@ -138,30 +144,3 @@ public class StationData {
 	}
 }
 //http://answers.unity3d.com/questions/901770/invoke-method-with-reflection-c.html
-
-public class StationCharacteristics {
-	public int theHull {get;set;}
-	public int hullWeakening {get;set;}
-	public double energyGWatts {get;set;}
-    public double maintenance { get; set; }
-    /// <summary>
-    /// how many civil has life supporting
-    /// </summary>
-    public double civilSupport{ get; set; }
-    public double civilSupportMax { get; set; }
-	public double civilLoyalty {get;set;}
-
-	public int transportRoutesMax {get;set;}
-	public int transportRoutes {get;set;}
-
-	public double pureApartment {get;set;}
-	public double normalApartment {get;set;}
-	public double luxApartment {get;set;}
-
-	// ========== demands ========== 
-	public double pureApartmentDemands {get;set;}
-	public double normalApartmentDemands {get;set;}
-	public double luxApartmentDemands {get;set;}
-
-}
-

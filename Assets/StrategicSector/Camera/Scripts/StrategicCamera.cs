@@ -91,6 +91,7 @@ public class StrategicCamera : HitSelectObjectByTag {
     float remFlowSpeed;
     float remFlowDamping;
     //------------ properties for moving border limitation------------
+    [Header("Moving")]
     // after select some target user could move target of camera not longer then predefined distance value
     public int moveDistanceLimit = 200;
     Vector3 lastDesiredTarget; // the position that was selected by hit, see external using of the method SetDesiredTarget and OnTargetHitRelease

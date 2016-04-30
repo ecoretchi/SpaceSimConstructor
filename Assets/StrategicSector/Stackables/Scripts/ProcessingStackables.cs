@@ -148,8 +148,8 @@ namespace Stackables {
         override public void OnStart() {
             hitTag = "Stackable";
             strategicCamera = GameObject.FindObjectOfType<StrategicCamera>();
-            strategicCamera.SetDesiredTarget(new Vector3(100, 0, 100), 1);
             m_mainStation = GameObject.FindObjectOfType<MainStationModule>();
+            strategicCamera.SetDesiredTarget(m_mainStation.transform.position, 1);// new Vector3(100, 0, 100)
         }
         //==================  UPDATE  ==================
         override public void OnUpdate() {        

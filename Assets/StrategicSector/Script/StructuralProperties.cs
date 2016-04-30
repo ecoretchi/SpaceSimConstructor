@@ -60,9 +60,9 @@ public class JobVacancy {
 [System.Serializable]
 public class Apartments {
     public enum Type {
-        Pure,
-        Normal,
-        Lux
+        AT_Maintenance,
+        AT_Freelancer,
+        AT_VipCitizen
     };
     /// <summary>
     /// 

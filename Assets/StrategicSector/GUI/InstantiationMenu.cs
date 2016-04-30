@@ -15,27 +15,27 @@ public class InstantiationMenu : MonoBehaviour {
         return new Rect(x + dx * col, y + dy * row, dx, dy);
     }
     void OnGUI() {
-            int row = 0;
-            GUI.Label(getCellRect(row++), "Build Station Version 0.0.1");
+            //int row = 0;
+            //GUI.Label(getCellRect(row++), "Build Station Version 0.0.1");
             
-            if (GUI.Button(getCellRect(row++), "SmallConnector (key S)")) {
-                stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorS));
-            }
-            if (GUI.Button(getCellRect(row++), "MediumConnector (key M)")) {
-                stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorM));
-            }
-            if (GUI.Button(getCellRect(row++), "LargeConnector (key L)")) {
-                stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorL));
-            }
-            if (GUI.Button(getCellRect(row++), "PlantModule Grain (key G)")) {
-                stackablesProcessing.OnInstantiateByGUIButton(Instantiate(plantModule_Grain));
-            }
-            if (GUI.Button(getCellRect(row++), "PlantModule Oxygen (key O)")) {
-                stackablesProcessing.OnInstantiateByGUIButton(Instantiate(plantModule_Oxygen));
-            }
-            if (GUI.Button(getCellRect(row++), "PlantModule Barnyard (key B)")) {
-                stackablesProcessing.OnInstantiateByGUIButton(Instantiate(plantModule_Barnyard));
-            }
+            //if (GUI.Button(getCellRect(row++), "SmallConnector (key S)")) {
+            //    stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorS));
+            //}
+            //if (GUI.Button(getCellRect(row++), "MediumConnector (key M)")) {
+            //    stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorM));
+            //}
+            //if (GUI.Button(getCellRect(row++), "LargeConnector (key L)")) {
+            //    stackablesProcessing.OnInstantiateByGUIButton(Instantiate(connectorL));
+            //}
+            //if (GUI.Button(getCellRect(row++), "PlantModule Grain (key G)")) {
+            //    stackablesProcessing.OnInstantiateByGUIButton(Instantiate(plantModule_Grain));
+            //}
+            //if (GUI.Button(getCellRect(row++), "PlantModule Oxygen (key O)")) {
+            //    stackablesProcessing.OnInstantiateByGUIButton(Instantiate(plantModule_Oxygen));
+            //}
+            //if (GUI.Button(getCellRect(row++), "PlantModule Barnyard (key B)")) {
+            //    stackablesProcessing.OnInstantiateByGUIButton(Instantiate(plantModule_Barnyard));
+            //}
         
         }
     void Awake() {
