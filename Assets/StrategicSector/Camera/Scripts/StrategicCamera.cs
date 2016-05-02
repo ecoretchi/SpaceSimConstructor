@@ -100,6 +100,9 @@ public class StrategicCamera : HitSelectObjectByTag {
         return ( 1 << 8 ) | 1;
     }
     // ------------ Public Interface Implementation Begin ------------     
+    public bool IsOnAction() {
+        return IsMoving() || IsOrbitRotating() || IsZooming();
+    }
     public bool IsOnActionByMouse(int buttonId) {
 	    if(buttonId == MouseButtonIDMoving)
             return IsMoving();
@@ -321,7 +324,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 		
 	}
 	bool IsRotatingVertical (){
-		return Mathf.Abs (torqueVertical) > 0;
+        return Mathf.Abs(torqueVertical) > Mathf.Deg2Rad;
 	}
 	// --------------- DoRotateV End Implementation ---------------
 	// --------------- DoRotateH Begin Implementation ---------------
@@ -344,7 +347,7 @@ public class StrategicCamera : HitSelectObjectByTag {
 		//Debug.DrawRay (target.position, desiredPosition - target.position, Color.green);
 	}
 	bool IsRotatingHorizontal(){
-		return Mathf.Abs (torqueHorizontal) > Mathf.Deg2Rad;
+        return Mathf.Abs(torqueHorizontal) > Mathf.Deg2Rad;
 	}
 	// --------------- DoRotateH End Implementation ---------------
 	// --------------- Moving Begin Implementation ---------------

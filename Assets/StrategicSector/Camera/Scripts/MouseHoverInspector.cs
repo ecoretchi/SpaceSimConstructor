@@ -12,6 +12,7 @@ public class MouseHoverInspector : MonoBehaviour {
     [Header("MouseHoverInspector")]
 
     public bool through_hit = true;
+    public bool gybrit_through_hit = true;
     protected string hitTag { get; set; }
 
     // ================ pure INTERFACES ===================
@@ -62,14 +63,15 @@ public class MouseHoverInspector : MonoBehaviour {
         Ray ray = currCamera.ScreenPointToRay(Input.mousePosition);
         if (!through_hit) {
             bool res = Physics.Raycast(ray, out hitInfo, Mathf.Infinity, mask);
-            if (!res) {
-                return false;
+            if (res) {
+                t = hitInfo.transform;
+                if (OnCheckTagName(t.tag))
+                    return true;
             }
-            t = hitInfo.transform;
-            return OnCheckTagName(t.tag);
+            if (!gybrit_through_hit)
+                return false;
         }
-
-        
+                
         RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, mask);
         for (int i = 0; i < hits.Length; ++i) {
             hitInfo = hits[i];
