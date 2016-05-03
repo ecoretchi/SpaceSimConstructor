@@ -1,19 +1,26 @@
 fileFormatVersion: 2
-guid: 2acc8ca894abf6f4d8df8f25690f85bf
-timeCreated: 1462054805
+guid: 80e2e863df225c04cab52984c888484d
+timeCreated: 1462126174
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: TurretBase
+    100004: TurretWeapon
     400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: TurretBase
+    400002: TurretBase
+    400004: TurretWeapon
+    2300000: TurretBase
+    2300002: TurretWeapon
+    3300000: TurretBase
+    3300002: TurretWeapon
+    4300000: TurretWeapon
+    4300002: TurretBase
     7400000: Default Take
     9500000: //RootNode
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
@@ -39,7 +46,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importBlendShapes: 0
+    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -52,7 +59,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 30
+    normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
   importAnimation: 1
