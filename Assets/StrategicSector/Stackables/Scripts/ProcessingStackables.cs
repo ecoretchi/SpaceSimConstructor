@@ -221,7 +221,7 @@ namespace Stackables {
             //Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
 
             Stackable s = target.GetComponentInParent<Stackable>();
-            s.OnMoveOverConstruction(hit);
+             s.OnMoveOverConstruction(hit);
             m_convergence = s.IsConvergence();
 
         }

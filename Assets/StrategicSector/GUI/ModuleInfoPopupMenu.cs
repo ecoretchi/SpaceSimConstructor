@@ -22,6 +22,9 @@ public class ModuleInfoPopupMenu : MouseHoverInspector {
         return false;
     }
     override public void OnUpdate() {
+        if (fadeTarget)
+            fadeUIPositionToTarget(ref fadeTarget);
+
     }
     override public void OnStart() {
         strategicCamera = (StrategicCamera)GameObject.FindObjectOfType(typeof(StrategicCamera));
@@ -32,7 +35,10 @@ public class ModuleInfoPopupMenu : MouseHoverInspector {
         //float f = Screen.width / rt.sizeDelta.x;
 
         //pos.x = (Screen.width - rt.sizeDelta.x)/4f;
-        canvasUI.transform.localPosition = pos; 
+        canvasUI.transform.localPosition = pos;
+
+
+        canvasUI.gameObject.SetActive(false);
     }
     override public void OnTargetHitEnter(Transform target) {
         curTarget = target;
@@ -52,8 +58,9 @@ public class ModuleInfoPopupMenu : MouseHoverInspector {
         adjustUIPositionToCam(target);
     }
     override public void OnTargetHitRelease(Transform target) {
-        curTarget = target;
-        canvasUI.gameObject.SetActive(false);
+        fadeTarget = curTarget;
+        curTarget = null;
+        //canvasUI.gameObject.SetActive(false);
     }
 
     /// HARD ADJUST
@@ -102,7 +109,8 @@ public class ModuleInfoPopupMenu : MouseHoverInspector {
             fadeTarget = null;
             canvasUI.gameObject.SetActive(false);
             gameObject.transform.localScale = Vector3.one;
-            OnTargetHitEnter(curTarget);            
+            if (curTarget)
+                OnTargetHitEnter(curTarget);
             //print("---------------------------!!!!---------------------------");
         }
     }
