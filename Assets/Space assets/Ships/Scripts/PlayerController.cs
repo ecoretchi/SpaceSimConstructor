@@ -20,7 +20,7 @@ namespace Spacecraft {
 		private bool        _isDamping      = false;
 		private float       _dampSpeed      = 10f;
 
-		private Spacecraft_Generic  _ship; // shortcut to master object
+		private SpacecraftGeneric  _ship; // shortcut to master object
 
         private float       desiredThrottle		= 0;    // current desired speed
         private float       rememberedThrottle	= 0; // desired speed for "no override mode"
@@ -30,8 +30,8 @@ namespace Spacecraft {
         // Unity callbacks ////////////////////////////////
 
         void Start() {
-			_ship = GetComponentInParent<Spacecraft_Generic>();
-			Assert.IsNotNull(_ship, "PlayerController::Start: No parent Spacecraft_Generic found!");
+			_ship = GetComponentInParent<SpacecraftGeneric>();
+			Assert.IsNotNull(_ship, "PlayerController::Start: No parent SpacecraftGeneric found!");
 
             InitialiseCameras();
 			GameController.instance.IsCursorLocked = true;
@@ -82,7 +82,8 @@ namespace Spacecraft {
         void FixedUpdate() {
 			// если это перенести в LateUpdate, то камера адово дергается
 			if (_isDamping) {
-				cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
+				//cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
+				cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
 				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
 			}
 
@@ -121,8 +122,9 @@ namespace Spacecraft {
 			sb.Append( "Loc Velocity: " ).Append( locVel.ToString() ).Append( " magn: " ).AppendLine( locVel.magnitude.ToString( "000.00" ) );
 
 			sb.Append( "Ang.Velocity: " ).Append( rb.angularVelocity.ToString() ).Append( " magn: " ).AppendLine( rb.angularVelocity.magnitude.ToString( "000.00" ) );
-
-            Vector3 helper = rb.transform.position + rb.transform.up * 3f;
+			sb.Append( "RPM:          " ).Append( (transform.InverseTransformDirection( rb.angularVelocity ) * 9.549296586f ).ToString() ).AppendLine();
+			
+			Vector3 helper = rb.transform.position + rb.transform.up * 3f;
             Debug.DrawLine( helper, helper + rb.transform.forward * 3f, Color.blue );
             Debug.DrawLine( helper, helper + rb.transform.up * 3f, Color.green );
             Debug.DrawLine( helper, helper + rb.transform.right * 3f, Color.red );
@@ -132,7 +134,9 @@ namespace Spacecraft {
             sb.Append( "Forward speed: " ).Append( fwdSpeed.ToString( "0.00" ) );
             sb.AppendLine();
 
-            shipUI.description = sb.ToString();
+			sb.Append( "Acceleration: " ).Append( _ship.CurrentAcceleration.ToString() ).AppendLine();
+			
+			shipUI.description = sb.ToString();
         }
 
         

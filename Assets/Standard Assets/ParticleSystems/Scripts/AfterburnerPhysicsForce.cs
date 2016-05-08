@@ -45,6 +45,9 @@ namespace UnityStandardAssets.Effects
 
         private void OnDrawGizmosSelected()
         {
+			if (!enabled)
+				return;
+
             //check for editor time simulation to avoid null ref
             if(m_Sphere == null)
                 m_Sphere = (GetComponent<Collider>() as SphereCollider);

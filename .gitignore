@@ -3,8 +3,7 @@
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/Assets/Sources/
-/Assets/Sources*
+/[Ss]ources*
 /Assets/Nonversioned/
 /Assets/Nonversioned*
 /Assets/AssetStoreTools*
@@ -28,3 +27,5 @@ ExportedObj/
 Thumbs.db
 SpaceBuilderGenesis
 Assets/SpaceBuilderGenesis.meta
+ProjectSettings/EditorBuildSettings.asset
+References
