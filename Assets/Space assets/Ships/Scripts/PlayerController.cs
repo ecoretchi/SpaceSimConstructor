@@ -26,10 +26,12 @@ namespace Spacecraft {
         private float       rememberedThrottle	= 0; // desired speed for "no override mode"
         private bool        mouseShownByAlt     = false;
 
+		private Vector3 cameraVelocity = Vector3.zero;
 
-        // Unity callbacks ////////////////////////////////
 
-        void Start() {
+		// Unity callbacks ////////////////////////////////
+
+		void Start() {
 			_ship = GetComponentInParent<SpacecraftGeneric>();
 			Assert.IsNotNull(_ship, "PlayerController::Start: No parent SpacecraftGeneric found!");
 
@@ -83,7 +85,8 @@ namespace Spacecraft {
 			// если это перенести в LateUpdate, то камера адово дергается
 			if (_isDamping) {
 				//cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
-				cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
+				//cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
+				cameraToUse.transform.position = Vector3.SmoothDamp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection( _ship.CurrentAcceleration ) * -0.01f, ref cameraVelocity, 0.05f * (1.0f - _ship.CurrentVelocity.sqrMagnitude / _ship.maxSupportedSpeed.sqrMagnitude ) );
 				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
 			}
 

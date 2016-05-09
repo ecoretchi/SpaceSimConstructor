@@ -12,12 +12,18 @@ public class TestPlasmaShot : MonoBehaviour {
 	public float maxDistance; // max travel distance
 	public float safeZone;  //distance of no collision detection
 	public SpacecraftGeneric owner; // owner of shot
+	private Vector3 normalScale;
 
 	//private float maxDistanceSqr; // maxDistance * maxDistance
 	private float travelledDistance;
 
 	void Awake() {
 		gameObject.layer = LayerMask.NameToLayer( "Ignore Collision" );
+		normalScale = transform.localScale;
+	}
+
+	void OnEnable() {
+		transform.localScale.Set( 1f, 1f, 0.5f );
 	}
 
 	// Update is called once per frame
@@ -31,6 +37,7 @@ public class TestPlasmaShot : MonoBehaviour {
 		if (travelledDistance >= safeZone) {
 			//we've passed safe zone, turn on collisions by changing layer
 			rb.gameObject.layer = LayerMask.NameToLayer( "Default" );
+			transform.localScale = normalScale;
 		}
 
 		if (travelledDistance >= maxDistance) {

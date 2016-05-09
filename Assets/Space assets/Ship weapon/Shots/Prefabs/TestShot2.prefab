@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 164498}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -56.29, y: 1.5851923, z: 25.031368}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 418446}
   m_Father: {fileID: 0}
@@ -165,8 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f65fc8bfd444c6a438cef548c766a235, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 300
-  maxDistance: 4000
+  speed: 2000
+  maxDistance: 6000
   safeZone: 3
   owner: {fileID: 0}
 --- !u!1001 &100100000
