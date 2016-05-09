@@ -27,7 +27,7 @@ public class ShowModuleMenuInfo : MouseHoverInspector {
         curTarget = target;
         gameObject.transform.position = target.position;
 
-        menuManager.ShowMenu(true);
+        menuManager.ShowModuleInfoMenu(true);
     }
     override public void OnTargetHit(Transform target) {
         if (curTarget != target) {
@@ -37,7 +37,7 @@ public class ShowModuleMenuInfo : MouseHoverInspector {
     override public void OnTargetHitRelease(Transform target) {
         curTarget = null;
 
-        menuManager.ShowMenu(false);
+        menuManager.ShowModuleInfoMenu(false);
     }
 
 
