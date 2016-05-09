@@ -1,0 +1,11 @@
+﻿
+---Production and Consumation ---
+
+Maintenance: Important property to normal functional the station 
+EnergyGWats:
+HullFactor:
+IncomeCivil: Income civil per cycle
+
+
+--- Influence ---
+Hull: Some negative factor that could decrease hull, or positive that increase it.

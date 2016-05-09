@@ -44,9 +44,9 @@ GameObject:
   - 4: {fileID: 436796}
   - 33: {fileID: 3345476}
   - 23: {fileID: 2365368}
-  - 136: {fileID: 13616382}
   - 54: {fileID: 5422708}
   - 114: {fileID: 11432734}
+  - 136: {fileID: 13639684}
   m_Layer: 8
   m_Name: mesh_connector_s
   m_TagString: Stackable
@@ -64,9 +64,10 @@ GameObject:
   - 4: {fileID: 444110}
   - 114: {fileID: 11409220}
   - 114: {fileID: 11451774}
+  - 114: {fileID: 11444190}
   m_Layer: 0
   m_Name: ConnectorS
-  m_TagString: Untagged
+  m_TagString: StationConnector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,7 +93,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 148002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 97.40861, y: 0.6949787, z: 96.569496}
+  m_LocalPosition: {x: 100, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 436796}
@@ -105,8 +106,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 131952}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 1.008}
-  m_LocalScale: {x: 0.33333334, y: 0.33333337, z: 0.33333334}
+  m_LocalPosition: {x: 0, y: 0, z: 35.27999}
+  m_LocalScale: {x: 11.666667, y: 11.666668, z: 11.666667}
   m_Children: []
   m_Father: {fileID: 436796}
   m_RootOrder: 0
@@ -118,7 +119,7 @@ Transform:
   m_GameObject: {fileID: 133192}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000016292068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.33333334, y: 0.33333337, z: 0.3333333}
+  m_LocalScale: {x: 11.666667, y: 11.666668, z: 11.666667}
   m_Children: []
   m_Father: {fileID: 436796}
   m_RootOrder: 1
@@ -220,6 +221,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb4894f5487f5a4e8912f3aafee6852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11444190
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 148002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746a28eee35515c4d95dd4112ea318e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  minutesPerCycle: 0
+  hull: 50
+  influences:
+  - nameID: GWatt Conductivity
+    enabled: 1
+    value: 1
+    productionRequire: 0
+    productionsID: []
+  - nameID: GWatt Energy
+    enabled: 1
+    value: -0.05
+    productionRequire: 0
+    productionsID: []
+  - nameID: Maintenance
+    enabled: 1
+    value: -3
+    productionRequire: 0
+    productionsID: []
+  - nameID: Hull weakening %
+    enabled: 1
+    value: 2
+    productionRequire: 0
+    productionsID: []
+  facilities: []
+  apartments: []
+  storage: []
 --- !u!114 &11451774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -255,7 +294,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.6
   m_Center: {x: 0, y: 0, z: 0}
---- !u!136 &13616382
+--- !u!136 &13639684
 CapsuleCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -264,10 +303,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.14
-  m_Height: 1.16
+  m_Radius: 3.98
+  m_Height: 43.1
   m_Direction: 2
-  m_Center: {x: 0.0000038146973, y: 0, z: 0.50402325}
+  m_Center: {x: 0, y: 0, z: 17.640816}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

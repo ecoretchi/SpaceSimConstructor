@@ -148,8 +148,8 @@ namespace Stackables {
         override public void OnStart() {
             hitTag = "Stackable";
             strategicCamera = GameObject.FindObjectOfType<StrategicCamera>();
-            strategicCamera.SetDesiredTarget(new Vector3(100, 0, 100), 1);
             m_mainStation = GameObject.FindObjectOfType<MainStationModule>();
+            strategicCamera.SetDesiredTarget(m_mainStation.transform.position, 1);// new Vector3(100, 0, 100)
         }
         //==================  UPDATE  ==================
         override public void OnUpdate() {        
@@ -161,19 +161,19 @@ namespace Stackables {
         }
         //float curAngle;
         //float curMeredianAngle;
-        void DoFlowCam() {
-            ////prepare params
-            //Transform cam = currCamera.transform;
-            //Vector3 curCamLookAt = cam.forward;
-            //Vector3 offset = projectedMousePosOnPlane - cam.position;
-            //curAngle = Vector3.Angle(curCamLookAt, offset);
+        //void DoFlowCam() {
+        //    ////prepare params
+        //    //Transform cam = currCamera.transform;
+        //    //Vector3 curCamLookAt = cam.forward;
+        //    //Vector3 offset = projectedMousePosOnPlane - cam.position;
+        //    //curAngle = Vector3.Angle(curCamLookAt, offset);
 
-            //curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
-            //print(curMeredianAngle);
+        //    //curMeredianAngle = Vector3.Angle(Vector3.up, -offset);
+        //    //print(curMeredianAngle);
 
-            //DoLookFollow();
-            //DoMoveFollow();
-        }
+        //    //DoLookFollow();
+        //    //DoMoveFollow();
+        //}
 
         void DoMoveObject() {
             //is any target on hold
@@ -221,7 +221,7 @@ namespace Stackables {
             //Debug.DrawRay(hit.point, hit.normal * 1000, Color.blue);
 
             Stackable s = target.GetComponentInParent<Stackable>();
-            s.OnMoveOverConstruction(hit);
+             s.OnMoveOverConstruction(hit);
             m_convergence = s.IsConvergence();
 
         }

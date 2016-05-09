@@ -12,7 +12,6 @@ GameObject:
   - 23: {fileID: 2312274}
   - 95: {fileID: 9511844}
   - 136: {fileID: 13618152}
-  - 114: {fileID: 11425770}
   - 114: {fileID: 11471034}
   m_Layer: 8
   m_Name: mesh_connector_L
@@ -31,9 +30,10 @@ GameObject:
   - 4: {fileID: 445162}
   - 114: {fileID: 11469942}
   - 114: {fileID: 11400948}
+  - 114: {fileID: 11487720}
   m_Layer: 8
   m_Name: ConnectorL
-  m_TagString: Untagged
+  m_TagString: StationConnector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,8 +104,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 107742}
-  m_LocalRotation: {x: -0.50000006, y: -0.49999994, z: -0.49999994, w: 0.50000006}
-  m_LocalPosition: {x: 96.31445, y: 14.65737, z: 95.412056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 4.05, y: 4.0499997, z: 3}
   m_Children:
   - {fileID: 409876}
@@ -117,8 +117,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 166470}
-  m_LocalRotation: {x: 0.000000029802322, y: -0.00000008940697, z: 1, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0.506}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 17.74}
   m_LocalScale: {x: 0.24691357, y: 0.2469136, z: 0.33333334}
   m_Children: []
   m_Father: {fileID: 409876}
@@ -198,17 +198,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dimType: 3
   orientedType: 0
---- !u!114 &11425770
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 105844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbbcc04b5248fce4bbcfb59223c235ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11469942
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -244,6 +233,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dimType: 3
   orientedType: 0
+--- !u!114 &11487720
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 107742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746a28eee35515c4d95dd4112ea318e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  minutesPerCycle: 0
+  hull: 150
+  influences:
+  - nameID: GWatt Conductivity
+    enabled: 1
+    value: 5
+    productionRequire: 0
+    productionsID: []
+  - nameID: GWatt Energy
+    enabled: 1
+    value: -0.2
+    productionRequire: 0
+    productionsID: []
+  - nameID: Maintenance
+    enabled: 1
+    value: -9
+    productionRequire: 0
+    productionsID: []
+  - nameID: Hull weakening %
+    enabled: 1
+    value: 6
+    productionRequire: 0
+    productionsID: []
+  facilities: []
+  apartments: []
+  storage: []
 --- !u!135 &13541424
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -277,10 +304,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.2568232
-  m_Height: 0.91
+  m_Radius: 8.5
+  m_Height: 31.91
   m_Direction: 2
-  m_Center: {x: 0, y: 0.00000013411045, z: 0.25333056}
+  m_Center: {x: 0, y: 0, z: 8.9}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
