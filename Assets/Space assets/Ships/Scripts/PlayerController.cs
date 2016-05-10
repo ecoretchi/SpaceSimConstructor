@@ -10,41 +10,32 @@ namespace Spacecraft {
 
         [Header("Links")]
 		public Camera cameraToUse;
-        public Transform cameraPositionsSource;
-        public ShipUI shipUI;
+		public ShipUI shipUI;
+		public Transform cameraCenter;
+        
+		private Vector3 cameraVelocity = Vector3.zero;
+		private float cameraDistance = 10f;
+		public float maxCameraDistance = 30f;
+		public float zoomSensitivity = 30f;
 
-
-        // Camera controls
-		private Transform[] cameraPositions;
-		private int         cameraIndex     = 0; // camera_to_use index
-		private bool        _isDamping      = false;
-		private float       _dampSpeed      = 10f;
-
-		private SpacecraftGeneric  _ship; // shortcut to master object
+		private SpacecraftGeneric  m_ship; // shortcut to master object
 
         private float       desiredThrottle		= 0;    // current desired speed
-        private float       rememberedThrottle	= 0; // desired speed for "no override mode"
+        private float       rememberedThrottle	= 0;	// desired speed for "no override mode"
         private bool        mouseShownByAlt     = false;
-
-		private Vector3 cameraVelocity = Vector3.zero;
-
+		
 
 		// Unity callbacks ////////////////////////////////
 
-		void Start() {
-			_ship = GetComponentInParent<SpacecraftGeneric>();
-			Assert.IsNotNull(_ship, "PlayerController::Start: No parent SpacecraftGeneric found!");
+		void Awake() {
+			m_ship = GetComponentInParent<SpacecraftGeneric>();
+			Assert.IsNotNull(m_ship, "PlayerController::Awake: No parent SpacecraftGeneric found!");
 
-            InitialiseCameras();
 			GameController.instance.IsCursorLocked = true;
 		}	
 
 		void Update() {
-
-            if (Input.GetKeyUp( KeyCode.F1 )) {
-                SwithCamera();
-            }
-
+			            
             ProcessCruiseEnginesThrottleControl();
 
             if (!mouseShownByAlt && Input.GetKeyDown( KeyCode.LeftAlt )) {
@@ -62,47 +53,31 @@ namespace Spacecraft {
                 GameController.instance.IsCursorLocked = !GameController.instance.IsCursorLocked;
             }
 
+			float scrollWheel = Input.GetAxis( "Mouse ScrollWheel" );
+			if (scrollWheel != 0f) {
+				cameraDistance -= scrollWheel * Time.deltaTime * zoomSensitivity;
+				cameraDistance = Mathf.Clamp( cameraDistance, 0, maxCameraDistance );
+			}
 
-			_ship.ControlShipMovement( Input.GetAxis( "Horisontal Strafe" ),        // direction x
+			m_ship.ControlShipMovement( Input.GetAxis( "Horisontal Strafe" ),        // direction x
 								   Input.GetAxis( "Vertical Strafe" ),          // direction y
 								   desiredThrottle );                                // direction z
 
-			_ship.ControlShipRotations( GameController.instance.IsCursorLocked ? Input.GetAxis( "Vertical" ) : 0,                 // rotation x
+			// Direct ship controls
+			m_ship.ControlShipRotations( GameController.instance.IsCursorLocked ? Input.GetAxis( "Vertical" ) : 0,           // rotation x
 								   GameController.instance.IsCursorLocked ? Input.GetAxis( "Horizontal" ) : 0,               // rotation y
 								   Input.GetAxis( "Roll" ) );                    // rotation z
 
-
-			//////////////////////////////////////////// temp
-			if (Input.GetKeyDown( KeyCode.Backspace )) {
-				GetComponentInParent<Rigidbody>().velocity = Vector3.zero;
-				GetComponentInParent<Rigidbody>().angularVelocity = Vector3.zero;
-			}
-			////////////////////////////////////////////
-
         }
 
-        void FixedUpdate() {
-			// если это перенести в LateUpdate, то камера адово дергается
-			if (_isDamping) {
-				//cameraToUse.transform.position = Vector3.Lerp(cameraToUse.transform.position, cameraPositions[cameraIndex].position, Time.smoothDeltaTime * _dampSpeed);
-				//cameraToUse.transform.position = Vector3.Lerp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection(_ship.CurrentAcceleration) * -0.01f, Time.deltaTime * _dampSpeed * (_ship.CurrentVelocity.sqrMagnitude + 1));
-				cameraToUse.transform.position = Vector3.SmoothDamp( cameraToUse.transform.position, cameraPositions[cameraIndex].position + transform.TransformDirection( _ship.CurrentAcceleration ) * -0.01f, ref cameraVelocity, 0.05f * (1.0f - _ship.CurrentVelocity.sqrMagnitude / _ship.maxSupportedSpeed.sqrMagnitude ) );
-				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
-			}
-
+        void LateUpdate() {
+			//cameraToUse.transform.position = Vector3.SmoothDamp( cameraToUse.transform.position, cameraCenter.position + transform.TransformDirection( m_ship.CurrentAcceleration ) * -0.01f, ref cameraVelocity, 0.05f * (1.0f - m_ship.CurrentVelocity.sqrMagnitude / m_ship.maxSupportedSpeed.sqrMagnitude ) );
+			cameraToUse.transform.position = cameraCenter.position + cameraCenter.rotation *  Vector3.forward * -cameraDistance;
+			cameraToUse.transform.rotation = cameraCenter.rotation;
+			
             TestCalc();
 		}
-
-		void LateUpdate() {
-			// а если это перенести в FixedUpdate, то камера "плавает", как будто пружинящая (видимо, позиции трансформов еще не обновляются к тому моменту)
-			if (!_isDamping) {
-				cameraToUse.transform.position = cameraPositions[cameraIndex].position;
-				cameraToUse.transform.rotation = cameraPositions[cameraIndex].rotation;
-			}
-
-            //TestCalc();
-		}
-
+		
         private void TestCalc() {
 
             //get the Rigidbody
@@ -111,9 +86,9 @@ namespace Spacecraft {
             StringBuilder sb = new StringBuilder();
             sb.Append( "Ship " ).Append( rb.gameObject.name ).AppendLine();
             sb.Append( "Mass " ).Append( rb.mass ).AppendLine();
-			sb.Append( "Max speed (m/s): " ).Append( _ship.maxSupportedSpeed.ToString() ).AppendLine();
-			sb.Append( "Cruise engines factor: " ).Append( _ship.cruiseEnginesFactor.ToString() ).AppendLine();
-			sb.Append( "Max acceleration (m/s²): " ).Append( _ship.maxLinearAcceleration.ToString() ).AppendLine();
+			sb.Append( "Max speed (m/s): " ).Append( m_ship.maxSupportedSpeed.ToString() ).AppendLine();
+			sb.Append( "Cruise engines factor: " ).Append( m_ship.cruiseEnginesFactor.ToString() ).AppendLine();
+			sb.Append( "Max acceleration (m/s²): " ).Append( m_ship.maxLinearAcceleration.ToString() ).AppendLine();
             sb.AppendLine( "=======================" );
 
             sb.Append("Throttle: ").AppendLine(desiredThrottle.ToString());
@@ -137,7 +112,7 @@ namespace Spacecraft {
             sb.Append( "Forward speed: " ).Append( fwdSpeed.ToString( "0.00" ) );
             sb.AppendLine();
 
-			sb.Append( "Acceleration: " ).Append( _ship.CurrentAcceleration.ToString() ).AppendLine();
+			sb.Append( "Acceleration: " ).Append( m_ship.CurrentAcceleration.ToString() ).AppendLine();
 			
 			shipUI.description = sb.ToString();
         }
@@ -145,32 +120,7 @@ namespace Spacecraft {
         
 
         // methods ////////////////////////////////////////////////////////////////////////
-
-        /// <summary>
-        ///  "Переключает" камеру на одну из позиций из списка GameObject'ов
-        ///  Если позиций камер не обнаружено, то поставит просто в центр текущего GameObject.
-        /// </summary>
-        /// <param name="switchToIndex">
-        ///  Индекс позиции камеры. Если <0 - переключает на следующую. Если больше количества позиций - переключит на последнюю.
-        /// </param>
-        public void SwithCamera( int switchToIndex = -1 ) {
-
-            if (switchToIndex < 0) {
-                if (++cameraIndex > cameraPositions.GetLength( 0 ) - 1) {
-                    cameraIndex = 0;
-                }
-            } else {
-                cameraIndex = Math.Min( switchToIndex, cameraPositions.GetLength( 0 ) - 1 );
-            }
-
-            CameraPositionPoint cp = cameraPositions[cameraIndex].gameObject.GetComponent<CameraPositionPoint>();
-            if (cp) {
-                _isDamping = cp.isDamped;
-                _dampSpeed = cp.dampingSpeed;
-            }
-
-        }
-
+		        
         private void ProcessCruiseEnginesThrottleControl() {
             float tempThrottle = desiredThrottle;
 
@@ -218,8 +168,12 @@ namespace Spacecraft {
                 tempThrottle = rememberedThrottle;
             }
 
-            // update widget only on changes
-            if (!Mathf.Approximately( tempThrottle, desiredThrottle )) {
+			if (Input.GetButtonDown( "SetSpeedToZero" )) { 
+				desiredThrottle = 0f;
+			}
+
+			// update widget only on changes
+			if (!Mathf.Approximately( tempThrottle, desiredThrottle )) {
                 desiredThrottle = tempThrottle;
                 shipUI.speed = desiredThrottle;
             } else {
@@ -227,28 +181,5 @@ namespace Spacecraft {
                 desiredThrottle = shipUI.speed;
             }
         }
-
-        private void InitialiseCameras() {
-			if (cameraToUse == null) {
-                cameraToUse = Camera.main;
-                Assert.IsNotNull( cameraToUse, "PlayerController::initialiseCameras: main camera not found!" );
-			}
-
-			PrepareCameraList();
-			SwithCamera(0);
-		}
-
-		private void PrepareCameraList() {
-			if (cameraPositionsSource.childCount == 0) {
-				cameraPositions = new Transform[1];
-				cameraPositions[0] = transform;
-			} else {
-				cameraPositions = new Transform[cameraPositionsSource.childCount];
-				int i = 0;
-				foreach (Transform t in cameraPositionsSource) {
-					cameraPositions[i++] = t;
-				}
-			}
-		}
 	}
 }
