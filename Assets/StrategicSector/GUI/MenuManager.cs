@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class MenuManager : MonoBehaviour {
 
     public Menu BuildingMenu;
-    public Menu BuildConnectorsMenu;
 
     public Menu InfoMenu;    
     public Menu ModuleInfoMenu;
