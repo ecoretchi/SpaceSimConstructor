@@ -8,6 +8,8 @@ public class Menu : MonoBehaviour {
     private CanvasGroup _canvasGroup;
     private Animation _animation;
 
+    public Menu parentMenu;
+
     public bool IsOpen {
         get { return _animator.GetBool("IsOpen"); }
         set { _animator.SetBool("IsOpen", value); }

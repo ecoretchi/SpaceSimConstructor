@@ -37,7 +37,8 @@ public class MenuManager : MonoBehaviour {
     public void ShowMenu(Menu m_) {
         Menu CurrentMenu = CurrentMenus[m_.menuGroup];
         if (CurrentMenu != null) {
-            CurrentMenu.IsOpen = false;
+            if (CurrentMenu.parentMenu)
+                CurrentMenu.IsOpen = false;
             if (m_)
                 m_.IsOpenEx = CurrentMenu.IsOpenEx;
         }
@@ -49,8 +50,12 @@ public class MenuManager : MonoBehaviour {
             m_.IsOpenEx = false;
 
             Menu CurrentMenu = CurrentMenus[m_.menuGroup];
-            if (m_ != CurrentMenu && CurrentMenu)
-                CurrentMenu.IsOpen = false;
+            if (m_ != CurrentMenu && CurrentMenu) {
+                if (CurrentMenu.parentMenu)
+                    CurrentMenu.IsOpen = false;
+                else
+                    CurrentMenu.IsOpenEx = false;
+            }
         }
     }
 
@@ -67,8 +72,13 @@ public class MenuManager : MonoBehaviour {
         if (m_!= null ) {
             m_.IsOpenEx = true;// !m_.IsOpenEx;
 
-            if (m_ != CurrentMenu && CurrentMenu)
-                CurrentMenu.IsOpen = false;
+            if (m_ != CurrentMenu && CurrentMenu) {
+                if (CurrentMenu.parentMenu)
+                    CurrentMenu.IsOpen = false;
+                else
+                    CurrentMenu.IsOpenEx = false; 
+                
+            }
 
             if (m_.IsOpenEx && !m_.IsOpen)
                 m_.IsOpen = true;

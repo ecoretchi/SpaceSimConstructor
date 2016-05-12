@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuGroup: 0
+  parentMenu: {fileID: 0}
 --- !u!95 &2504050
 Animator:
   serializedVersion: 3
@@ -511,7 +512,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -731,7 +732,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: BACK
+  m_Text: Close
 --- !u!222 &131455016
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -968,7 +969,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1019,7 +1020,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000015258789}
+  m_AnchoredPosition: {x: 72, y: -0.000015258789}
   m_SizeDelta: {x: 72, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!225 &194922950
@@ -1779,6 +1780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuGroup: 1
+  parentMenu: {fileID: 0}
 --- !u!225 &561565085
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2222,7 +2224,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2394,7 +2396,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &653696374
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2460,6 +2462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuGroup: 0
+  parentMenu: {fileID: 2504049}
 --- !u!95 &687776557
 Animator:
   serializedVersion: 3
@@ -2573,7 +2576,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2748,7 +2751,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3066,7 +3069,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &912793553
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3110,7 +3113,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000015258789}
+  m_AnchoredPosition: {x: 72, y: -0.000015258789}
   m_SizeDelta: {x: 72, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!225 &913596568
@@ -3851,7 +3854,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300004, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300028, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4068,6 +4071,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuGroup: 1
+  parentMenu: {fileID: 0}
 --- !u!225 &1028235925
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4162,7 +4166,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &1031551515
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4472,7 +4476,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &1068697915
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4579,7 +4583,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: BACK
+  m_Text: Close
 --- !u!222 &1098081915
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4652,7 +4656,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &1237867241
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4835,7 +4839,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &1416004006
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5387,7 +5391,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300004, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300028, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6028,7 +6032,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (reserved)
+  m_Text: 
 --- !u!222 &1644530207
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6666,7 +6670,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7564,7 +7568,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300010, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8198,6 +8202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuGroup: 0
+  parentMenu: {fileID: 2504049}
 --- !u!225 &2065380025
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8550,7 +8555,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300158, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
+  m_Sprite: {fileID: 21300068, guid: 376ae57a890ed2843afc849ea74f61f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
