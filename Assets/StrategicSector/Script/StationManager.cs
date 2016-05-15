@@ -4,7 +4,7 @@ using System.Collections;
 public class StationManager : MonoBehaviour {
 
 	//station characteristics
-    StationData m_stationInfo;
+    public StationData m_stationInfo;
 
     MainStationModule m_cms;
     // Use this for initialization
