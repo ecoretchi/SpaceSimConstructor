@@ -5,8 +5,8 @@ public class Menu : MonoBehaviour {
 
     public MenuManager.MenuGroup menuGroup;
     private Animator _animator;
-    private CanvasGroup _canvasGroup;
-    private Animation _animation;
+    //private CanvasGroup _canvasGroup;
+    //private Animation _animation;
 
     public Menu parentMenu;
 
@@ -23,8 +23,8 @@ public class Menu : MonoBehaviour {
 	// Use this for initialization
 	void Awake() {
         _animator = GetComponent<Animator>();
-        _canvasGroup = GetComponent<CanvasGroup>();
-        _animation = GetComponent<Animation>(); 
+        //_canvasGroup = GetComponent<CanvasGroup>();
+        //_animation = GetComponent<Animation>(); 
 
         var rect = GetComponent<RectTransform>();
         rect.offsetMax = rect.offsetMin = Vector2.zero;
