@@ -104,7 +104,7 @@ namespace Spacecraft {
 			//TODO:  take current mass into account
 			m_CurrentAcceleration.x = m_CurrentThrottles.x * maxLinearAcceleration.x;
 			m_CurrentAcceleration.y = m_CurrentThrottles.y * maxLinearAcceleration.y;
-			m_CurrentAcceleration.z = m_CurrentThrottles.z * maxLinearAcceleration.z * cruiseEnginesFactor;
+			m_CurrentAcceleration.z = m_CurrentThrottles.z * maxLinearAcceleration.z * (shipCourse.z > 0 ? cruiseEnginesFactor : 1);
 		   	            			            
 			// apply forces
 			m_rigidbody.AddRelativeForce( m_CurrentAcceleration, ForceMode.Acceleration );
@@ -114,25 +114,11 @@ namespace Spacecraft {
 				ForceMode.Force);
 		}
 
-		/*
-        private void StabiliseRotation(float stability, float speed) {
-			
-            Vector3 predictedUp = Quaternion.AngleAxis( m_rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
-                                                        m_rigidbody.angularVelocity ) * transform.up;
-
-            Vector3 torqueVector = Vector3.Cross( predictedUp, Vector3.up );
-            // Uncomment the next line to stabilize on only 1 axis.
-            //torqueVector = Vector3.Project(torqueVector, transform.forward);
-            m_rigidbody.AddTorque( torqueVector * speed );
-			
-
-        }
-		*/
-
 		public void ControlShipMovement( float x, float y, float z ) {
 			desiredShipMovementVelocity.x = x * maxSupportedSpeed.x; //TODO: consider mass changes?
 			desiredShipMovementVelocity.y = y * maxSupportedSpeed.y;
-			desiredShipMovementVelocity.z = (z > 0) ? (z * maxSupportedSpeed.z * cruiseEnginesFactor) : (z * maxSupportedSpeed.z);
+			//desiredShipMovementVelocity.z = (z > 0) ? (z * maxSupportedSpeed.z * cruiseEnginesFactor) : (z * maxSupportedSpeed.z);
+			desiredShipMovementVelocity.z = z * maxSupportedSpeed.z;
 		}
 
 		public void ControlShipRotations(Vector3 setRotation ) {
