@@ -11,7 +11,7 @@ namespace Spacecraft {
         [Header("Links")]
 		public Camera cameraToUse;
 		public ShipUI shipUI;
-		public Transform cameraCenter;
+		public Transform cameraRig;
         
 		private Vector3 cameraVelocity = Vector3.zero;
 		private float cameraDistance = 10f;
@@ -72,8 +72,8 @@ namespace Spacecraft {
 
         void LateUpdate() {
 			//cameraToUse.transform.position = Vector3.SmoothDamp( cameraToUse.transform.position, cameraCenter.position + transform.TransformDirection( m_ship.CurrentAcceleration ) * -0.01f, ref cameraVelocity, 0.05f * (1.0f - m_ship.CurrentVelocity.sqrMagnitude / m_ship.maxSupportedSpeed.sqrMagnitude ) );
-			cameraToUse.transform.position = cameraCenter.position + cameraCenter.rotation *  Vector3.forward * -cameraDistance;
-			cameraToUse.transform.rotation = cameraCenter.rotation;
+			cameraToUse.transform.position = cameraRig.position + cameraRig.rotation *  Vector3.forward * -cameraDistance;
+			cameraToUse.transform.rotation = cameraRig.rotation;
 			
             TestCalc();
 		}
